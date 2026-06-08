@@ -35,7 +35,7 @@ region VARCHAR(20) NOT NULL
 CREATE TABLE TOURNAMENT	
 (
 tournament_id INT PRIMARY KEY,
-tournament_name VARCHAR(30) NOT NULL,
+tournament_name VARCHAR(50) NOT NULL,
 country VARCHAR(30) NOT NULL,
 start_date DATE NOT NULL,
 end_date DATE NOT NULL,
