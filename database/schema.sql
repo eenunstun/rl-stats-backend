@@ -1,113 +1,115 @@
-drop table if exists APP_USER cascade;
-drop table if exists PLAYER cascade;
-drop table if exists TEAM cascade;
-drop table if exists TOURNAMENT cascade;
-drop table if exists ARENA cascade;
-drop table if exists MATCH_DATA cascade;
-drop table if exists PLAYER_MATCH_STATS cascade;
-drop table if exists PLAYS_FOR cascade;
-drop table if exists PLAYS_AS cascade;
-drop table if exists FAV_PLAYER cascade;
-drop table if exists FAV_TEAM cascade;
+DROP TABLE IF EXISTS APP_USER CASCADE;
+DROP TABLE IF EXISTS PLAYER CASCADE;
+DROP TABLE IF EXISTS TEAM CASCADE;
+DROP TABLE IF EXISTS TOURNAMENT CASCADE;
+DROP TABLE IF EXISTS ARENA CASCADE;
+DROP TABLE IF EXISTS MATCH_DATA CASCADE;
+DROP TABLE IF EXISTS PLAYER_MATCH_STATS CASCADE;
+DROP TABLE IF EXISTS PLAYS_FOR CASCADE;
+DROP TABLE IF EXISTS PLAYS_AS CASCADE;
+DROP TABLE IF EXISTS FAV_PLAYER CASCADE;
+DROP TABLE IF EXISTS FAV_TEAM CASCADE;
 
 CREATE TABLE APP_USER	
 (
-user_id INT primary key,
-username VARCHAR(20) not null unique,
-password VARCHAR(50) not null,
-is_admin BOOLEAN not null default false 
+user_id INT PRIMARY KEY,
+username VARCHAR(20) NOT NULL UNIQUE,
+password VARCHAR(50) NOT NULL,
+is_admin BOOLEAN NOT NULL DEFAULT FALSE 
 );
+
 CREATE TABLE PLAYER	
 (
-player_id INT primary key,
-player_name VARCHAR(50) not null,
-platform VARCHAR(50) not null
+player_id INT PRIMARY KEY,
+player_name VARCHAR(50) NOT NULL,
+platform VARCHAR(50) NOT NULL
 );
 
 CREATE table TEAM
 (
-team_id INT primary key,
-team_name VARCHAR(30) not null unique,
-region VARCHAR(20) not null
+team_id INT PRIMARY KEY,
+team_name VARCHAR(30) NOT NULL UNIQUE,
+region VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE TOURNAMENT	
 (
-tournament_id INT primary key,
-tournament_name VARCHAR(30) not null,
-country VARCHAR(30) not null,
-start_date DATE not null,
-end_date DATE not null,
-check (end_date >= start_date)
+tournament_id INT PRIMARY KEY,
+tournament_name VARCHAR(30) NOT NULL,
+country VARCHAR(30) NOT NULL,
+start_date DATE NOT NULL,
+end_date DATE NOT NULL,
+CHECK (end_date >= start_date)
 );
 
 CREATE TABLE ARENA
 (
-arena_id INT primary key,
-arena_name VARCHAR(30) not null unique
+arena_id INT PRIMARY KEY,
+arena_name VARCHAR(30) NOT NULL UNIQUE
 );
+
 CREATE TABLE MATCH_DATA	
 (
-match_id INT primary key,
-match_date DATE not null,
-tournament_stage VARCHAR(30) not null,
-weather VARCHAR(20) not null,
-tournament_id INT not null,
-arena_id INT not null ,
-foreign key (tournament_id) references TOURNAMENT(tournament_id),
-foreign key (arena_id) references ARENA(arena_id)
+match_id INT PRIMARY KEY,
+match_date DATE NOT NULL,
+tournament_stage VARCHAR(30) NOT NULL,
+weather VARCHAR(20) NOT NULL,
+tournament_id INT NOT NULL,
+arena_id INT NOT NULL ,
+FOREIGN KEY (tournament_id) REFERENCES TOURNAMENT(tournament_id),
+FOREIGN KEY (arena_id) REFERENCES ARENA(arena_id)
 );
 
 CREATE TABLE PLAYER_MATCH_STATS	
 (
-player_id INT not null,
-match_id INT not null,
-goals INT not null check (goals >= 0),
-assists INT not null check (assists >= 0),
-saves INT not null check (saves >= 0),
-shot_accuracy DECIMAL(5,2) not null check (shot_accuracy >= 0 and shot_accuracy <= 100),
-mvp BOOLEAN not null default false,
-primary key(player_id, match_id),
-foreign key (player_id) references PLAYER(player_id),
-foreign key (match_id) references MATCH_DATA(match_id)
+player_id INT NOT NULL,
+match_id INT NOT NULL,
+goals INT NOT NULL CHECK (goals >= 0),
+assists INT NOT NULL CHECK (assists >= 0),
+saves INT NOT NULL CHECK (saves >= 0),
+shot_accuracy DECIMAL(5,2) NOT NULL CHECK (shot_accuracy >= 0 AND shot_accuracy <= 100),
+mvp BOOLEAN NOT NULL DEFAULT FALSE,
+PRIMARY KEY(player_id, match_id),
+FOREIGN KEY (player_id) REFERENCES PLAYER(player_id),
+FOREIGN KEY (match_id) REFERENCES MATCH_DATA(match_id)
 );
 
 CREATE TABLE PLAYS_FOR
 (
-player_id INT not null,
-team_id INT not null,
-since DATE not null,
+player_id INT NOT NULL,
+team_id INT NOT NULL,
+since DATE NOT NULL,
 until DATE,
-check (until is null or until >= since),
-primary key (player_id, team_id, since),
-foreign key (player_id) references PLAYER(player_id),
-foreign key (team_id) references TEAM(team_id)
+CHECK (until IS NULL OR until >= since),
+PRIMARY KEY (player_id, team_id, since),
+FOREIGN KEY (player_id) REFERENCES PLAYER(player_id),
+FOREIGN KEY (team_id) REFERENCES TEAM(team_id)
 );
 
 CREATE TABLE PLAYS_AS	
 (
-team_id INT not null,
-match_id INT not null,
-team_type VARCHAR(6) not null check (team_type in ('ORANGE', 'BLUE')),
-primary key(team_id, match_id),
-foreign key (team_id) references TEAM(team_id),
-foreign key (match_id) references MATCH_DATA(match_id)
+team_id INT NOT NULL,
+match_id INT NOT NULL,
+team_type VARCHAR(6) NOT NULL CHECK (team_type IN ('ORANGE', 'BLUE')),
+PRIMARY KEY(team_id, match_id),
+FOREIGN KEY (team_id) REFERENCES TEAM(team_id),
+FOREIGN KEY (match_id) REFERENCES MATCH_DATA(match_id)
 );
 
 CREATE TABLE FAV_PLAYER
 (
-user_id INT not null, 
-player_id  INT not null,
-primary key(user_id, player_id),
-foreign key (user_id) references APP_USER(user_id),
-foreign key (player_id) references PLAYER(player_id)
+user_id INT NOT NULL, 
+player_id  INT NOT NULL,
+PRIMARY KEY(user_id, player_id),
+FOREIGN KEY (user_id) REFERENCES APP_USER(user_id),
+FOREIGN KEY (player_id) REFERENCES PLAYER(player_id)
 );
 
 CREATE TABLE FAV_TEAM	
 (
-user_id INT not null,
-team_id  INT not null,
-primary key(user_id, team_id),
-foreign key (user_id) references APP_USER(user_id),
-foreign key (team_id) references TEAM(team_id)
+user_id INT NOT NULL,
+team_id  INT NOT NULL,
+PRIMARY KEY(user_id, team_id),
+FOREIGN KEY (user_id) REFERENCES APP_USER(user_id),
+FOREIGN KEY (team_id) REFERENCES TEAM(team_id)
 );
