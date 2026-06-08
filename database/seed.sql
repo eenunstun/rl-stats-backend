@@ -32,7 +32,14 @@ VALUES(1, 'stizzy', 'PC'),
       (24, 'brad', 'XBOX'),
 
 INSERT INTO TEAM(team_id, team_name, region)
-VALUES(),
+VALUES(1, 'Dignitas', 'Europe'),
+      (2, 'Wildcard', 'Australia'),
+      (3, 'Team BDS', 'Europe'),
+      (4, 'G2 Stride', 'North America'),
+      (5, 'KRÜ Esports', 'South America'),
+      (6, 'G2 Esports', 'North America'),
+      (7, 'Twisted Minds', 'Europe'),
+      (8, 'Karmine Corp', 'Europe'),    
 
 INSERT INTO TOURNAMENT(tournament_id, tournament_name, country, start_date, end_date)
 VALUES(),
