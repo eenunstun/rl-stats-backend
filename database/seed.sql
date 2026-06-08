@@ -53,8 +53,27 @@ VALUES(1, 'LDLC Arena'),
       (4, 'Paris La Défense Arena'),
       (5, 'Lenovo Center');
 
-INSERT INTO MATCH_DATA()
-VALUES(),
+INSERT INTO MATCH_DATA(match_id, match_date, tournament_stage, weather, tournament_id, arena_id)
+VALUES(1, '2025-09-10', 'Round 1', 'Rainy', 1, 2),
+      (2, '2024-09-11', 'Round 1', 'Sunny', 2, 3),
+      (3, '2025-09-11', 'Round 1', 'Rainy', 1, 3),
+      (4, '2025-09-12', 'Round 2', 'Foggy', 1, 1),
+      (5, '2024-09-12', 'Round 2', 'Foggy', 2, 2),
+      (6, '2023-08-03', 'Round 2', 'Stormy', 3, 5),
+      (7, '2023-08-03', 'Round 3', 'Sunny', 3, 2),
+      (8, '2025-09-12', 'Round 3', 'Sunny', 1, 5),
+      (9, '2025-09-12', 'Round 3', 'Rainy', 1, 4),
+      (10, '2025-09-13', 'Lower Bracket Quarterfinals', 'Rainy', 1, 2),
+      (11, '2024-09-13', 'Lower Bracket Quarterfinals', 'Sunny', 2, 4),
+      (12, '2024-09-13', 'Lower Bracket Quarterfinals', 'Foggy', 2, 3),
+      (13, '2024-09-13', 'Upper Bracket Quarterfinals', 'Rainy', 2, 3),
+      (14, '2023-08-07', 'Upper Bracket Quarterfinals', 'Foggy', 3, 1),
+      (15, '2023-08-07', 'Upper Bracket Quarterfinals', 'Sunny', 3, 1),
+      (16, '2025-09-14', 'Semifinals', 'Sunny', 1, 2),
+      (17, '2025-09-14', 'Semifinals', 'Foggy', 1, 5),
+      (18, '2024-09-14', 'Semifinals', 'Stormy', 2, 3),
+      (19, '2024-09-15', 'Grand Final', 'Foggy', 2, 4),
+      (20, '2025-09-14', 'Grand Final', 'Sunny', 1, 5);      
 
 INSERT INTO PLAYER_MATCH_STATS()
 VALUES(),
