@@ -269,11 +269,106 @@ VALUES  -- Dignitas
 
         -- Twisted Minds
         (19, 7, '2015-02-14', NULL),
-        (20, 7, '2015-06-30', '2024-11-07'),
+        (20, 7, '2015-06-30', '2026-11-07'),
         (21, 7, '2022-02-27', NULL),
 
         -- Karmine Corp
-        (22, 8, '2022-10-30', '2025-06-07'),
+        (22, 8, '2022-10-30', '2026-12-07'),
         (23, 8, '2021-07-10', '2025-08-05'),
         (24, 8, '2020-08-18', '2025-11-10');
+
+INSERT INTO PLAYS_AS (team_id, match_id, team_type)
+VALUES -- Match 1: Dignitas vs Wildcard
+        (1, 1, 'BLUE'),
+        (2, 1, 'ORANGE'),
+
+        -- Match 2: Team BDS vs G2 Stride
+        (3, 2, 'BLUE'),
+        (4, 2, 'ORANGE'),
+
+        -- Match 3: KRÜ Esports vs G2 Esports
+        (5, 3, 'BLUE'),
+        (6, 3, 'ORANGE'),
+
+        -- Match 4: Twisted Minds vs Karmine Corp
+        (7, 4, 'BLUE'),
+        (8, 4, 'ORANGE'),
+
+        -- Match 5: Dignitas vs Team BDS
+        (1, 5, 'BLUE'),
+        (3, 5, 'ORANGE'),
+
+        -- Match 6: G2 Stride vs KRÜ Esports
+        (4, 6, 'BLUE'),
+        (5, 6, 'ORANGE'),
+
+        -- Match 7: G2 Esports vs Twisted Minds
+        (6, 7, 'BLUE'),
+        (7, 7, 'ORANGE'),
+
+        -- Match 8: Karmine Corp vs Dignitas
+        (8, 8, 'BLUE'),
+        (1, 8, 'ORANGE'),
+
+        -- Match 9: Wildcard vs Team BDS
+        (2, 9, 'BLUE'),
+        (3, 9, 'ORANGE'),
+
+        -- Match 10: G2 Stride vs KRÜ Esports
+        (4, 10, 'BLUE'),
+        (5, 10, 'ORANGE'),
+
+        -- Match 11: G2 Esports vs Twisted Minds
+        (6, 11, 'BLUE'),
+        (7, 11, 'ORANGE'),
+
+        -- Match 12: Karmine Corp vs Dignitas
+        (8, 12, 'BLUE'),
+        (1, 12, 'ORANGE'),
+
+        -- Match 13: Wildcard vs Team BDS
+        (2, 13, 'BLUE'),
+        (3, 13, 'ORANGE'),
+
+        -- Match 14: G2 Stride vs KRÜ Esports
+        (4, 14, 'BLUE'),
+        (5, 14, 'ORANGE'),
+
+        -- Match 15: G2 Esports vs Twisted Minds
+        (6, 15, 'BLUE'),
+        (7, 15, 'ORANGE'),
+
+        -- Match 16: Karmine Corp vs Dignitas
+        (8, 16, 'BLUE'),
+        (1, 16, 'ORANGE'),
+
+        -- Match 17: Wildcard vs Team BDS
+        (2, 17, 'BLUE'),
+        (3, 17, 'ORANGE'),
+
+        -- Match 18: G2 Stride vs KRÜ Esports
+        (4, 18, 'BLUE'),
+        (5, 18, 'ORANGE'),
+
+        -- Match 19: G2 Esports vs Twisted Minds
+        (6, 19, 'BLUE'),
+        (7, 19, 'ORANGE'),
+
+        -- Match 20: Karmine Corp vs Dignitas
+        (8, 20, 'BLUE'),
+        (1, 20, 'ORANGE');
+
+INSERT INTO FAV_PLAYER (user_id, player_id)
+VALUES  (1,17),
+        (2,21),
+        (3,9),
+        (4,8),
+        (5,10);
+
+INSERT INTO FAV_TEAM (user_id, team_id)
+VALUES  (1,6),
+        (2,7),
+        (3,3),
+        (4,3),
+        (5,4);
 
