@@ -28,7 +28,7 @@ platform VARCHAR(50) NOT NULL
 CREATE table TEAM
 (
 team_id INT PRIMARY KEY,
-team_name VARCHAR(30) NOT NULL UNIQUE,
+team_name VARCHAR(50) NOT NULL UNIQUE,
 region VARCHAR(20) NOT NULL
 );
 
@@ -45,14 +45,14 @@ CHECK (end_date >= start_date)
 CREATE TABLE ARENA
 (
 arena_id INT PRIMARY KEY,
-arena_name VARCHAR(30) NOT NULL UNIQUE
+arena_name VARCHAR(50) NOT NULL UNIQUE
 );
 
 CREATE TABLE MATCH_DATA	
 (
 match_id INT PRIMARY KEY,
 match_date DATE NOT NULL,
-tournament_stage VARCHAR(30) NOT NULL,
+tournament_stage VARCHAR(50) NOT NULL,
 weather VARCHAR(20) NOT NULL,
 tournament_id INT NOT NULL,
 arena_id INT NOT NULL ,
