@@ -42,7 +42,9 @@ VALUES(1, 'Dignitas', 'Europe'),
       (8, 'Karmine Corp', 'Europe'),    
 
 INSERT INTO TOURNAMENT(tournament_id, tournament_name, country, start_date, end_date)
-VALUES(),
+VALUES(1, 'RLCS 2025 - World Championship', 'France', '2025-09-10', '2025-09-14'),
+      (2, 'RLCS 2024 - World Championship', 'USA', '2024-09-10', '2024-09-15'),
+      (3, 'RLCS 2022-23 - World Championship', 'Germany', '2023-08-03', '2023-08-13'),
 
 INSERT INTO ARENA(arena_id, arena_name)
 VALUES(),
