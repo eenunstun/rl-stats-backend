@@ -6,6 +6,22 @@
     <title>RLstats</title>
     
     <link rel="icon" type="image/png" href="rocket-league-logo.png">
+
+<style>
+    #page-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #121214;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    }
+</style>
  
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -776,7 +792,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
     </div>
 </nav>
 
-<div id="page-loader" class="fixed top-20 inset-x-0 bottom-0 z-[9999] bg-[#121214] flex flex-col items-center justify-center transition-all duration-300">
+<div id="page-loader" class="fixed inset-0 z-[9999] bg-[#121214] flex flex-col items-center justify-center transition-all duration-300">
     <div class="relative mb-8">
         <img src="rocket-league-logo.png" class="h-20 w-auto animate-pulse drop-shadow-[0_0_30px_rgba(157,78,237,0.6)]" alt="Loading...">
         <div class="absolute -inset-4 border-2 border-t-purple-500 border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
@@ -1443,9 +1459,9 @@ body:has(#page-loader:not(.loader-hidden)) main {
                     <div class="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center">
                         <i data-lucide="shield-half" class="w-4 h-4 text-emerald-400"></i>
                     </div>
-                    <span class="text-[9px] font-black uppercase tracking-widest text-emerald-400/60 border border-emerald-500/20 rounded-full px-2 py-0.5">R. Matches</span>
+                    <span class="text-[9px] font-black uppercase tracking-widest text-emerald-400/60 border border-emerald-500/20 rounded-full px-2 py-0.5">All Matches</span>
                 </div>
-                <div class="text-[10px] font-black text-gray-500 uppercase tracking-widest leading-tight">Total Regular 3V3 Matches Added</div>
+                <div class="text-[10px] font-black text-gray-500 uppercase tracking-widest leading-tight">Total All 3V3 Matches Added</div>
                 <p class="text-3xl font-black text-white mt-auto pt-2" id="ov-arena-match-count">0</p>
             </div>
 
@@ -1453,15 +1469,15 @@ body:has(#page-loader:not(.loader-hidden)) main {
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     
-    <div class="bg-[#1a1b1e] border border-gray-800 rounded-2xl overflow-hidden flex flex-col hover:border-orange-500/40 transition-colors h-[500px]">
+    <div class="bg-[#1a1b1e] border border-gray-800 rounded-2xl overflow-hidden flex flex-col hover:border-purple-500/40 transition-colors h-[500px]">
         <div class="px-6 py-4 border-b border-gray-800 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-7 h-7 rounded-lg bg-orange-500/10 flex items-center justify-center">
-                    <i data-lucide="users" class="w-3.5 h-3.5 text-orange-400"></i>
+                <div class="w-7 h-7 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                    <i data-lucide="users" class="w-3.5 h-3.5 text-purple-400"></i>
                 </div>
                 <h3 class="text-xs font-black uppercase tracking-widest text-white">Recent Players</h3>
             </div>
-            <button onclick="switchDashTab('players')" class="text-[10px] font-black uppercase tracking-widest text-orange-400 hover:text-orange-300 transition-colors">View All →</button>
+            <button onclick="switchDashTab('players')" class="text-[10px] font-black uppercase tracking-widest text-purple-400 hover:text-purple-300 transition-colors">View All →</button>
         </div>
         <div id="ov-recent-players" class="divide-y divide-gray-800/50 flex-1 overflow-y-auto"></div>
     </div>
@@ -1518,15 +1534,15 @@ body:has(#page-loader:not(.loader-hidden)) main {
         <div id="ov-recent-tourney-matches" class="divide-y divide-gray-800/50 flex-1 overflow-y-auto"></div>
     </div>
 
-    <div class="bg-[#1a1b1e] border border-gray-800 rounded-2xl overflow-hidden flex flex-col hover:border-purple-500/40 transition-colors h-[500px]">
+    <div class="bg-[#1a1b1e] border border-gray-800 rounded-2xl overflow-hidden flex flex-col hover:border-orange-500/40 transition-colors h-[500px]">
         <div class="px-6 py-4 border-b border-gray-800 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-7 h-7 rounded-lg bg-purple-500/10 flex items-center justify-center">
-                    <i data-lucide="user-cog" class="w-3.5 h-3.5 text-purple-400"></i>
+                <div class="w-7 h-7 rounded-lg bg-orange-500/10 flex items-center justify-center">
+                    <i data-lucide="user-cog" class="w-3.5 h-3.5 text-orange-400"></i>
                 </div>
                 <h3 class="text-xs font-black uppercase tracking-widest text-white">Recent Players Stats</h3>
             </div>
-            <button onclick="openLeaderboard('wins')" class="text-[10px] font-black uppercase tracking-widest text-purple-400 hover:text-purple-300 transition-colors">View All →</button>
+            <button onclick="openLeaderboard('wins')" class="text-[10px] font-black uppercase tracking-widest text-orange-400 hover:text-orange-300 transition-colors">View All →</button>
         </div>
         <div id="ov-recent-player-matches" class="divide-y divide-gray-800/50 flex-1 overflow-y-auto"></div>
     </div>
@@ -1896,7 +1912,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
             <input type="number" id="t-psav" class="admin-input text-xs px-2.5 py-2 w-full" placeholder="Saves">
         </div>
     </div>
-    <div class="flex items-center gap-2 py-1 w-full max-w-[300px]">
+    <div class="js-card-container flex items-center gap-2 py-1 w-full max-w-[300px]">
         <label class="text-[10px] font-black text-purple-400 uppercase tracking-widest select-none inline-flex items-center gap-1 shrink-0">
             <i data-lucide="star" class="w-3 h-3 text-purple-400"></i> Match MVP *
         </label>
@@ -2071,7 +2087,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
             <input type="number" id="m-psav" class="admin-input text-xs px-2.5 py-2 w-full" placeholder="Saves">
         </div>
     </div>
-    <div class="flex items-center gap-2 py-1 w-full max-w-[300px]">
+    <div class="js-card-container flex items-center gap-2 py-1 w-full max-w-[300px]">
         <label class="text-[10px] font-black text-purple-400 uppercase tracking-widest select-none inline-flex items-center gap-1 shrink-0">
             <i data-lucide="star" class="w-3 h-3 text-purple-400"></i> Match MVP *
         </label>
@@ -2441,7 +2457,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
                             <div class="flex items-center gap-2 pl-12"><i data-lucide="users-2" class="w-3 h-3"></i>Teams</div>
                         </th>
                         
-                        <th class="px-6 py-5 text-left text-white">
+                        <th class="px-6 py-5 text-center text-white">
                             <div class="flex items-center gap-2"><i data-lucide="medal" class="w-3 h-3"></i>Winner Team</div>
                         </th>
 
@@ -2711,7 +2727,7 @@ function addNewTournament() {
     const startDate = startInput ? startInput.value : '';
     const endDate = endInput ? endInput.value : '';
     
-    // ══ Her Alan İçin Ayrı Ayrı Spesifik Hata Mesajları ══
+    // Her Alan İçin Ayrı Ayrı Spesifik Hata Mesajları
     if (!name) {
         return showAdminMsg('new-t-msg', 'Tournament name is required!', 'error');
     }
@@ -2726,6 +2742,13 @@ function addNewTournament() {
 
     if (!endDate) {
         return showAdminMsg('new-t-msg', 'Tournament end date is required!', 'error');
+    }
+
+    // Başlangıç tarihi bitiş tarihinden sonra olamaz kontrolü
+    const startD = new Date(startDate);
+    const endD = new Date(endDate);
+    if (startD > endD) {
+        return showAdminMsg('new-t-msg', 'Start date cannot be after the end date!', 'error');
     }
 
     // Ülke Adı Doğrulama ve Biçimlendirme Kuralları
@@ -2774,11 +2797,14 @@ function populateAllCountriesDropdown() {
     if (!countrySelect) return;
     
     const uniqueCountries = [...new Set(tournamentNamesDB.map(t => t.country || 'Global').filter(Boolean))];
-    const currentCountry = countrySelect.value;
+    
+    // Sadece o anki değeri değil, sayfa yenilendiyse localStorage'daki son seçimi de al
+    const currentCountry = countrySelect.value || localStorage.getItem('lastAdminTourneyCountry');
     
     countrySelect.innerHTML = '<option value="">— Select Country Name —</option>' + 
                               uniqueCountries.map(c => `<option value="${c}" class="bg-[#1a1b1e]">${c}</option>`).join('');
     
+    // Hafızadaki ülke, kayıtlı turnuvaların ülkeleri arasında hala mevcutsa seçimi geri yükle
     if (currentCountry && uniqueCountries.includes(currentCountry)) {
         countrySelect.value = currentCountry;
     }
@@ -2966,7 +2992,22 @@ function addTournamentMatch() {
         if (document.getElementById('t-stage')) document.getElementById('t-stage').value = '';
         if (document.getElementById('t-team1-sel')) document.getElementById('t-team1-sel').value = '';
         if (document.getElementById('t-team2-sel')) document.getElementById('t-team2-sel').value = '';
-        if (document.getElementById('t-match-player-sel')) document.getElementById('t-match-player-sel').innerHTML = '<option value="">— Select Player —</option>';
+
+        if (document.getElementById('t-date')) document.getElementById('t-date').value = '';
+        if (document.getElementById('t-start-date')) document.getElementById('t-start-date').value = '';
+        if (document.getElementById('t-end-date')) document.getElementById('t-end-date').value = '';
+        
+        const playerSel = document.getElementById('t-match-player-sel');
+        if (playerSel) {
+            playerSel.innerHTML = '<option value="">— Select Player —</option>';
+            playerSel.value = ''; // Seçimi tamamen boşa düşür
+        }
+        
+        // İstatistik inputlarını, MVP'yi ve Change/Save butonlarını otomatik sıfırla
+        if (typeof loadSavedPlayerPerformance === 'function') {
+            loadSavedPlayerPerformance('t'); 
+        }
+
         tempTourneyMatchPlayers = []; // Hafızadaki geçici oyuncu listesini sıfırlar
         localStorage.removeItem('tempTourneyMatchPlayers'); // Kayıt bittiği için localstorage hafızasını temizle
     };
@@ -2986,27 +3027,15 @@ function addTournamentMatch() {
     if (!t1) { resetOne('t-team1-sel'); return showAdminMsg('t-msg', 'First team selection is required.', 'error'); }
     if (!t2) { resetOne('t-team2-sel'); return showAdminMsg('t-msg', 'Second team selection is required.', 'error'); }
 
-    // Match MVP Validation Logic
-    // Kart içerisindeki dropdownları tarayarak en az bir tane YES girildiğini denetler
-    const targetCardContainer = errEl.closest('form') || errEl.closest('.rounded-3xl') || document;
-    const activeMvpSelects = targetCardContainer.querySelectorAll('.match-mvp-select');
-    const mvpIsSelected = Array.from(activeMvpSelects).some(s => s.value === 'YES');
-
-    if (!mvpIsSelected) {
-        // Mevcut projenizdeki showAuthError yapısıyla ve aynı tasarımda hatayı fırlatır
-        if (typeof showAuthError === 'function') {
-            return showAuthError(errEl, errTxt, 'Please select the Match MVP case.');
-        } else {
-            errTxt.textContent = 'Please select the Match MVP case.';
-            errEl.classList.remove('hidden');
-            errEl.style.display = 'flex';
-            return;
-        }
+    // 1. Dinamik oyuncu performans giriş kontrolü (Artık 6 oyuncunun performansı da zorunlu)
+    if (!tempTourneyMatchPlayers || tempTourneyMatchPlayers.length !== 6) {
+        return showAdminMsg('t-msg', 'Please save all 6 players performances before saving the match.', 'error');
     }
 
-    // Dinamik oyuncu performans giriş kontrolü
-    if (!tempTourneyMatchPlayers || tempTourneyMatchPlayers.length === 0) {
-        return showAdminMsg('t-msg', 'Please save at least one player performance before saving the match.', 'error');
+    // 2. Match MVP Validation Logic: DOM'daki sıfırlanmış dropdown'a değil, kayıtlı oyuncu listesine bakıyoruz!
+    const mvpIsSelected = tempTourneyMatchPlayers.some(p => p.mvp === true);
+    if (!mvpIsSelected) {
+        return showAdminMsg('t-msg', 'Please select the Match MVP case for one of the players.', 'error');
     }
 
     // Match Date Tarih Aralığı Güvenlik Kontrolü (Dropdown'ları etkilemez)
@@ -3023,16 +3052,11 @@ function addTournamentMatch() {
         return showAdminMsg('t-msg', 'Cannot add matches to a tournament that has not started yet!', 'error');
     }
 
-    // 10 Haziran Üst Sınır Kontrolü (10 Haziran tarihinden sonra Tournament match oluşturamayım)
-    const deadlineD = new Date('2026-06-10');
+    // Match Date'in Başlangıç ve Bitiş Tarihleri İçinde Olma Kontrolü
     const matchZero = new Date(matchD.getFullYear(), matchD.getMonth(), matchD.getDate());
-    const deadlineZero = new Date(deadlineD.getFullYear(), deadlineD.getMonth(), deadlineD.getDate());
+    const endZero = new Date(endD.getFullYear(), endD.getMonth(), endD.getDate());
 
-    if (matchZero > deadlineZero) {
-        return showAdminMsg('t-msg', 'Matches cannot be created after 10 June 2026!', 'error');
-    }
-
-    if (matchD < startD || matchD > endD) {
+    if (matchZero < startZero || matchZero > endZero) {
         return showAdminMsg('t-msg', 'Match date must be between the tournament start and end dates!', 'error');
     }
 
@@ -3269,7 +3293,20 @@ function addArenaMatch() {
         if (document.getElementById('m-weather')) document.getElementById('m-weather').value = '';
         if (document.getElementById('m-team1-sel')) document.getElementById('m-team1-sel').value = '';
         if (document.getElementById('m-team2-sel')) document.getElementById('m-team2-sel').value = '';
-        if (document.getElementById('m-match-player-sel')) document.getElementById('m-match-player-sel').innerHTML = '<option value="">— Select Player —</option>';
+
+        if (document.getElementById('m-date')) document.getElementById('m-date').value = '';
+        
+        const playerSel = document.getElementById('m-match-player-sel');
+        if (playerSel) {
+            playerSel.innerHTML = '<option value="">— Select Player —</option>';
+            playerSel.value = ''; // Seçimi tamamen boşa düşür
+        }
+        
+        // İstatistik inputlarını, MVP'yi ve Change/Save butonlarını otomatik sıfırla
+        if (typeof loadSavedPlayerPerformance === 'function') {
+            loadSavedPlayerPerformance('m'); 
+        }
+
         tempArenaMatchPlayers = []; // Hafızadaki geçici oyuncu listesini sıfırlar
         localStorage.removeItem('tempArenaMatchPlayers'); // Kayıt bittiği için localstorage hafızasını temizle
     };
@@ -3284,37 +3321,15 @@ function addArenaMatch() {
     if (!t1) { resetOne('m-team1-sel'); return showAdminMsg('m-msg', 'First team selection is required.', 'error'); }
     if (!t2) { resetOne('m-team2-sel'); return showAdminMsg('m-msg', 'Second team selection is required.', 'error'); }
 
-    // Match MVP Validation Logic
-    // Kart içerisindeki dropdownları tarayarak en az bir tane YES girildiğini denetler
-    const targetCardContainer = errEl.closest('form') || errEl.closest('.rounded-3xl') || document;
-    const activeMvpSelects = targetCardContainer.querySelectorAll('.match-mvp-select');
-    const mvpIsSelected = Array.from(activeMvpSelects).some(s => s.value === 'YES');
+    // 1. Dinamik oyuncu performans giriş kontrolü (Artık 6 oyuncunun performansı da zorunlu)
+    if (!tempArenaMatchPlayers || tempArenaMatchPlayers.length !== 6) {
+        return showAdminMsg('m-msg', 'Please save all 6 players performances before saving the match.', 'error');
+    }
 
+    // 2. YENİ Match MVP Validation Logic: DOM'daki sıfırlanmış dropdown'a değil, kayıtlı oyuncu listesine bakıyoruz!
+    const mvpIsSelected = tempArenaMatchPlayers.some(p => p.mvp === true);
     if (!mvpIsSelected) {
-        // Mevcut projenizdeki showAuthError yapısıyla ve aynı tasarımda hatayı fırlatır
-        if (typeof showAuthError === 'function') {
-            return showAuthError(errEl, errTxt, 'Please select the Match MVP case.');
-        } else {
-            errTxt.textContent = 'Please select the Match MVP case.';
-            errEl.classList.remove('hidden');
-            errEl.style.display = 'flex';
-            return;
-        }
-    }
-
-    // Dinamik oyuncu performans giriş kontrolü
-    if (!tempArenaMatchPlayers || tempArenaMatchPlayers.length === 0) {
-        return showAdminMsg('m-msg', 'Please save at least one player performance before saving the match.', 'error');
-    }
-
-    // 10 Haziran 2026 Üst Sınır Kontrol Mekanizması
-    const matchD = new Date(dateRaw);
-    const deadlineD = new Date('2026-06-10');
-    const matchZero = new Date(matchD.getFullYear(), matchD.getMonth(), matchD.getDate());
-    const deadlineZero = new Date(deadlineD.getFullYear(), deadlineD.getMonth(), deadlineD.getDate());
-
-    if (matchZero > deadlineZero) {
-        return showAdminMsg('m-msg', 'Matches cannot be created after 10 June 2026!', 'error');
+        return showAdminMsg('m-msg', 'Please select the Match MVP case for one of the players.', 'error');
     }
 
     // Doğrulamalar geçildikten sonra veriler atanabilir ve dönüştürülebilir
@@ -3384,32 +3399,8 @@ function addArenaMatch() {
         }
     });
 
-    let computedTag = 'dfh';
-    if (stadiumValue) {
-        const cleanString = stadiumValue.toLowerCase().replace(/[^a-z0-9]/g, '');
-        if (cleanString.startsWith('dfh')) computedTag = 'dfh';
-        else if (cleanString.startsWith('mannfield')) computedTag = 'mannfield';
-        else if (cleanString.startsWith('champions')) computedTag = 'champions';
-        else if (cleanString.startsWith('urban')) computedTag = 'urban';
-        else if (cleanString.startsWith('beckwith')) computedTag = 'beckwith';
-        else if (cleanString.startsWith('utopia')) computedTag = 'utopia';
-        else if (cleanString.startsWith('wasteland')) computedTag = 'wasteland';
-        else if (cleanString.startsWith('neotokyo')) computedTag = 'neotokyo';
-        else if (cleanString.startsWith('aquadome')) computedTag = 'aquadome';
-        else if (cleanString.startsWith('farmstead')) computedTag = 'farmstead';
-        else if (cleanString.startsWith('forbidden')) computedTag = 'forbidden';
-        else if (cleanString.startsWith('deadeye')) computedTag = 'deadeye';
-        else if (cleanString.startsWith('neon')) computedTag = 'neon';
-        else if (cleanString.startsWith('salty')) computedTag = 'salty';
-        else if (cleanString.startsWith('sovereign')) computedTag = 'sovereign';
-        else if (cleanString.startsWith('starbase')) computedTag = 'starbase';
-        else if (cleanString.startsWith('rivals')) computedTag = 'rivals';
-        else if (cleanString.startsWith('estadio')) computedTag = 'estadio';
-        else if (cleanString.startsWith('drift')) computedTag = 'drift';
-        else if (cleanString.startsWith('futura')) computedTag = 'futura';
-        else if (cleanString.startsWith('boostfield')) computedTag = 'boostfield';
-        else if (cleanString.startsWith('parc')) computedTag = 'parc';
-    }
+    // Stadyum ismini hesaplama işlemi
+    const computedTag = computeArenaTag(stadiumValue);
 
     const m1Select = document.getElementById('m-team1-sel');
     const m2Select = document.getElementById('m-team2-sel');
@@ -3973,6 +3964,7 @@ function showPage(page, isPopState = false) {
         }
         
     } else if (page === 'admin') {
+
         if (navAdmin) {
             navAdmin.classList.add('text-purple-500', 'border-b-2', 'border-purple-500');
             navAdmin.classList.remove('text-gray-500');
@@ -3992,6 +3984,9 @@ function showPage(page, isPopState = false) {
 
             if (typeof flashAdminTabs === "function") flashAdminTabs();
             if (typeof refreshOverview === "function") refreshOverview(); 
+
+            // Admin Panel'e geçildiğinde Team Registry, Player Roster, Tournaments ve Matches tablolarını anlık render eden fonksiyonu çağrısı
+            if (typeof refreshAdminDashboard === "function") refreshAdminDashboard();
                     
             // Artık sabit son sekmeyi çağırmak yerine geçmişten ayrıştırılan hedef sekmeyi çağırır
             if (typeof switchDashTab === "function") switchDashTab(targetAdminTab, true);
@@ -4580,8 +4575,7 @@ function renderPlayerList() {
                         <div class="flex items-center gap-1 px-2 py-0.5 rounded-md bg-yellow-500/10 border border-yellow-500/20 text-[9px] font-black text-yellow-400 select-none mr-2">
                             <i data-lucide="calendar-cog" class="w-3 h-3 text-yellow-400"></i> Since in Team: <span class="font-mono text-white/90">${assignedTeam ? (p.sinceInTeam || '28/05/2026') : '—'}</span>
                         </div>
-                    <
-/div>
+                    </div>
                 </div>
             </div>
             <button onclick="deletePlayer(${p.id})" class="text-gray-600 hover:text-red-400 transition-colors p-2 hover:bg-red-500/10 rounded-lg shrink-0 ml-2">
@@ -4620,7 +4614,8 @@ function deletePlayer(id) {
     // Arayüz Görünümlerini Anlık Tazele
     renderPlayerList();
     
-    // Oyuncu silindiğinde Team Registry kartını da anında güncelle
+    // Oyuncu silindiğinde Tea
+m Registry kartını da anında güncelle
     if (typeof renderTeamList === "function") renderTeamList();
     
     refreshOverview();
@@ -4999,7 +4994,7 @@ if (recP) {
         today.setHours(0, 0, 0, 0);
         const twoWeeksInMs = 14 * 24 * 60 * 60 * 1000;
 
-        recP.innerHTML = playerDB.slice(-5).reverse().map((p) => {
+        recP.innerHTML = playerDB.slice(-6).reverse().map((p) => {
             const firstLetter = p.name.charAt(0);
             const assignedTeam = teamDB.find(t => t.playerIds && t.playerIds.includes(p.id));
             
@@ -5058,7 +5053,7 @@ if (recT) {
         today.setHours(0, 0, 0, 0);
         const twoWeeksInMs = 14 * 24 * 60 * 60 * 1000;
 
-        recT.innerHTML = teamDB.slice(-5).reverse().map((t) => {
+        recT.innerHTML = teamDB.slice(-6).reverse().map((t) => {
             const firstLetter = t.name.charAt(0);
             
             // Oluşturulma tarihini al (yoksa bugünü baz al)
@@ -5122,7 +5117,7 @@ if (recTour) {
         today.setHours(0, 0, 0, 0);
         const twoWeeksInMs = 14 * 24 * 60 * 60 * 1000;
 
-        recTour.innerHTML = tournamentNamesDB.slice(-5).reverse().map((t) => {
+        recTour.innerHTML = tournamentNamesDB.slice(-6).reverse().map((t) => {
             const firstLetter = t.name.charAt(0); 
             const startDate = new Date(t.startDate || '2026-05-15');
             const endDate = new Date(t.endDate || '2026-05-25');
@@ -5233,9 +5228,9 @@ if (recM) {
     const combinedRecentMatches = [...(arenaMatchDB || []), ...tMatchesMappedForOverview];
 
     if (combinedRecentMatches.length > 0) {
-        // Önce tarih bazlı sırala (eskiden yeniye doğru), sonra son 5'i al
+        // Önce tarih bazlı sırala (eskiden yeniye doğru), sonra son 6'yı al
         const sortedArenas = combinedRecentMatches.sort((a, b) => new Date(a.matchDate) - new Date(b.matchDate));
-        const recentArenas = sortedArenas.slice(-5);
+        const recentArenas = sortedArenas.slice(-6);
 
         recM.innerHTML = recentArenas.map((m, idx) => {
             // Oluşturulma tarihine göre 2 hafta kontrolü sağlanıyor
@@ -5312,7 +5307,7 @@ if (recTMatches) {
 
         // Kronolojik sıralama yap (En eskiden en yeniye doğru)
         const sortedTourneys = [...tournamentMatchDB].sort((a, b) => new Date(a.matchDate) - new Date(b.matchDate));
-        const recentTourneys = sortedTourneys.slice(-5);
+        const recentTourneys = sortedTourneys.slice(-6);
 
         recTMatches.innerHTML = recentTourneys.map((m) => {
             const tourneyInfo = tournamentNamesDB.find(t => t.id === m.tournamentType);
@@ -5397,81 +5392,89 @@ lucide.createIcons();
 
 // 6. RECENT PLAYERS STATS
 const recPM = document.getElementById('ov-recent-player-matches');
-    if (recPM) {
-        // Sadece istatistiği olan (en az bir verisi 0'dan büyük olan) aktif oyuncuları filtrele ve son 6 tanesini kronolojik sırala
-        const activePlayers = playerDB.length > 0 ? [...playerDB]
-            .filter(p => 
-                (p.wins || 0) > 0 || 
-                (p.mvps || 0) > 0 || 
-                (p.goals || 0) > 0 || 
-                (p.shots || 0) > 0 || 
-                (p.assists || 0) > 0 || 
-                (p.saves || 0) > 0
-            )
-            .sort((a, b) => (b.lastUpdated || 0) - (a.lastUpdated || 0))
-            .slice(0, 6) : [];
+if (recPM) {
+    // Sadece istatistiği olan (en az bir verisi 0'dan büyük olan) aktif oyuncuları filtrele ve son 6 tanesini kronolojik sırala
+    const activePlayers = playerDB.length > 0 ? [...playerDB]
+        .filter(p => (p.wins || 0) > 0 || (p.mvps || 0) > 0 || (p.goals || 0) > 0 || (p.shots || 0) > 0 || (p.assists || 0) > 0 || (p.saves || 0) > 0)
+        .sort((a, b) => (b.lastUpdated || 0) - (a.lastUpdated || 0))
+        .slice(0, 6) : [];
 
-        if (activePlayers.length > 0) {
-            // İki haftalık (14 gün) dinamik süre analizi için milisaniye bazlı tarih hesaplaması
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const twoWeeksInMs = 14 * 24 * 60 * 60 * 1000;
+    if (activePlayers.length > 0) {
+        // 14 günlük süreyi hesaplamak için gerekli değişkenler
+        const now = new Date().getTime();
+        const twoWeeksInMs = 14 * 24 * 60 * 60 * 1000;
 
-            recPM.innerHTML = activePlayers.map(p => {
-                const firstLetter = p.name ? p.name.charAt(0).toUpperCase() : 'P';
-                const shotsVal = p.shots ? p.shots + '%' : '0%';
-                
-                // İstatistik güncelleme zaman damgasına göre rozet durum analizi yapılıyor
-                const lastUpdatedTime = p.lastUpdated || 0;
-                const isNew = lastUpdatedTime && (today.getTime() < (lastUpdatedTime + twoWeeksInMs));
-                
-                // Kartın turuncu genel espor temasına birebir uyan senkron NEW rozeti yapısı
-                const badgeHtml = isNew 
-                    ? `<span class="text-[9px] font-black text-orange-400 border border-orange-500/20 bg-orange-500/10 px-2 py-0.5 rounded-full shrink-0 animate-pulse select-none">NEW</span>` 
-                    : '';
-                
-                // text-white/90 sınıfları kaldırılarak sayıların ve ikonların badge rengini (inherit) alması sağlandı
-                return `
-                <div class="px-6 py-3.5 flex flex-col gap-2 transition-all admin-login-animate">
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-7 h-7 rounded-lg bg-orange-500/10 flex items-center justify-center font-black text-orange-400 text-[10px] border border-orange-500/20 shrink-0">
-                            ${firstLetter}
-                        </div>
-                        ${badgeHtml}
-                        <span class="text-xs font-black text-white truncate">${p.name}</span>
+        recPM.innerHTML = activePlayers.map(p => {
+            const firstLetter = p.name ? p.name.charAt(0) : 'P';
+            const shotsVal = p.shots ? p.shots + '%' : '0%';
+            
+            // --- ZAMAN BİRİMİ DÜZELTMESİ ---
+            let lastUpdatedTime = p.lastUpdated || 0;
+            // Eğer değer saniye cinsindeyse (2 milyardan küçükse), milisaniyeye çevir
+            if (lastUpdatedTime > 0 && lastUpdatedTime < 2000000000) {
+                lastUpdatedTime *= 1000;
+            }
+            
+            // Sadece 14 gün içerisinde güncellenen oyuncular için NEW badge'i göster
+            const diff = now - lastUpdatedTime;
+            const isNew = lastUpdatedTime > 0 && diff < twoWeeksInMs && diff >= 0;
+            
+            // Rank hesaplama
+            const playerRank = (typeof getCompetitiveRank === 'function') ? getCompetitiveRank(p.wins, p.mvps) : 'Unranked';
+            
+            const badgeHtml = isNew 
+                ? `<span class="ml-auto text-[9px] font-black text-blue-400 border border-blue-500/20 bg-blue-500/10 px-2 py-0.5 rounded-full shrink-0 animate-pulse select-none">NEW</span>` 
+                : '';
+            
+            return `
+            <div class="px-6 py-3.5 flex flex-col gap-2 transition-all admin-login-animate">
+                <div class="flex items-center gap-2.5 w-full">
+                    <div class="w-7 h-7 rounded-lg bg-orange-500/10 flex items-center justify-center font-black text-orange-400 text-[10px] border border-orange-500/20 shrink-0">
+                        ${firstLetter}
                     </div>
-                    <div class="flex flex-wrap items-center gap-1.5 pl-9">
-                        <span class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-red-500/10 border border-red-500/20 text-[8px] font-black text-red-400 tracking-wide select-none">
-                            <i data-lucide="trophy" class="w-2.5 h-2.5 text-red-400"></i> WINS: <span class="font-mono text-red-400">${p.wins || 0}</span>
-                        </span>
-                        <span class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 text-[8px] font-black text-purple-400 tracking-wide select-none">
-                            <i data-lucide="star" class="w-2.5 h-2.5 text-purple-400"></i> MVPS: <span class="font-mono text-purple-400">${p.mvps || 0}</span>
-                        </span>
-                        <span class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-orange-500/10 border border-orange-500/20 text-[8px] font-black text-orange-400 tracking-wide select-none">
-                            <i data-lucide="loader-pinwheel" class="w-2.5 h-2.5 text-orange-400"></i> GOALS: <span class="font-mono text-orange-400">${p.goals || 0}</span>
-                        </span>
-                        <span class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-yellow-500/10 border border-yellow-500/20 text-[8px] font-black text-yellow-400 tracking-wide select-none">
-                            <i data-lucide="target" class="w-2.5 h-2.5 text-yellow-400"></i> SHOTS_ACC: <span class="font-mono text-yellow-400">${shotsVal}</span>
-                        </span>
-                        <span class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/20 text-[8px] font-black text-cyan-400 tracking-wide select-none">
-                            <i data-lucide="users" class="w-2.5 h-2.5 text-cyan-400"></i> ASSISTS: <span class="font-mono text-cyan-400">${p.assists || 0}</span>
-                        </span>
-                        <span class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-green-500/10 border border-green-500/20 text-[8px] font-black text-green-400 tracking-wide select-none">
-                            <i data-lucide="shield" class="w-2.5 h-2.5 text-green-400"></i> SAVES: <span class="font-mono text-green-400">${p.saves || 0}</span>
-                        </span>
-                    </div>
-                </div>`;
-            }).join('');
-        } else {
-            recPM.innerHTML = `
-            <div class="px-6 py-4 text-center">
-                <i data-lucide="chart-no-axes-column" class="w-6 h-6 text-gray-700 mx-auto mb-1"></i>
-                <p class="text-[10px] font-black text-gray-600 uppercase tracking-widest">No player matches stats recorded yet</p>
+                    <span class="text-xs font-black text-white truncate max-w-[100px]">${p.name}</span>
+                    
+                    <span class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 text-[8px] font-black text-purple-400 tracking-wide select-none">
+                        <i data-lucide="award" class="w-2.5 h-2.5 text-purple-400"></i> Competitive Rank: ${playerRank}
+                    </span>
+
+                    ${badgeHtml}
+                </div>
+                <div class="flex flex-wrap items-center gap-1.5 pl-9">
+                    <span class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-gray-500/10 border border-gray-500/20 text-[8px] font-black text-gray-400 tracking-wide select-none">
+                        <i data-lucide="swords" class="w-2.5 h-2.5 text-gray-400"></i> P. MATCHES: <span class="font-mono text-gray-400">${p.matchesPlayed || 0}</span>
+                    </span>
+                    <span class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-red-500/10 border border-red-500/20 text-[8px] font-black text-red-400 tracking-wide select-none">
+                        <i data-lucide="trophy" class="w-2.5 h-2.5 text-red-400"></i> WINS: <span class="font-mono text-red-400">${p.wins || 0}</span>
+                    </span>
+                    <span class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-purple-500/10 border border-purple-500/20 text-[8px] font-black text-purple-400 tracking-wide select-none">
+                        <i data-lucide="star" class="w-2.5 h-2.5 text-purple-400"></i> MVPS: <span class="font-mono text-purple-400">${p.mvps || 0}</span>
+                    </span>
+                    <span class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-orange-500/10 border border-orange-500/20 text-[8px] font-black text-orange-400 tracking-wide select-none">
+                        <i data-lucide="loader-pinwheel" class="w-2.5 h-2.5 text-orange-400"></i> GOALS: <span class="font-mono text-orange-400">${p.goals || 0}</span>
+                    </span>
+                    <span class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-yellow-500/10 border border-yellow-500/20 text-[8px] font-black text-yellow-400 tracking-wide select-none">
+                        <i data-lucide="target" class="w-2.5 h-2.5 text-yellow-400"></i> SHOTS_ACC: <span class="font-mono text-yellow-400">${shotsVal}</span>
+                    </span>
+                    <span class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/20 text-[8px] font-black text-cyan-400 tracking-wide select-none">
+                        <i data-lucide="users" class="w-2.5 h-2.5 text-cyan-400"></i> ASSISTS: <span class="font-mono text-cyan-400">${p.assists || 0}</span>
+                    </span>
+                    <span class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-green-500/10 border border-green-500/20 text-[8px] font-black text-green-400 tracking-wide select-none">
+                        <i data-lucide="shield" class="w-2.5 h-2.5 text-green-400"></i> SAVES: <span class="font-mono text-green-400">${p.saves || 0}</span>
+                    </span>
+                </div>
             </div>`;
-        }
+        }).join('');
+    } else {
+        recPM.innerHTML = `
+        <div class="px-6 py-4 text-center">
+            <i data-lucide="chart-no-axes-column" class="w-6 h-6 text-gray-700 mx-auto mb-1"></i>
+            <p class="text-[10px] font-black text-gray-600 uppercase tracking-widest">No player matches stats recorded yet</p>
+        </div>`;
     }
-    lucide.createIcons();
-        
+}
+lucide.createIcons();
+
     // İSTATİSTİK KARTLARINA REFRESH ANINDA AYNI POP EFEKTİ ATANIYOR
     const cards = document.querySelectorAll('#dash-overview .grid > div > div, #dash-overview > .grid > div');
     cards.forEach(card => {
@@ -6363,8 +6366,8 @@ function renderTournamentMatchStats() {
             </td>
 
            <td class="px-6 py-5 text-left">
-                <span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-400 w-max tracking-wide">
-                    <i data-lucide="land-plot" class="w-3 h-3 text-emerald-500"></i> ${m.arena || 'N/A'}
+                <span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-gray-500/10 border border-gray-500/20 text-[10px] font-bold text-gray-400 w-max tracking-wide">
+                    <i data-lucide="land-plot" class="w-3 h-3 text-gray-500"></i> ${m.arena || 'N/A'}
                 </span>
             </td>
             
@@ -6398,17 +6401,17 @@ function renderTournamentMatchStats() {
                 </span>
             </td>
             
-            <td class="px-6 py-5 text-center font-mono text-xs text-orange-500 font-black">${m.wGoals}</td>
-            <td class="px-6 py-5 text-center font-mono text-xs text-orange-500 font-black">${m.lGoals}</td>
+            <td class="px-6 py-5 text-center font-mono text-sm text-orange-500 font-black">${m.wGoals}</td>
+            <td class="px-6 py-5 text-center font-mono text-sm text-orange-500 font-black">${m.lGoals}</td>
             
-            <td class="px-6 py-5 text-center font-mono text-xs text-yellow-500 font-black">${formattedWAcc}</td>
-            <td class="px-6 py-5 text-center font-mono text-xs text-yellow-500 font-black">${formattedLAcc}</td>
+            <td class="px-6 py-5 text-center font-mono text-sm text-yellow-500 font-black">${formattedWAcc}</td>
+            <td class="px-6 py-5 text-center font-mono text-sm text-yellow-500 font-black">${formattedLAcc}</td>
             
-            <td class="px-6 py-5 text-center font-mono text-xs text-cyan-400 font-black">${m.wAss}</td>
-            <td class="px-6 py-5 text-center font-mono text-xs text-cyan-400 font-black">${m.lAss}</td>
+            <td class="px-6 py-5 pl-6 text-center font-mono text-sm text-cyan-400 font-black">${m.wAss}</td>
+            <td class="px-6 py-5 pl-10 text-center font-mono text-sm text-cyan-400 font-black">${m.lAss}</td>
             
-            <td class="px-6 py-5 text-center font-mono text-xs text-green-500 font-black">${m.wSav}</td>
-            <td class="px-6 py-5 text-center font-mono text-xs text-green-500 font-black">${m.lSav}</td>
+            <td class="px-6 py-5 pl-10 text-center font-mono text-sm text-green-500 font-black">${m.wSav}</td>
+            <td class="px-6 py-5 pl-10 text-center font-mono text-sm text-green-500 font-black">${m.lSav}</td>
             
             <td class="px-6 py-5 text-right">
                 <span class="inline-block mr-3 bg-purple-500/20 text-purple-400 px-3 py-1.5 rounded-lg border border-purple-500/40 text-[10px] font-black tracking-widest shadow-[0_0_15px_rgba(168,85,247,0.2)]">
@@ -6448,44 +6451,20 @@ function renderArenaMatchStats() {
         if (teamVal === 'all') {
             subTitle.innerHTML = `
                 <span style="text-transform: none !important; color: #10b981 !important;">All Teams</span> 
-                <span style="text-transform: uppercase !important; color: #6b7280 !important; margin-left: 4px;">Regular 3V3 Matches Team Stats</span>
+                <span style="text-transform: uppercase !important; color: #6b7280 !important; margin-left: 4px;">All 3V3 Matches Team Stats</span>
             `;
         } else {
             subTitle.innerHTML = `
                 <span style="text-transform: none !important; color: #10b981 !important;">${selectedText}</span> 
-                <span style="text-transform: uppercase !important; color: #6b7280 !important; margin-left: 4px;">Team Regular 3V3 Matches Stats</span>
+                <span style="text-transform: uppercase !important; color: #6b7280 !important; margin-left: 4px;">Team All 3V3 Matches Team Stats</span>
             `;
         }
     }
 
     // TURNUVA MAÇLARINI ANLIK OLARAK ARENA FORMATINA MAPLE
     const tMatchesMapped = (tournamentMatchDB || []).map(m => {
-        let computedTag = 'dfh';
-        if (m.arena) {
-            const cleanString = m.arena.toLowerCase().replace(/[^a-z0-9]/g, '');
-            if (cleanString.startsWith('dfh')) computedTag = 'dfh';
-            else if (cleanString.startsWith('mannfield')) computedTag = 'mannfield';
-            else if (cleanString.startsWith('champions')) computedTag = 'champions';
-            else if (cleanString.startsWith('urban')) computedTag = 'urban';
-            else if (cleanString.startsWith('beckwith')) computedTag = 'beckwith';
-            else if (cleanString.startsWith('utopia')) computedTag = 'utopia';
-            else if (cleanString.startsWith('wasteland')) computedTag = 'wasteland';
-            else if (cleanString.startsWith('neotokyo')) computedTag = 'neotokyo';
-            else if (cleanString.startsWith('aquadome')) computedTag = 'aquadome';
-            else if (cleanString.startsWith('farmstead')) computedTag = 'farmstead';
-            else if (cleanString.startsWith('forbidden')) computedTag = 'forbidden';
-            else if (cleanString.startsWith('deadeye')) computedTag = 'deadeye';
-            else if (cleanString.startsWith('neon')) computedTag = 'neon';
-            else if (cleanString.startsWith('salty')) computedTag = 'salty';
-            else if (cleanString.startsWith('sovereign')) computedTag = 'sovereign';
-            else if (cleanString.startsWith('starbase')) computedTag = 'starbase';
-            else if (cleanString.startsWith('rivals')) computedTag = 'rivals';
-            else if (cleanString.startsWith('estadio')) computedTag = 'estadio';
-            else if (cleanString.startsWith('drift')) computedTag = 'drift';
-            else if (cleanString.startsWith('futura')) computedTag = 'futura';
-            else if (cleanString.startsWith('boostfield')) computedTag = 'boostfield';
-            else if (cleanString.startsWith('parc')) computedTag = 'parc';
-        }
+        // Yardımcı fonksiyonu turnuva maçı arenası (m.arena) için çağırma işlemi
+        const computedTag = computeArenaTag(m.arena);
         return {
             ...m,
             type: m.arena, 
@@ -6559,17 +6538,17 @@ function renderArenaMatchStats() {
                 </span>
             </td>
             
-            <td class="px-6 py-5 text-center font-mono text-xs text-orange-500 font-black">${m.wGoals}</td>
-            <td class="px-6 py-5 text-center font-mono text-xs text-orange-500 font-black">${m.lGoals}</td>
+            <td class="px-6 py-5 text-center font-mono text-sm text-orange-500 font-black">${m.wGoals}</td>
+            <td class="px-6 py-5 text-center font-mono text-sm text-orange-500 font-black">${m.lGoals}</td>
             
-            <td class="px-6 py-5 text-center font-mono text-xs text-yellow-500 font-black">${formattedWAcc}</td>
-            <td class="px-6 py-5 text-center font-mono text-xs text-yellow-500 font-black">${formattedLAcc}</td>
+            <td class="px-6 py-5 text-center font-mono text-sm text-yellow-500 font-black">${formattedWAcc}</td>
+            <td class="px-6 py-5 text-center font-mono text-sm text-yellow-500 font-black">${formattedLAcc}</td>
             
-            <td class="px-6 py-5 text-center font-mono text-xs text-cyan-400 font-black">${m.wAss}</td>
-            <td class="px-6 py-5 text-center font-mono text-xs text-cyan-400 font-black">${m.lAss}</td>
+            <td class="px-6 py-5 text-center font-mono text-sm text-cyan-400 font-black">${m.wAss}</td>
+            <td class="px-6 py-5 text-center font-mono text-sm text-cyan-400 font-black">${m.lAss}</td>
             
-            <td class="px-6 py-5 text-center font-mono text-xs text-green-500 font-black">${m.wSav}</td>
-            <td class="px-6 py-5 text-center font-mono text-xs text-green-500 font-black">${m.lSav}</td>
+            <td class="px-6 py-5 text-center font-mono text-sm text-green-500 font-black">${m.wSav}</td>
+            <td class="px-6 py-5 text-center font-mono text-sm text-green-500 font-black">${m.lSav}</td>
             
             <td class="px-6 py-5 text-right">
                 <span class="inline-block mr-3 bg-purple-500/20 text-purple-400 px-3 py-1.5 rounded-lg border border-purple-500/40 text-[10px] font-black tracking-widest shadow-[0_0_15px_rgba(168,85,247,0.2)]">
@@ -7513,32 +7492,66 @@ function loadSavedPlayerPerformance(prefix) {
     const accInput = document.getElementById(prefix + '-pacc');
     const assInput = document.getElementById(prefix + '-passs');
     const savInput = document.getElementById(prefix + '-psav');
-    const mvpCheck = document.getElementById(prefix + '-pmvp');
+    
+    // HTML'de ID'si olan tek buton Change butonu. 
     const changeBtn = document.getElementById(prefix + '-change-stats-btn');
+    // Save butonu HTML'de Change butonunun hemen üstünde duruyor. Onu otomatik yakalıyoruz:
+    const saveBtn = changeBtn ? changeBtn.previousElementSibling : null;
+
+    if (!playerSel) return;
+
+    // MVP Select'i DOM üzerinden class'ı ile bulma (ID eksikliğini tamamen aşmak için)
+    const mvpCheck = playerSel.closest('.p-4')?.querySelector('.match-mvp-select') || playerSel.closest('form')?.querySelector('.match-mvp-select');
 
     const playerId = parseInt(playerSel.value);
-    if (!playerId) {
-        goalsInput.value = ''; accInput.value = ''; assInput.value = ''; savInput.value = '';
-        mvpCheck.checked = false;
-        if (changeBtn) changeBtn.classList.add('hidden');
-        return;
-    }
-
     const currentArr = prefix === 't' ? tempTourneyMatchPlayers : tempArenaMatchPlayers;
-    const savedStats = currentArr.find(p => p.id === playerId);
+    const savedStats = currentArr.find(p => parseInt(p.id) === playerId);
 
-    if (savedStats) {
-        // Seçilen esporcunun daha demin girilen istatistikleri anlık olarak form alanlarına basılır
-        goalsInput.value = savedStats.goals;
-        accInput.value = savedStats.shots;
-        assInput.value = savedStats.assists;
-        savInput.value = savedStats.saves;
-        mvpCheck.checked = savedStats.mvp;
-        if (changeBtn) changeBtn.classList.remove('hidden'); // Change Selected Player Stats butonu görünür olur
+    // KESİN BUTON GÖRÜNÜRLÜK YÖNETİMİ
+    const toggleButtons = (isSaved) => {
+        if (!saveBtn || !changeBtn) return;
+        if (isSaved) {
+            changeBtn.classList.remove('hidden');
+            saveBtn.classList.add('hidden');
+        } else {
+            saveBtn.classList.remove('hidden');
+            changeBtn.classList.add('hidden');
+        }
+    };
+
+    if (savedStats && !isNaN(playerId)) {
+        // --- VERİ VAR: İSTATİSTİKLERİ VE MVP'Yİ BAS ---
+        if (goalsInput) goalsInput.value = savedStats.goals ?? '';
+        if (accInput) accInput.value = savedStats.shots ?? '';
+        if (assInput) assInput.value = savedStats.assists ?? '';
+        if (savInput) savInput.value = savedStats.saves ?? '';
+        
+        if (mvpCheck) {
+            // Sessiz atama (Sonsuz döngüyü engeller)
+            const orig = mvpCheck.getAttribute('onchange');
+            mvpCheck.removeAttribute('onchange');
+            mvpCheck.value = savedStats.mvp ? 'YES' : 'NO';
+            if (orig) mvpCheck.setAttribute('onchange', orig);
+            if (typeof handleMvpDropdownChange === 'function') handleMvpDropdownChange(mvpCheck);
+        }
+
+        toggleButtons(true); // Change butonu gösterilir, Save butonu gizlenir
     } else {
-        goalsInput.value = ''; accInput.value = ''; assInput.value = ''; savInput.value = '';
-        mvpCheck.checked = false;
-        if (changeBtn) changeBtn.classList.add('hidden');
+        // --- VERİ YOK (YENİ OYUNCU): ALANLARI TEMİZLE ---
+        if (goalsInput) goalsInput.value = '';
+        if (accInput) accInput.value = '';
+        if (assInput) assInput.value = '';
+        if (savInput) savInput.value = '';
+        
+        if (mvpCheck) {
+            const orig = mvpCheck.getAttribute('onchange');
+            mvpCheck.removeAttribute('onchange');
+            mvpCheck.value = ''; // — Select Match MVP — Seçeneğine Geri Çeker
+            if (orig) mvpCheck.setAttribute('onchange', orig);
+            if (typeof handleMvpDropdownChange === 'function') handleMvpDropdownChange(mvpCheck);
+        }
+
+        toggleButtons(false); // Save butonu gösterilir, Change butonu gizlenir
     }
 }
 
@@ -7579,23 +7592,31 @@ function saveMatchPlayerPerformance(prefix) {
     const assInput = document.getElementById(prefix + '-passs');
     const savInput = document.getElementById(prefix + '-psav');
     
-    // Match MVP Dropdown Seçim Elemanının Yakalanması
+    // MVP Dropdown'u DOM üzerinden yakala
     const mvpSelect = playerSel ? playerSel.closest('.p-4')?.querySelector('.match-mvp-select') || playerSel.closest('form')?.querySelector('.match-mvp-select') : null;
-
+    
     const playerId = parseInt(playerSel.value);
     if (!playerId) {
         return showAdminMsg(prefix + '-player-log-msg', 'Please select an active player from dropdown first.', 'error');
     }
-
-    const goals = parseInt(goalsInput.value) || 0;
-    const acc = parseInt(accInput.value) || 0;
-    const assists = parseInt(assInput.value) || 0;
-    const saves = parseInt(savInput.value) || 0;
     
-    // Dropdown değerine göre MVP durumunun kontrol edilmesi (YES ise true)
+    // BOŞ GİRDİ DOĞRULAMASI
+    if (goalsInput.value === '' || accInput.value === '' || assInput.value === '' || savInput.value === '') {
+        return showAdminMsg(prefix + '-player-log-msg', 'Please fill in all player statistics (Goals, Shots Acc, Assists, Saves).', 'error');
+    }
+    if (!mvpSelect || mvpSelect.value === "") {
+        return showAdminMsg(prefix + '-player-log-msg', 'Please select Match MVP (YES or NO).', 'error');
+    }
+
+    const goals = parseInt(goalsInput.value);
+    const acc = parseInt(accInput.value);
+    const assists = parseInt(assInput.value);
+    const saves = parseInt(savInput.value);
+    
+    // Dropdown değerine göre MVP durumunun kontrol edilmesi
     const isMvp = mvpSelect ? (mvpSelect.value === 'YES') : false;
 
-    //  Oyuncu bazlı girilen istatistik verileri için kısıtlamalar ve doğrulamaların uygulanması için gerekli mantık yapısı
+    // Negatif değer kısıtlaması
     if (goals < 0 || acc < 0 || assists < 0 || saves < 0) {
         return showAdminMsg(prefix + '-player-log-msg', 'Statistics cannot contain negative values!', 'error');
     }
@@ -7603,13 +7624,9 @@ function saveMatchPlayerPerformance(prefix) {
         return showAdminMsg(prefix + '-player-log-msg', 'Shots Accuracy cannot exceed 100%!', 'error');
     }
 
-    // Bir takımdaki Player'ın asisti, takımdaki (veya kendi) gol sayılarına göre mantıksal kontrol edilir
-    if (assists > goals && goals > 0) {
-        // Kendi golünden fazla asist yapabilir (takım arkadaşları attığı için)
-    }
-
-    // Maç başına sadece maksimum 1 MVP seçme kısıtlaması uygulama mantığı
     const currentArr = prefix === 't' ? tempTourneyMatchPlayers : tempArenaMatchPlayers;
+    
+    // Maç başına tek MVP kısıtlaması
     if (isMvp) {
         const existingMvp = currentArr.find(p => p.mvp && p.id !== playerId);
         if (existingMvp) {
@@ -7620,36 +7637,31 @@ function saveMatchPlayerPerformance(prefix) {
     const playerObj = playerDB.find(p => p.id === playerId);
     const playerName = playerObj ? playerObj.name : 'Player';
 
-    const logData = { 
-        id: playerId, 
-        name: playerName, 
-        teamId: playerObj ? playerObj.teamId : null, 
-        goals: goals, 
-        shots: acc, 
-        assists: assists, 
-        saves: saves, 
-        mvp: isMvp 
+    const logData = {
+        id: playerId,
+        name: playerName,
+        teamId: playerObj ? playerObj.teamId : null,
+        goals: goals,
+        shots: acc,
+        assists: assists,
+        saves: saves,
+        mvp: isMvp
     };
 
     const existingIndex = currentArr.findIndex(p => p.id === playerId);
     if (existingIndex !== -1) {
-        currentArr[existingIndex] = logData; // Bilgiler girilen yeni verilerle anlık revize edilebilir veya değiştirilebilir
+        currentArr[existingIndex] = logData; // Veri güncellenir
     } else {
-        currentArr.push(logData);
+        currentArr.push(logData); // Yeni veri eklenir
     }
 
-    // Kalıcı Hafıza kullanılarak sayfa yenilense bile istatistik verileri kaybolmaz
+    // Kalıcı hafızaya işle
     localStorage.setItem(prefix === 't' ? 'tempTourneyMatchPlayers' : 'tempArenaMatchPlayers', JSON.stringify(currentArr));
 
-    //  Dinamik Match MVP dropdown sıfırlama mantığı
-    // Oyuncu performansı başarıyla kaydedildikten sonra Match MVP dropdownını sıfırlar ve kilitleri açar
-    if (mvpSelect) {
-        mvpSelect.value = ""; // Match MVP dropdownı dinamik olarak — Select Match MVP — durumuna geri getirir
-        Array.from(mvpSelect.options).forEach(opt => opt.disabled = false); // Kilitli kalan diğer opsiyonları açar
-    }
-
-    showAdminMsg(prefix + '-player-log-msg', `Stats for "${playerName}" saved/updated successfully!`, 'success');
-    loadSavedPlayerPerformance(prefix); // Form durumunu ve butonları eşitle
+    showAdminMsg(prefix + '-player-log-msg', `Stats for "${playerName}" saved or updated successfully!`, 'success');
+    
+    // Kayıt sonrası yeni veriyi alıp formdaki butonları anında 'Change' moduna geçirmesi için tetikle
+    loadSavedPlayerPerformance(prefix); 
 }
 
 // Sayfayı akıllı filtreleme hafızasıyla tetikleyerek açan ana fonksiyon
@@ -7730,8 +7742,16 @@ function renderPlayerMatchStats() {
                 const playerTeamObj = teamDB.find(t => t.id === pStats.teamId);
                 const currentTeamName = playerTeamObj ? playerTeamObj.name : 'Unknown Team';
 
-                // Maç sonucunu hesapla
-                const isWinnerTeam = match.winnerName === currentTeamName;
+                // Takım isimlerini çözümle (Veritabanından güvenli isim çekme)
+                const team1Obj = teamDB.find(t => t.id == match.team1Id || t.name === match.team1Tag || t.name === match.team1) || { name: match.team1Tag || match.team1 || 'Team 1' };
+                const team2Obj = teamDB.find(t => t.id == match.team2Id || t.name === match.team2Tag || t.name === match.team2) || { name: match.team2Tag || match.team2 || 'Team 2' };
+                const team1Name = team1Obj.name;
+                const team2Name = team2Obj.name;
+
+                // Kazanan takımın ismini belirle (stilleri uygulamak için)
+                const isT1Winner = (team1Name === match.winnerName);
+                const isT2Winner = (team2Name === match.winnerName);
+                const isWinnerTeam = (currentTeamName === match.winnerName);
 
                 // Maç türü badge düzeni
                 const matchTypeBadge = match.source === 'tournament'
@@ -7743,7 +7763,7 @@ function renderPlayerMatchStats() {
                     : `<span class="inline-flex items-center justify-center w-9 h-9 text-[10px] font-black uppercase tracking-widest text-red-400 bg-red-500/10 rounded-lg border border-red-500/20">LOST</span>`;
 
                 const mvpBadge = pStats.mvp
-                    ? `<span class="inline-flex items-center justify-center w-12 h-6 text-[10px] font-black text-purple-400 bg-purple-500/10 rounded border border-purple-500/20 animate-pulse">YES</span>`
+                    ? `<span class="inline-flex items-center justify-center w-12 h-6 text-[10px] font-black text-purple-400 bg-purple-500/10 rounded border border-purple-500/20">YES</span>`
                     : `<span class="inline-flex items-center justify-center w-12 h-6 text-[10px] font-black text-gray-400 bg-white/5 border border-white/10 rounded shadow-sm tracking-wide">NO</span>`;
 
                 const formattedAcc = pStats.shots.toString().includes('%') ? pStats.shots : `${pStats.shots}%`;
@@ -7757,22 +7777,28 @@ function renderPlayerMatchStats() {
                         <td class="px-6 py-5 text-left">
                             <div class="flex items-center gap-2.5 pl-4">
                                 <div class="w-7 h-7 rounded-lg bg-purple-500/10 flex items-center justify-center font-black text-purple-400 text-[10px] border border-purple-500/20 shrink-0">
-                                    ${pStats.name.charAt(0).toUpperCase()}
+                                    ${pStats.name.charAt(0)}
                                 </div>
                                 <span class="text-xs font-bold text-white group-hover:text-purple-400 transition-colors truncate">${pStats.name}</span>
                             </div>
                         </td>
                         <td class="px-6 py-5 text-left">
-                            <span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-sky-500/10 border border-sky-500/20 text-[10px] font-black text-sky-400 w-max tracking-wide">
+                            <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-sky-500/10 border border-sky-500/20 text-[10px] font-black text-sky-400 w-max tracking-wide">
                                 <i data-lucide="shield" class="w-3 h-3 text-sky-400"></i> ${currentTeamName}
                             </span>
                         </td>
                         <td class="px-6 py-5 text-left">
-                            <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-xs font-bold text-white tracking-wide w-max shadow-sm">
-                                ${match.team1Name || match.team1 || 'Team 1'} <span class="text-gray-500 font-medium lowercase mx-1 text-[10px]">vs</span> ${match.team2Name || match.team2 || 'Team 2'}
+                            <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-xs font-bold text-white italic tracking-tighter w-max">
+                                <span class="${isT1Winner ? 'text-emerald-400 font-black' : 'text-white'}">${team1Name}</span> 
+                                <span class="text-gray-400 font-normal not-italic text-[10px]">VS</span> 
+                                <span class="${isT2Winner ? 'text-emerald-400 font-black' : 'text-white'}">${team2Name}</span>
                             </span>
                         </td>
-                        <td class="px-6 py-5 text-left font-mono text-xs text-gray-400">${match.matchDate}</td>
+                        <td class="px-6 py-5 text-left">
+                            <span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-400 w-max font-mono">
+                                <i data-lucide="calendar" class="w-3 h-3 text-emerald-500"></i> ${match.matchDate}
+                            </span>
+                        </td>
                         <td class="px-6 py-5 text-left">${matchTypeBadge}</td>
                         <td class="px-6 py-5 text-left">
                             <span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-white/5 border border-white/10 text-[10px] font-bold text-gray-400 w-max tracking-wide">
@@ -7789,7 +7815,7 @@ function renderPlayerMatchStats() {
                         <td class="px-6 py-5 text-center font-mono text-sm font-black text-cyan-400">${pStats.assists}</td>
                         <td class="px-6 py-5 text-center font-mono text-sm font-black text-green-400">${pStats.saves}</td>
                         <td class="px-6 py-5 text-center">${mvpBadge}</td>
-                        <td class="px-6 py-5 text-right pr-8">${resultBadge}</td>
+                        <td class="px-6 py-5 text-center pr-10">${resultBadge}</td>
                     </tr>
                 `);
             });
@@ -7810,7 +7836,7 @@ function renderPlayerMatchStats() {
 
 function handleMvpDropdownChange(currentSelect) {
     // Aynı maç kartı içerisindeki diğer tüm MVP dropdownları bul
-    const currentCard = currentSelect.closest('form') || currentSelect.closest('.bg-white\/\\[0\\.02\\]') || currentSelect.closest('.rounded-3xl') || document;
+    const currentCard = currentSelect.closest('form') || currentSelect.closest('.js-card-container') || currentSelect.closest('.rounded-3xl') || document;
     const allSelects = currentCard.querySelectorAll('.match-mvp-select');
     
     const isAnyYes = Array.from(allSelects).some(s => s.value === 'YES');
@@ -7919,6 +7945,20 @@ function refreshMatchTeamDropdown() {
     
     // Tarayıcı hafızasındaki en son seçilen takımı geri yükle
     teamSel.value = localStorage.getItem('lastSelectedMatchTeam') || 'all';
+}
+
+// Stadyum isimlerini temizleyen ve eşleştiren yardımcı fonksiyon
+function computeArenaTag(stadiumValue) {
+    try {
+        if (!stadiumValue) return 'dfh';
+        // String() ile zorlayarak olası TypeError çökmelerini engelliyoruz
+        const cleanString = String(stadiumValue).toLowerCase().replace(/[^a-z0-9]/g, '');
+        const stadiums = ['dfh', 'mannfield', 'champions', 'urban', 'beckwith', 'utopia', 'wasteland', 'neotokyo', 'aquadome', 'farmstead', 'forbidden', 'deadeye', 'neon', 'salty', 'sovereign', 'starbase', 'rivals', 'estadio', 'drift', 'futura', 'boostfield', 'parc'];
+        const match = stadiums.find(s => cleanString.startsWith(s));
+        return match || 'dfh';
+    } catch (err) {
+        return 'dfh';
+    }
 }
 
 </script>

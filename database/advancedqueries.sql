@@ -1,6 +1,7 @@
---Top 5 Scorers with at least 60% Average Shot Accuracy
+-- name: top-scorers
+-- Top 5 Scorers with at least 60% Average Shot Accuracy
 
-SELECT  P.player_name, 
+SELECT  P.player_name,
         SUM(S.goals) AS goal_total, 
         SUM(S.assists) AS assist_total, 
         ROUND(AVG(S.shot_accuracy),2) AS average_shot_accuracy,             
@@ -12,9 +13,10 @@ HAVING  AVG(S.shot_accuracy) >= 60
 ORDER BY goal_total DESC 
 LIMIT 5;
 
---Top 5 Teams with Most Matches Played
+-- name: top-teams-by-matches
+-- Top 5 Teams with Most Matches Played
 
-SELECT  T.team_name, 
+SELECT  T.team_name,
         COUNT(*) AS played_total
 FROM    TEAM T, MATCH_DATA M, PLAYS_AS PA
 WHERE   T.team_id = PA.team_id 
@@ -23,7 +25,8 @@ GROUP BY T.team_id, T.team_name
 ORDER BY played_total DESC
 LIMIT 5;
 
---Top 3 Favorite Teams Ranked by Number of Total Goals Scored
+-- name: fav-teams-leaderboard
+-- Top 3 Favorite Teams Ranked by Number of Total Goals Scored
 
 SELECT  T.team_name,
         SUM(PMS.goals) AS team_total_goal,
@@ -42,9 +45,10 @@ ORDER BY team_total_goal DESC
 LIMIT 3;
 
 
---Statistics of the Tournament with Most Goals
+-- name: top-tournament
+-- Statistics of the Tournament with Most Goals
 
-SELECT  T.tournament_name, 
+SELECT  T.tournament_name,
         SUM(PMS.goals) AS tournament_total_goal, 
         SUM(PMS.assists) AS tournament_total_assist, 
         SUM(PMS.saves) AS tournament_total_save
@@ -67,7 +71,8 @@ HAVING  SUM(PMS.goals) = (
              ) AS tournament_goals_total
 );
 
---Final Scores of Matches using plays_for and match_data dates
+-- name: match-scores
+-- Final Scores of Matches using plays_for and match_data dates
 
 SELECT  M.match_id,
         M.match_date,
