@@ -2714,8 +2714,280 @@ function saveCustomDatabases() {
     localStorage.setItem('arenaMatchDB', JSON.stringify(arenaMatchDB));
 }
 
+// Backend adapter for the legacy single-file demo. The React app uses the same
+// token key, so logging in from either frontend shares the API session.
+const API_BASE = window.location.protocol === 'file:' ? 'http://localhost:5001' : '';
+const TOKEN_KEY = 'rlstats_token';
+let backendHydrated = false;
+
+function getApiToken() {
+    return localStorage.getItem(TOKEN_KEY);
+}
+
+function setApiSession(data) {
+    if (data && data.token) localStorage.setItem(TOKEN_KEY, data.token);
+    if (data && data.user) {
+        sessionStorage.setItem('currentUser', data.user.username);
+        currentUser = data.user.username;
+    }
+}
+
+function clearApiSession() {
+    localStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem('currentUser');
+    currentUser = null;
+}
+
+async function apiRequest(path, options = {}) {
+    const token = getApiToken();
+    const headers = {
+        Accept: 'application/json',
+        ...(options.body ? { 'Content-Type': 'application/json' } : {}),
+        ...(options.headers || {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {})
+    };
+    const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+    const text = await res.text();
+    let data = null;
+    try { data = text ? JSON.parse(text) : null; } catch (_) { data = null; }
+    if (!res.ok) throw new Error((data && (data.error || data.message)) || `Request failed (${res.status})`);
+    return data;
+}
+
+function isoDate(value) {
+    return value ? String(value).slice(0, 10) : '';
+}
+
+function asLegacyPlayer(row) {
+    const stats = row.career_stats || {};
+    return {
+        id: row.player_id,
+        name: row.player_name,
+        platform: row.platform,
+        rank: 'Unranked',
+        wins: 0,
+        mvps: Number(stats.mvp_count || 0),
+        goals: Number(stats.total_goals || 0),
+        saves: Number(stats.total_saves || 0),
+        shots: Number(stats.avg_shot_accuracy || 0),
+        assists: Number(stats.total_assists || 0),
+        teamId: null,
+        teamTag: '—',
+        sinceInTeam: '',
+        createdAt: new Date().toISOString()
+    };
+}
+
+function asLegacyTeam(row) {
+    return {
+        id: row.team_id,
+        name: row.team_name,
+        tag: String(row.team_name || '').slice(0, 3).toUpperCase(),
+        region: row.region,
+        playerIds: (row.current_roster || []).map(p => p.player_id),
+        createdAt: new Date().toISOString(),
+        wins: 0,
+        goals: Number(row.stats?.total_goals || 0),
+        accuracy: 0,
+        assists: Number(row.stats?.total_assists || 0),
+        saves: Number(row.stats?.total_saves || 0),
+        matchesPlayed: Number(row.stats?.matches_played || 0)
+    };
+}
+
+function legacyMatchFromDetail(match, tournamentById) {
+    const teams = match.teams || [];
+    if (teams.length < 2) return null;
+    const team1 = teams[0];
+    const team2 = teams[1];
+    const stats = match.player_stats || [];
+    const sumForTeam = (teamId, field) => stats
+        .filter(s => {
+            const p = playerDB.find(pl => pl.id === s.player_id);
+            return p && p.teamId === teamId;
+        })
+        .reduce((sum, s) => sum + Number(s[field] || 0), 0);
+    const avgAcc = (teamId) => {
+        const rows = stats.filter(s => {
+            const p = playerDB.find(pl => pl.id === s.player_id);
+            return p && p.teamId === teamId;
+        });
+        if (!rows.length) return 0;
+        return Math.round(rows.reduce((sum, s) => sum + Number(s.shot_accuracy || 0), 0) / rows.length);
+    };
+    const t1Goals = sumForTeam(team1.team_id, 'goals');
+    const t2Goals = sumForTeam(team2.team_id, 'goals');
+    const winner = t1Goals >= t2Goals ? team1 : team2;
+    const loser = t1Goals >= t2Goals ? team2 : team1;
+    const mvp = stats.find(s => s.mvp);
+    const tourney = tournamentById.get(match.tournament_id) || {};
+    const players = stats.map(s => {
+        const p = playerDB.find(pl => pl.id === s.player_id);
+        return {
+            id: s.player_id,
+            name: s.player_name,
+            teamId: p ? p.teamId : null,
+            goals: Number(s.goals || 0),
+            shots: Number(s.shot_accuracy || 0),
+            assists: Number(s.assists || 0),
+            saves: Number(s.saves || 0),
+            mvp: !!s.mvp
+        };
+    });
+    return {
+        matchId: match.match_id,
+        tournamentType: String(match.tournament_id),
+        date: `${isoDate(tourney.start_date)} / ${isoDate(tourney.end_date)}`,
+        startDate: isoDate(tourney.start_date),
+        endDate: isoDate(tourney.end_date),
+        country: tourney.country || 'Global',
+        arena: match.arena_name,
+        weather: match.weather,
+        matchDate: isoDate(match.match_date),
+        stage: match.tournament_stage,
+        team1Tag: team1.team_name,
+        team2Tag: team2.team_name,
+        winnerName: winner.team_name,
+        wGoals: winner.team_id === team1.team_id ? t1Goals : t2Goals,
+        lGoals: loser.team_id === team1.team_id ? t1Goals : t2Goals,
+        wAcc: avgAcc(winner.team_id),
+        lAcc: avgAcc(loser.team_id),
+        wAss: sumForTeam(winner.team_id, 'assists'),
+        lAss: sumForTeam(loser.team_id, 'assists'),
+        wSav: sumForTeam(winner.team_id, 'saves'),
+        lSav: sumForTeam(loser.team_id, 'saves'),
+        mvp: mvp ? mvp.player_name : 'N/A',
+        players,
+        createdAt: isoDate(match.match_date)
+    };
+}
+
+async function hydrateFromBackend() {
+    try {
+        const [players, teams, tournaments, matches] = await Promise.all([
+            apiRequest('/api/players'),
+            apiRequest('/api/teams'),
+            apiRequest('/api/tournaments'),
+            apiRequest('/api/matches')
+        ]);
+        const [playerDetails, teamDetails, matchDetails] = await Promise.all([
+            Promise.all(players.map(p => apiRequest(`/api/players/${p.player_id}`).catch(() => p))),
+            Promise.all(teams.map(t => apiRequest(`/api/teams/${t.team_id}`).catch(() => t))),
+            Promise.all(matches.map(m => apiRequest(`/api/matches/${m.match_id}`).catch(() => null)))
+        ]);
+        playerDB = playerDetails.map(asLegacyPlayer);
+        teamDB = teamDetails.map(asLegacyTeam);
+        teamDB.forEach(team => {
+            team.playerIds.forEach(playerId => {
+                const player = playerDB.find(p => p.id === playerId);
+                if (player) {
+                    player.teamId = team.id;
+                    player.teamTag = team.tag;
+                    const rosterRow = (teamDetails.find(t => t.team_id === team.id)?.current_roster || []).find(p => p.player_id === playerId);
+                    player.sinceInTeam = isoDate(rosterRow?.since);
+                }
+            });
+        });
+        tournamentNamesDB = tournaments.map(t => ({
+            id: String(t.tournament_id),
+            name: t.tournament_name,
+            country: t.country,
+            startDate: isoDate(t.start_date),
+            endDate: isoDate(t.end_date)
+        }));
+        const tournamentById = new Map(tournaments.map(t => [t.tournament_id, t]));
+        tournamentMatchDB = matchDetails
+            .filter(Boolean)
+            .map(m => legacyMatchFromDetail(m, tournamentById))
+            .filter(Boolean);
+        arenaMatchDB = [];
+        nextPlayerId = Math.max(0, ...playerDB.map(p => p.id)) + 1;
+        nextTeamId = Math.max(0, ...teamDB.map(t => t.id)) + 1;
+        backendHydrated = true;
+        saveToLocalStorageDB();
+        saveCustomDatabases();
+        localStorage.setItem('tournamentNamesDB', JSON.stringify(tournamentNamesDB));
+        if (typeof refreshAdminDashboard === 'function') refreshAdminDashboard();
+        if (typeof refreshAllUserLeaderboards === 'function') refreshAllUserLeaderboards();
+        if (typeof updateGlobalTopCards === 'function') updateGlobalTopCards();
+    } catch (err) {
+        console.error('Backend hydration failed:', err);
+        if (typeof showAdminMsg === 'function') showAdminMsg('overview-msg', err.message, 'error');
+    }
+}
+
+async function ensureBackendArena(arenaName) {
+    const arenas = await apiRequest('/api/arenas');
+    const existing = arenas.find(a => a.arena_name === arenaName);
+    if (existing) return existing.arena_id;
+    const created = await apiRequest('/api/arenas', {
+        method: 'POST',
+        body: JSON.stringify({ arena_name: arenaName })
+    });
+    return created.arena_id;
+}
+
+async function ensureBackendTournament(match) {
+    if (match.tournamentType && !String(match.tournamentType).startsWith('custom_') && !String(match.tournamentType).startsWith('t_')) {
+        return Number(match.tournamentType);
+    }
+    const name = match.tournamentName || 'Arena Exhibition';
+    const tournaments = await apiRequest('/api/tournaments');
+    const existing = tournaments.find(t => t.tournament_name === name);
+    if (existing) return existing.tournament_id;
+    const created = await apiRequest('/api/tournaments', {
+        method: 'POST',
+        body: JSON.stringify({
+            tournament_name: name,
+            country: match.country || 'Global',
+            start_date: match.startDate || match.matchDate,
+            end_date: match.endDate || match.matchDate
+        })
+    });
+    return created.tournament_id;
+}
+
+async function persistLegacyMatch(match, team1Id, team2Id) {
+    const tournament_id = await ensureBackendTournament(match);
+    const arena_id = await ensureBackendArena(match.arena || match.type || 'DFH Stadium');
+    const created = await apiRequest('/api/matches', {
+        method: 'POST',
+        body: JSON.stringify({
+            match_date: match.matchDate,
+            tournament_stage: match.stage || 'Exhibition',
+            weather: match.weather || 'Clear',
+            tournament_id,
+            arena_id
+        })
+    });
+    await apiRequest(`/api/matches/${created.match_id}/plays-as`, {
+        method: 'POST',
+        body: JSON.stringify({ team_id: team1Id, team_type: 'BLUE' })
+    });
+    await apiRequest(`/api/matches/${created.match_id}/plays-as`, {
+        method: 'POST',
+        body: JSON.stringify({ team_id: team2Id, team_type: 'ORANGE' })
+    });
+    for (const p of match.players || []) {
+        await apiRequest(`/api/matches/${created.match_id}/stats`, {
+            method: 'POST',
+            body: JSON.stringify({
+                player_id: p.id,
+                goals: p.goals,
+                assists: p.assists,
+                saves: p.saves,
+                shot_accuracy: p.shots,
+                mvp: !!p.mvp
+            })
+        });
+    }
+    match.matchId = created.match_id;
+    match.tournamentType = String(tournament_id);
+    return created;
+}
+
 // 1. YENİ TURNUVA TANIMLAMA MOTORU
-function addNewTournament() {
+async function addNewTournament() {
     const nameInput = document.getElementById('new-tourney-name');
     const countryInput = document.getElementById('new-tourney-country');
     const startInput = document.getElementById('new-tourney-start');
@@ -2766,15 +3038,23 @@ function addNewTournament() {
         country = convertToTitleCase(country);
     }
     
-    const id = 't_' + Date.now();
-    
-    // Veritabanına Kayıt Aşaması
-    tournamentNamesDB.push({ 
-        id: id, name: name, country: country,
-        startDate: startDate, endDate: endDate,
-        createdAt: new Date().toISOString()
-    });
-    localStorage.setItem('tournamentNamesDB', JSON.stringify(tournamentNamesDB));
+    try {
+        const created = await apiRequest('/api/tournaments', {
+            method: 'POST',
+            body: JSON.stringify({ tournament_name: name, country, start_date: startDate, end_date: endDate })
+        });
+        tournamentNamesDB.push({
+            id: String(created.tournament_id),
+            name: created.tournament_name,
+            country: created.country,
+            startDate: isoDate(created.start_date),
+            endDate: isoDate(created.end_date),
+            createdAt: new Date().toISOString()
+        });
+        localStorage.setItem('tournamentNamesDB', JSON.stringify(tournamentNamesDB));
+    } catch (err) {
+        return showAdminMsg('new-t-msg', err.message, 'error');
+    }
     
     // Input Alanlarının Temizlenmesi
     nameInput.value = '';
@@ -2966,7 +3246,7 @@ function refreshTournamentDropdowns() {
 }
 
 // TOURNAMENT MAÇ VERİSİ EKLEME MOTORU
-function addTournamentMatch() {
+async function addTournamentMatch() {
     const msgEl = document.getElementById('t-msg');
     const tourneySelect = document.getElementById('t-type-sel'); 
     
@@ -3134,6 +3414,7 @@ function addTournamentMatch() {
 
     const match = {
         tournamentType: tourneyVal,
+        tournamentName: tournamentNamesDB.find(t => String(t.id) === String(tourneyVal))?.name,
         date: combinedDate,
         startDate: startDateVal,
         endDate: endDateVal,
@@ -3151,7 +3432,12 @@ function addTournamentMatch() {
         createdAt: new Date().toISOString()
     };
 
-    tournamentMatchDB.push(match);
+    try {
+        await persistLegacyMatch(match, t1Id, t2Id);
+        await hydrateFromBackend();
+    } catch (err) {
+        return showAdminMsg('t-msg', err.message, 'error');
+    }
     saveCustomDatabases();
     renderAdminTournamentMatches();
     if (typeof renderAdminArenaMatches === "function") renderAdminArenaMatches();
@@ -3276,7 +3562,7 @@ function renderAdminTournamentMatches() {
 }
 
 // ARENA MATCH MAÇ VERİSİ EKLEME MOTORU
-function addArenaMatch() {
+async function addArenaMatch() {
     const msgEl = document.getElementById('m-msg');
     
     // Girdilerin ham metin hallerini doğrulamak için hazırlıyoruz ilk olarak
@@ -3409,9 +3695,16 @@ function addArenaMatch() {
     const winnerName = t1Goals > t2Goals ? t1Name : t2Name;
 
     const match = {
+        tournamentName: 'Arena Exhibition',
+        tournamentType: '',
+        startDate: dateRaw,
+        endDate: dateRaw,
+        country: 'Global',
         type: stadiumValue,
+        arena: stadiumValue,
         weather: weatherRaw,
         matchDate: dateRaw,
+        stage: 'Exhibition',
         arenaTag: computedTag,
         team1Tag: t1Name,
         team2Tag: t2Name,
@@ -3422,7 +3715,12 @@ function addArenaMatch() {
         createdAt: new Date().toISOString()
     };
 
-    arenaMatchDB.push(match);
+    try {
+        await persistLegacyMatch(match, t1Id, t2Id);
+        await hydrateFromBackend();
+    } catch (err) {
+        return showAdminMsg('m-msg', err.message, 'error');
+    }
     saveCustomDatabases();
     renderAdminArenaMatches();
     updateGlobalTopCards();
@@ -4095,7 +4393,7 @@ function showPage(page, isPopState = false) {
 }
 
 // SAYFA YÜKLENDİĞİNDE VE YENİLEMEDE MERKEZİ YÖNETİM
-window.onload = function() {
+window.onload = async function() {
 
     // Sayfa yenilendiğinde ezilme (sıfırlanma) durumunu önlemek için ilk gerçek koordinat hafızasını hemen en başta kilitle
     const initialSavedScrolls = JSON.parse(localStorage.getItem('panelScrollPositions')) || {};
@@ -4146,6 +4444,19 @@ window.onload = function() {
         // Mevcut sekme için oturum bayrağını aktif et
         sessionStorage.setItem('adminTabSessionActive', 'true');
     }
+
+    if (getApiToken()) {
+        try {
+            const me = await apiRequest('/api/auth/me');
+            currentUser = me.username;
+            sessionStorage.setItem('currentUser', me.username);
+            sessionStorage.setItem('isTabSessionActive', 'true');
+        } catch (err) {
+            clearApiSession();
+        }
+    }
+
+    await hydrateFromBackend();
 
     // Sayfa Açıldığında Tüm Takım İstatistiklerini Öncelikli Olarak Hesapla
     if (typeof updateGlobalTopCards === "function") updateGlobalTopCards();
@@ -4479,7 +4790,7 @@ window.onpopstate = function(event) {
 }
 
 // OYUNCU YÖNETİMİ
-function addPlayer() {
+async function addPlayer() {
     const nameInput = document.getElementById('player-name');
     const platformInput = document.getElementById('player-platform');
     const name = nameInput.value.trim();
@@ -4507,18 +4818,19 @@ function addPlayer() {
 
     if (!platform) { resetDropdown(); return showAdminMsg('player-add-msg', 'Please select a platform.', 'error'); }
 
-    const player = {
-        id: nextPlayerId++,
-        name: name,
-        platform: platform,
-        rank: 'Unranked',
-        wins: 0, mvps: 0, goals: 0, saves: 0, shots: 0, assists: 0,
-        teamId: null,
-        teamTag: '—',
-        createdAt: new Date().toISOString()
-    };
-
-    playerDB.push(player);
+    let player;
+    try {
+        const created = await apiRequest('/api/players', {
+            method: 'POST',
+            body: JSON.stringify({ player_name: name, platform })
+        });
+        player = asLegacyPlayer(created);
+        playerDB.push(player);
+        nextPlayerId = Math.max(nextPlayerId, player.id + 1);
+    } catch (err) {
+        resetDropdown();
+        return showAdminMsg('player-add-msg', err.message, 'error');
+    }
     saveToLocalStorageDB();
     updateGlobalTopCards();
 
@@ -4590,14 +4902,18 @@ function renderPlayerList() {
 
 
 // DELETE PLAYER (Oyuncu Silme Motoru)
-function deletePlayer(id) {
+async function deletePlayer(id) {
     if (!confirm('Are you sure you want to delete this player?')) return;
     
     // Oyuncuyu bul ve ismini kontrol etmek için sakla
     const player = playerDB.find(p => p.id === id);
     if (!player) return;
 
-    // Oyuncuyu ana veritabanından filtrele
+    try {
+        await apiRequest(`/api/players/${id}`, { method: 'DELETE' });
+    } catch (err) {
+        return showAdminMsg('player-add-msg', err.message, 'error');
+    }
     playerDB = playerDB.filter(p => p.id !== id);
     
     // Eğer silinen oyuncu bir takıma kayıtlıysa, o takımın kadrosundan da sil
@@ -4625,14 +4941,18 @@ function deletePlayer(id) {
 }
 
 // DELETE TEAM (Takım Silme, Oyuncu Serbest Bırakma & Tüm Geçmiş Maçları Silme Motoru)
-function deleteTeam(id) {
+async function deleteTeam(id) {
     if (!confirm('WARNING: Are you sure you want to delete this team? This will release its players and COMPLETELY delete all its past Tournament & Arena matches!')) return;
 
     // Maçları temizleyebilmek için silinecek takımı ismiyle eşleştirmek üzere önceden hafızaya al
     const team = teamDB.find(t => t.id === id);
     if (!team) return;
 
-    // Takımı ana veritabanından filtrele
+    try {
+        await apiRequest(`/api/teams/${id}`, { method: 'DELETE' });
+    } catch (err) {
+        return showAdminMsg('team-add-msg', err.message, 'error');
+    }
     teamDB = teamDB.filter(t => t.id !== id);
     
     // Bu takıma atanmış oyuncuların takım bağlarını sıfırla ve serbest kalsınlar
@@ -4679,11 +4999,15 @@ function deleteTeam(id) {
 }
 
 // DELETE TOURNAMENT MATCH (Turnuva Maçı Silme Motoru)
-function deleteTournamentMatch(idx) {
+async function deleteTournamentMatch(idx) {
     if (!confirm('Are you sure you want to delete this tournament match stats?')) return;
-    
-    // İlgili indeksteki maçı diziden çıkart
-    tournamentMatchDB.splice(idx, 1);
+    const match = tournamentMatchDB[idx];
+    try {
+        if (match?.matchId) await apiRequest(`/api/matches/${match.matchId}`, { method: 'DELETE' });
+        await hydrateFromBackend();
+    } catch (err) {
+        return showAdminMsg('t-msg', err.message, 'error');
+    }
     
     // Veritabanlarını kaydet ve istatistik leaderboard kartlarını yeniden hesapla
     saveCustomDatabases();
@@ -4702,11 +5026,15 @@ function deleteTournamentMatch(idx) {
 }
 
 // DELETE ARENA MATCH (Arena Maçı Silme Motoru)
-function deleteArenaMatch(idx) {
+async function deleteArenaMatch(idx) {
     if (!confirm('Are you sure you want to delete this arena match stats?')) return;
-    
-    // İlgili indeksteki maçı diziden çıkart
-    arenaMatchDB.splice(idx, 1);
+    const match = arenaMatchDB[idx];
+    try {
+        if (match?.matchId) await apiRequest(`/api/matches/${match.matchId}`, { method: 'DELETE' });
+        await hydrateFromBackend();
+    } catch (err) {
+        return showAdminMsg('m-msg', err.message, 'error');
+    }
     
     // Veritabanlarını kaydet ve istatistik lider kartlarını yeniden hesapla
     saveCustomDatabases();
@@ -4724,7 +5052,7 @@ function deleteArenaMatch(idx) {
 }
 
 // TAKIM YÖNETİMİ
-function createTeam() {
+async function createTeam() {
     const name = document.getElementById('team-name').value.trim();
     const regionSelect = document.getElementById('team-region');
     const region = document.getElementById('team-region').value;
@@ -4748,15 +5076,18 @@ function createTeam() {
         return showAdminMsg('team-add-msg', 'This team name is already taken!', 'error');
     }
 
-    teamDB.push({
-        id: nextTeamId++,
-        name: name,
-        tag: name.slice(0, 3).toUpperCase(),
-        region: region,
-        playerIds: [],
-        createdAt: new Date().toISOString(),
-        wins: 0, goals: 0, accuracy: 0, assists: 0, saves: 0, matchesPlayed: 0
-    });
+    try {
+        const created = await apiRequest('/api/teams', {
+            method: 'POST',
+            body: JSON.stringify({ team_name: name, region })
+        });
+        const team = asLegacyTeam(created);
+        teamDB.push(team);
+        nextTeamId = Math.max(nextTeamId, team.id + 1);
+    } catch (err) {
+        resetDropdown();
+        return showAdminMsg('team-add-msg', err.message, 'error');
+    }
 
     saveToLocalStorageDB();
     updateGlobalTopCards();
@@ -4845,7 +5176,7 @@ function renderTeamList() {
     }
 }
 
-function assignPlayerToTeam() {
+async function assignPlayerToTeam() {
     const pSel = document.getElementById('assign-player-sel');
     const tSel = document.getElementById('assign-team-sel');
     const pId = parseInt(document.getElementById('assign-player-sel').value);
@@ -4878,6 +5209,16 @@ function assignPlayerToTeam() {
 
         // Tüm kurallar geçildiyse ana kayıt bloğu çalışır
         if (!team.playerIds.includes(pId)) {
+            const todayIso = new Date().toISOString().slice(0, 10);
+            try {
+                await apiRequest(`/api/players/${pId}/plays-for`, {
+                    method: 'POST',
+                    body: JSON.stringify({ team_id: tId, since: todayIso, until: null })
+                });
+            } catch (err) {
+                resetDropdowns();
+                return showAdminMsg('assign-msg', err.message, 'error');
+            }
             team.playerIds.push(pId);
             player.teamId = tId;
             player.teamTag = team.tag;
@@ -5659,7 +6000,7 @@ lucide.createIcons();
 }
 
     // USER AUTH SİGN UP İŞLEMİ FONKSİYONU
-   function handleUserSignup() {
+   async function handleUserSignup() {
     const uname = document.getElementById('signup-username').value.trim();
     const pass1 = document.getElementById('signup-password').value;
     const pass2 = document.getElementById('signup-password2').value;
@@ -5673,11 +6014,6 @@ lucide.createIcons();
 
     // 1. BOŞ ALAN KONTROLÜ
     if (!uname || !pass1 || !pass2) return showAuthError(errEl, errTxt, 'Please fill in all fields!');
-
-    // 2. BENZERSİZ KULLANICI ADI KONTROLÜ (Case-Sensitive and Unique)
-    if (userDB[uname]) {
-        return showAuthError(errEl, errTxt, 'This exact username is already taken!');
-    }
 
     // 3. ŞİFRE UZUNLUĞU (8-30 Karakter)
     if (pass1.length < 8 || pass1.length > 30) {
@@ -5709,11 +6045,15 @@ lucide.createIcons();
         return showAuthError(errEl, errTxt, 'Passwords do not match!');
     }
 
-    // TÜM KONTROLLER GEÇİLDİYSE KAYITA BAŞLA
-    userDB[uname] = { password: pass1 }; 
-    
-    // Yeni kayıt edilen kullanıcıyı tarayıcı hafızasına (localStorage) kaydet
-    localStorage.setItem('registeredUsers', JSON.stringify(userDB)); 
+    try {
+        const data = await apiRequest('/api/auth/register', {
+            method: 'POST',
+            body: JSON.stringify({ username: uname, password: pass1 })
+        });
+        setApiSession(data);
+    } catch (err) {
+        return showAuthError(errEl, errTxt, err.message);
+    }
     
     const sucTxt = sucEl.querySelector('span');
     if (sucTxt) sucTxt.textContent = "Account created! Redirecting to Sign In...";
@@ -5739,7 +6079,7 @@ lucide.createIcons();
 }
 
 // USER AUTH SİGN İN İŞLEMİ FONKSİYONU
-function handleUserLogin() {
+async function handleUserLogin() {
     const uname = document.getElementById('user-login-username').value.trim();
     const pass  = document.getElementById('user-login-password').value;
     const errEl = document.getElementById('user-login-error');
@@ -5763,15 +6103,15 @@ function handleUserLogin() {
         return showAuthError(errEl, errTxt, 'Please enter your username.');
     }
 
-    // 3. Kullanıcı adı kontrolü
-    const record = userDB[uname];
-    if (!record) {
-        return showAuthError(errEl, errTxt, 'User not found! Please check your username.');
-    }
-
-    // 4. Şifre kontrolü
-    if (record.password !== pass) {
-        return showAuthError(errEl, errTxt, 'Incorrect password! Please try again.');
+    try {
+        const data = await apiRequest('/api/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({ username: uname, password: pass })
+        });
+        setApiSession(data);
+        await hydrateFromBackend();
+    } catch (err) {
+        return showAuthError(errEl, errTxt, err.message);
     }
     
     // 5. Başarılı Giriş Durumu
@@ -5878,7 +6218,7 @@ function userLogout() {
     }
 
     // 1. OTURUMU VE VERİLERİ TEMİZLE
-    sessionStorage.removeItem('currentUser');
+    clearApiSession();
     sessionStorage.removeItem('isTabSessionActive'); // Çıkışta sekme oturum hafızasını sıfırla
     localStorage.removeItem('lastActiveUserPage'); // Çıkış yapıldığında user sayfa hafızasını sıfırla
     currentUser = null;
@@ -5944,9 +6284,9 @@ function handleAdminLogout() {
     }
 
     // OTURUMU VE VERİLERİ TEMİZLE
+    clearApiSession();
     currentUser = null; // Kullanıcı oturumu tamamen kapatılıyor
     localStorage.removeItem('currentUser'); // Kullanıcı yerel oturum verisi siliniyor
-    sessionStorage.removeItem('currentUser'); // Sekme bazlı kullanıcı oturum verisi siliniyor
     
     // Admin Panel butonunun User Sign In ve User Sign Up sayfalarında gözükmemesini garanti et
     const navAdmin = document.getElementById('nav-admin');
@@ -6658,7 +6998,7 @@ function deleteTeamFromCard() {
     if (el) el.value = '';
 }
 
-function deleteTournamentFromCard(passedId) {
+async function deleteTournamentFromCard(passedId) {
     const el = document.getElementById('delete-tourney-sel');
     // Eğer butondan (çöp kutusundan) bir ID geldiyse onu kullan, gelmediyse dropdown'dan oku
     const id = passedId || document.getElementById('delete-tourney-sel').value;
@@ -6673,9 +7013,13 @@ function deleteTournamentFromCard(passedId) {
         return;
     }
 
-    // Turnuvayı ve ona ait maçları komple temizle
-    tournamentNamesDB = tournamentNamesDB.filter(t => t.id !== id);
-    tournamentMatchDB = tournamentMatchDB.filter(m => m.tournamentType !== id);
+    try {
+        await apiRequest(`/api/tournaments/${id}`, { method: 'DELETE' });
+        await hydrateFromBackend();
+    } catch (err) {
+        if (el) el.value = '';
+        return alert(err.message);
+    }
     
     localStorage.setItem('tournamentNamesDB', JSON.stringify(tournamentNamesDB));
     saveCustomDatabases();
@@ -6756,12 +7100,20 @@ function refreshUserFavDropdown() {
 }
 
 // Favori oyuncu sayfasını açan fonksiyon
-function openFavPlayerPage() {
+async function openFavPlayerPage() {
     const sel = document.getElementById('user-fav-player-sel');
     const pId = parseInt(sel.value);
     
     if (!pId) return alert("Please select a player first!");
     
+    try {
+        await apiRequest('/api/users/me/fav-players', {
+            method: 'POST',
+            body: JSON.stringify({ player_id: pId })
+        });
+    } catch (err) {
+        if (err.message !== 'Player already favorited') return alert(err.message);
+    }
     localStorage.setItem('myFavPlayerId', pId);
     window.scrollTo(0, 0);
     showPage('page-fav-player');
@@ -7252,7 +7604,7 @@ function refreshRemoveTeamDropdown() {
     if (tSel.value) refreshRemovePlayerDropdown();
 }
 
-function removePlayerFromTeam() {
+async function removePlayerFromTeam() {
     const tSel = document.getElementById('remove-team-sel');
     const pSel = document.getElementById('remove-player-sel');
     const tId = parseInt(document.getElementById('remove-team-sel').value);
@@ -7270,6 +7622,12 @@ function removePlayerFromTeam() {
     const player = playerDB.find(p => p.id === pId);
 
     if (team && player) {
+        try {
+            await apiRequest(`/api/players/${pId}/plays-for/${tId}`, { method: 'DELETE' });
+        } catch (err) {
+            resetDropdowns();
+            return showAdminMsg('remove-msg', err.message, 'error');
+        }
         team.playerIds = team.playerIds.filter(id => id !== pId);
         player.teamId = null;
         player.sinceInTeam = '';
@@ -7524,12 +7882,20 @@ function refreshAdminDashboard() {
 }
 
 // Favori takım overview sayfasını akıllı filtreyle açan fonksiyon
-function openFavTeamPage() {
+async function openFavTeamPage() {
     const sel = document.getElementById('user-fav-team-sel');
     const tId = parseInt(sel.value);
     
     if (!tId) return alert("Please select a team first!");
     
+    try {
+        await apiRequest('/api/users/me/fav-teams', {
+            method: 'POST',
+            body: JSON.stringify({ team_id: tId })
+        });
+    } catch (err) {
+        if (err.message !== 'Team already favorited') return alert(err.message);
+    }
     localStorage.setItem('myFavTeamId', tId); 
     
     // Seçilen takımın bölgesini bulup global filtre dropdown'ını otomatik ayarla
