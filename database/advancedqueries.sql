@@ -67,15 +67,15 @@ HAVING  SUM(PMS.goals) = (
              ) AS tournament_goals_total
 );
 
---Final Scores of Matches
+--Final Scores of Matches using plays_for and match_data dates
 
-SELECT  A.match_id,
-        A.match_date,
+SELECT  M.match_id,
+        M.match_date,
         A.team_name AS blue_team,
         A.team_score AS blue_score,
         B.team_name AS orange_team,
         B.team_score AS orange_score
-FROM
+FROM    MATCH_DATA M,
 (
     SELECT PA.match_id,
            T.team_name,
@@ -83,11 +83,16 @@ FROM
     FROM TEAM T,
          PLAYS_AS PA, 
          PLAYS_FOR PF, 
-         PLAYER_MATCH_STATS PMS
+         PLAYER_MATCH_STATS PMS,
+         MATCH_DATA M1
     WHERE T.team_id = PA.team_id
       AND T.team_id = PF.team_id
       AND PF.player_id = PMS.player_id
       AND PA.match_id = PMS.match_id
+      AND M1.match_id = PA.match_id
+      AND M1.match_id = PMS.match_id
+      AND M1.match_date >= PF.since
+      AND (PF.until IS NULL OR M1.match_date <= PF.until)
       AND PA.team_type = 'BLUE'
     GROUP BY PA.match_id, T.team_name
 ) AS A,
@@ -95,18 +100,22 @@ FROM
     SELECT PA.match_id,
            T.team_name,
            SUM(PMS.goals) AS team_score
-    FROM TEAM T, 
+    FROM TEAM T,
          PLAYS_AS PA, 
          PLAYS_FOR PF, 
-         PLAYER_MATCH_STATS PMS
+         PLAYER_MATCH_STATS PMS,
+         MATCH_DATA M1
     WHERE T.team_id = PA.team_id
       AND T.team_id = PF.team_id
       AND PF.player_id = PMS.player_id
       AND PA.match_id = PMS.match_id
+      AND M1.match_id = PA.match_id
+      AND M1.match_id = PMS.match_id
+      AND M1.match_date >= PF.since
+      AND (PF.until IS NULL OR M1.match_date <= PF.until)
       AND PA.team_type = 'ORANGE'
     GROUP BY PA.match_id, T.team_name
-) AS B,
-MATCH_DATA M
+) AS B
 WHERE A.match_id = B.match_id
   AND A.match_id = M.match_id
 ORDER BY A.match_id;
