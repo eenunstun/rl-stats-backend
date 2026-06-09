@@ -1161,7 +1161,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
         </section>
     </main>
  
-    <!-- ===== USER AUTH PAGE (Login + Sign Up) ===== -->
+    <!-- USER AUTH PAGE (Login + Sign Up) -->
     <main id="page-user-auth" class="hidden min-h-[calc(100vh-80px)] flex items-center justify-center relative overflow-hidden"
           style="background: linear-gradient(rgba(18,18,20,0.92), rgba(18,18,20,0.97)), url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200'); background-size: cover; background-position: center;">
  
@@ -2274,10 +2274,10 @@ body:has(#page-loader:not(.loader-hidden)) main {
                     <tr>
                         <th class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[5%]">Rank</th>
                         <th class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[25%]"><div class="pl-16">Team</div></th>
-                        <th class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[30%]"><div class="pl-11">Team Players</div></th>
-                        <th class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[15%]"><div class="pl-7">Regıon</div></th>
+                        <th class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[30%]"><div class="pl-16">Team Players</div></th>
+                        <th class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[15%]"><div class="pl-2">Regıon</div></th>
                         <th class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[10%] text-center">Matches</th>
-                        <th id="team-table-stat-header" class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 text-right tracking-widest w-[15%]">Wins</th>
+                        <th id="team-table-stat-header" class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 text-right tracking-widest w-[15%]"><div class="pl-14">Wıns</div></th>
                     </tr>
                 </thead>
                 <tbody id="team-leaderboard-table-body" class="divide-y divide-gray-800/50">
@@ -2327,7 +2327,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
         </th>
         
         <th class="px-6 py-5 text-left text-gray-500">
-            <div class="flex items-center gap-2 pl-20"><i data-lucide="calendar" class="w-3 h-3"></i>T. Dates</div>
+            <div class="flex items-center gap-2 pl-20 pr-20"><i data-lucide="calendar" class="w-3 h-3"></i>T. Dates</div>
         </th>
 
         <th class="px-6 py-5 text-left text-gray-500">
@@ -2442,7 +2442,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
                             <div class="flex items-center gap-2"><i data-lucide="hash" class="w-3 h-3"></i>Rank</div>
                         </th>
                         <th class="px-6 py-5 text-left text-gray-500">
-                            <div class="flex items-center gap-2 pl-8"><i data-lucide="land-plot" class="w-3 h-3"></i>Arena</div>
+                            <div class="flex items-center gap-2 pl-3"><i data-lucide="land-plot" class="w-3 h-3"></i>Arena</div>
                         </th>
                         <th class="px-6 py-5 text-left text-gray-500">
                             <div class="flex items-center gap-2"><i data-lucide="cloud-sun" class="w-3 h-3"></i>Weather</div>
@@ -2450,8 +2450,8 @@ body:has(#page-loader:not(.loader-hidden)) main {
                         <th class="px-6 py-5 text-left text-gray-500">
                             <div class="flex items-center gap-2"><i data-lucide="clock" class="w-3 h-3"></i>Match Date</div>
                         </th>
-                        <th class="px-6 py-5 text-left text-gray-500">
-                            <div class="flex items-center gap-2"><i data-lucide="gamepad-2" class="w-3 h-3"></i>Match Type</div>
+                        <th class="px-6 py-5 text-center text-gray-500">
+                            <div class="flex items-center gap-2 pl-4"><i data-lucide="gamepad-2" class="w-3 h-3"></i>Match Type</div>
                         </th>
                         <th class="px-6 py-5 text-left text-gray-500">
                             <div class="flex items-center gap-2 pl-12"><i data-lucide="users-2" class="w-3 h-3"></i>Teams</div>
@@ -2537,27 +2537,27 @@ body:has(#page-loader:not(.loader-hidden)) main {
                     <div class="flex items-center gap-2"><i data-lucide="hash" class="w-3 h-3"></i>Rank</div>
                 </th>
                 <th class="px-6 py-5 text-left text-gray-500 w-[12%]">
-                    <div class="flex items-center gap-2 pl-4"><i data-lucide="user" class="w-3 h-3"></i>Player Name</div>
+                    <div class="flex items-center gap-2"><i data-lucide="user" class="w-3 h-3"></i>Player Name</div>
                 </th>
                 <th class="px-6 py-5 text-left text-gray-500 w-[8%]">
-                    <div class="flex items-center gap-2"><i data-lucide="shield" class="w-3 h-3"></i>Team</div>
+                    <div class="flex items-center gap-2 pl-4"><i data-lucide="shield" class="w-3 h-3"></i>Team</div>
                 </th>
-                <!-- YENİ: Team sütunundan hemen sonra eklenen Teams Sütun Başlığı -->
-                <th class="px-6 py-5 text-left text-gray-500 w-[11%]">
-                    <div class="flex items-center gap-2"><i data-lucide="users-2" class="w-3 h-3"></i>Teams</div>
+                <!-- Team sütunundan hemen sonra eklenen Teams Sütun Başlığı -->
+                <th class="px-6 py-5 text-center text-gray-500 w-[11%]">
+                    <div class="flex items-center gap-2 pl-12"><i data-lucide="users-2" class="w-3 h-3"></i>Teams</div>
                 </th>
                 <th class="px-6 py-5 text-left text-gray-500 w-[8%]">
                     <div class="flex items-center gap-2"><i data-lucide="clock" class="w-3 h-3"></i>Match Date</div>
                 </th>
-                <th class="px-6 py-5 text-left text-gray-500 w-[8%]">
-                    <div class="flex items-center gap-2"><i data-lucide="gamepad-2" class="w-3 h-3"></i>Match Type</div>
+                <th class="px-6 py-5 text-center text-gray-500 w-[8%]">
+                    <div class="flex items-center gap-2 pl-4"><i data-lucide="gamepad-2" class="w-3 h-3"></i>Match Type</div>
                 </th>
-                <!-- YENİ: Arena sütunundan hemen önce eklenen Weather Sütun Başlığı -->
+                <!-- Arena sütunundan hemen önce eklenen Weather Sütun Başlığı -->
                 <th class="px-6 py-5 text-left text-gray-500 w-[7%]">
                     <div class="flex items-center gap-2"><i data-lucide="cloud-sun" class="w-3 h-3"></i>Weather</div>
                 </th>
                 <th class="px-6 py-5 text-left text-gray-500 w-[9%]">
-                    <div class="flex items-center gap-2 pl-4"><i data-lucide="land-plot" class="w-3 h-3"></i>Arena</div>
+                    <div class="flex items-center gap-2 pl-6"><i data-lucide="land-plot" class="w-3 h-3"></i>Arena</div>
                 </th>
                 <th class="px-6 py-5 text-center text-orange-500 w-[5%]">
                     <div class="flex items-center justify-center gap-2"><i data-lucide="loader-pinwheel" class="w-3 h-3"></i>Goals</div>
@@ -2653,7 +2653,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
 <script>
     lucide.createIcons();
 
-    // ========== YUKARIYA ÇIK BUTONU ==========
+    // YUKARIYA ÇIK BUTONU
     const backToTopBtn = document.getElementById('backToTopBtn');
     window.onscroll = function() {
         if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
@@ -3147,7 +3147,7 @@ function addTournamentMatch() {
         winnerName: winnerName,
         wGoals: wGoals, lGoals: lGoals, wAcc: wAcc, lAcc: lAcc, wAss: wAss, lAss: lAss, wSav: wSav, lSav: lSav,
         mvp: mvpPlayerName,
-        players: [...tempTourneyMatchPlayers], // ===== [GÜNCELLEME] OYUNCU GEÇMİŞİ DİNAMİK HAVUZA EKLENDİ =====
+        players: [...tempTourneyMatchPlayers], // OYUNCU GEÇMİŞİ DİNAMİK HAVUZA EKLENDİ
         createdAt: new Date().toISOString()
     };
 
@@ -3326,7 +3326,7 @@ function addArenaMatch() {
         return showAdminMsg('m-msg', 'Please save all 6 players performances before saving the match.', 'error');
     }
 
-    // 2. YENİ Match MVP Validation Logic: DOM'daki sıfırlanmış dropdown'a değil, kayıtlı oyuncu listesine bakıyoruz!
+    // 2. Match MVP Validation Logic: DOM'daki sıfırlanmış dropdown'a değil, kayıtlı oyuncu listesine bakıyoruz!
     const mvpIsSelected = tempArenaMatchPlayers.some(p => p.mvp === true);
     if (!mvpIsSelected) {
         return showAdminMsg('m-msg', 'Please select the Match MVP case for one of the players.', 'error');
@@ -3418,7 +3418,7 @@ function addArenaMatch() {
         winnerName: winnerName,
         wGoals: wGoals, lGoals: lGoals, wAcc: wAcc, lAcc: lAcc, wAss: wAss, lAss: lAss, wSav: wSav, lSav: lSav,
         mvp: mvpPlayerName,
-        players: [...tempArenaMatchPlayers], // ===== [GÜNCELLEME] OYUNCU GEÇMİŞİ DİNAMİK HAVUZA EKLENDİ =====
+        players: [...tempArenaMatchPlayers], // OYUNCU GEÇMİŞİ DİNAMİK HAVUZA EKLENDİ
         createdAt: new Date().toISOString()
     };
 
@@ -3629,7 +3629,7 @@ function updateGlobalTopCards() {
         ...(typeof tournamentMatchDB !== 'undefined' ? tournamentMatchDB : [])
     ];
 
-    // ===== [YENİ SİSTEM] OYUNCU İSTATİSTİKLERİNİ TÜM MAÇ GEÇMİŞİNDEN DİNAMİK HESAPLAYAN MANTIK =====
+    // OYUNCU İSTATİSTİKLERİNİ TÜM MAÇ GEÇMİŞİNDEN DİNAMİK HESAPLAYAN MANTIK
     if (typeof playerDB !== 'undefined') {
         playerDB.forEach(player => {
             let wins = 0;
@@ -4614,8 +4614,7 @@ function deletePlayer(id) {
     // Arayüz Görünümlerini Anlık Tazele
     renderPlayerList();
     
-    // Oyuncu silindiğinde Tea
-m Registry kartını da anında güncelle
+    // Oyuncu silindiğinde Team Registry kartını da anında güncelle
     if (typeof renderTeamList === "function") renderTeamList();
     
     refreshOverview();
@@ -4812,7 +4811,6 @@ function renderTeamList() {
                     ${firstLetter}
                 </div>
                 
-                <!-- ═══ [GÜNCELLEME] DİKEY ARALIK ÇOK HAFİF DARALTILARAK gap-1.5 YAPILDI ═══ -->
                 <div class="flex flex-col flex-1 min-w-0 gap-1.5">
                     <div class="flex items-center">
                         <p class="text-sm font-black text-white group-hover:text-sky-400 transition-colors truncate pt-1.5 leading-none">${t.name}</p>
@@ -6089,7 +6087,27 @@ function switchStatTab(statType) {
     if (titleEl) titleEl.innerText = title;
     
     const headerEl = document.getElementById('table-stat-header');
-    if (headerEl) headerEl.innerText = statType.charAt(0).toUpperCase() + statType.slice(1);
+    if (headerEl) {
+        // Sütun adı shots ise "Shots Accuracy" yap, değilse ilk harfi büyüt
+        headerEl.innerText = statType === 'shots' ? 'Shots Accuracy' : statType.charAt(0).toUpperCase() + statType.slice(1);
+
+        // İstatistik türüne göre renk haritası
+        const statColors = {
+            wins: 'text-red-400',       // Wins için kırmızı
+            mvps: 'text-purple-400',    // MVPs için mor
+            goals: 'text-orange-400',   // Goals için turuncu
+            shots: 'text-yellow-400',   // Shots (Accuracy) için sarı
+            assists: 'text-cyan-400',   // Assists için açık mavi
+            saves: 'text-green-400'     // Saves için yeşil
+        };
+        const currentColor = statColors[statType] || 'text-white';
+
+        // Eski olası tüm trend renk sınıflarını ve varsayılan griyi temizle
+        headerEl.classList.remove('text-gray-500', 'text-red-400', 'text-purple-400', 'text-orange-400', 'text-yellow-400', 'text-cyan-400', 'text-green-400', 'text-white');
+        
+        // Aktif trend rengini ve değer hücreleriyle hizalanması için hafif sola kaydırma padding'ini (pr-10) ekle
+        headerEl.classList.add(currentColor, 'pr-10');
+    }
 
     renderLeaderboardTable(statType);
 }
@@ -6114,6 +6132,17 @@ function renderLeaderboardTable(statType) {
         tbody.innerHTML = `<tr><td colspan="6" class="px-8 py-12 text-center text-gray-600 text-xs font-black uppercase tracking-[0.2em]">No players found for this platform</td></tr>`;
         return;
     }
+
+    // Aktif istatistik rengini belirle
+    const statColors = {
+        wins: 'text-red-400',
+        mvps: 'text-purple-400',
+        goals: 'text-orange-400',
+        shots: 'text-yellow-400',
+        assists: 'text-cyan-400',
+        saves: 'text-green-400'
+    };
+    const currentColor = statColors[statType] || 'text-white';
 
     tbody.innerHTML = sortedPlayers.map((p, index) => {
 
@@ -6151,7 +6180,7 @@ function renderLeaderboardTable(statType) {
                 <span class="text-[10px] font-black text-gray-400">${p.matchesPlayed || '0'}</span>
             </td>
 
-            <td class="px-8 py-5 text-right font-mono text-xs text-white font-black">
+            <td class="px-8 py-5 text-right font-mono text-xs font-black pr-12 ${currentColor}">
                 ${statType === 'shots' ? (p[statType] || 0) + '%' : (p[statType] || 0).toLocaleString()}
             </td>
         </tr>
@@ -6167,6 +6196,25 @@ function renderTeamLeaderboardTable(statType) {
     const regionSelect = document.getElementById('team-region-select');
     const selectedRegion = regionSelect ? regionSelect.value : 'Global';
 
+    // Hangi statType gelirse ona uygun metin rengini seçen harita
+    const statColors = {
+        wins: 'text-red-400',       // Wins için kırmızı
+        goals: 'text-orange-400',   // Goals için turuncu
+        assists: 'text-cyan-400',   // Assists için açık mavi
+        saves: 'text-emerald-400',  // Saves için yeşil
+        accuracy: 'text-yellow-400' // Accuracy için sarı
+    };
+    const currentColor = statColors[statType] || 'text-white';
+
+    // Sütun başlığının (Header) rengini alt değerlerle uyumlu olacak şekilde dinamik güncelle
+    const headerEl = document.getElementById('team-table-stat-header');
+    if (headerEl) {
+        // Önceki olası renk sınıflarını ve varsayılan griyi temizle
+        headerEl.classList.remove('text-gray-500', 'text-red-400', 'text-orange-400', 'text-cyan-400', 'text-emerald-400', 'text-yellow-400');
+        // Aktif trend rengini başlığa ata
+        headerEl.classList.add(currentColor);
+    }
+
     // Seçilen bölgeye göre filtrele (Global ise hepsini göster)
     const filteredTeams = [...teamDB].filter(team => 
         selectedRegion === 'Global' || team.region === selectedRegion
@@ -6175,7 +6223,7 @@ function renderTeamLeaderboardTable(statType) {
     const sortedTeams = filteredTeams.sort((a, b) => (b[statType] || 0) - (a[statType] || 0));
 
     if (sortedTeams.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="px-8 py-12 text-center text-gray-600 text-xs font-black uppercase tracking-[0.2em]">No teams found in this region</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="px-8 py-12 text-center text-gray-600 text-xs font-black uppercase tracking-[0.2em]">No teams found ın thıs regıon</td></tr>`;
         return;
     }
 
@@ -6203,7 +6251,7 @@ function renderTeamLeaderboardTable(statType) {
             </td>
             
             <td class="px-8 py-5 flex items-center gap-4 overflow-hidden">
-                <div class="w-10 h-10 rounded-xl bg-sky-600/10 flex items-center justify-center font-black text-sky-400 text-sm border border-sky-500/20 shadow-lg shrink-0 group-hover:border-sky-500/50 transition-all">
+                <div class="w-10 h-10 rounded-xl bg-sky-600/10 flex items-center justify-center font-black text-sky-400 text-sm border border-sky-500/20 shadow-lg shrink-0 transition-all">
                     ${team.name.charAt(0)}
                 </div>
                 
@@ -6213,7 +6261,7 @@ function renderTeamLeaderboardTable(statType) {
                 </div>
             </td>
             
-            <td class="px-8 py-5">
+            <td class="px-8 py-5 pl-10"> 
                 <div class="py-1 px-2 rounded-xl bg-white/[0.04] border border-white/10 flex flex-wrap items-center gap-2 w-fit max-w-full shadow-sm">
                     <span class="text-[10px] font-black text-gray-400 tracking-wide select-none">Players of Team:</span>
                     <div class="flex flex-wrap items-center gap-1.5">
@@ -6230,7 +6278,7 @@ function renderTeamLeaderboardTable(statType) {
                 <span class="text-[10px] font-black text-gray-400">${team.matchesPlayed || '0'}</span>
             </td>
             
-            <td class="px-8 py-5 text-right font-mono text-xs text-white font-black">
+            <td class="px-8 py-5 text-right font-mono text-xs font-black pr-10 ${currentColor}"> 
                 ${statType === 'accuracy' ? (team[statType] || 0) + '%' : (team[statType] || 0).toLocaleString()}
             </td>
         </tr>
@@ -6333,6 +6381,9 @@ function renderTournamentMatchStats() {
 
     const filteredMatches = (tournamentMatchDB || []).filter(m => m.tournamentType === type || type === 'all' || !m.tournamentType);
 
+    // Bütün maçları kronolojik olarak sırala (En yeniden en eskiye doğru şekilde)
+    filteredMatches.sort((a, b) => new Date(b.matchDate) - new Date(a.matchDate));
+
     if (filteredMatches.length === 0) {
         tbody.innerHTML = `<tr><td colspan="18" class="px-8 py-20 text-center text-gray-600 text-xs font-black uppercase tracking-[0.2em]">Please add 3V3 tournament matches from Admın Panel to generate 3V3 tournament matches stats</td></tr>`;
         return;
@@ -6421,9 +6472,10 @@ function renderTournamentMatchStats() {
         </tr>`;
     }).join('');
     
-    setTimeout(() => {
+    // Lucide ikonlar anında render edilecek
+    if (typeof lucide !== 'undefined') {
         lucide.createIcons();
-    }, 20);
+    }
 }
 
 // Arena Sayfasını Başlatan Fonksiyon
@@ -6478,6 +6530,9 @@ function renderArenaMatchStats() {
 
     // Seçilen case-sensitive takıma göre (team1 veya team2 eşleşmesiyle) birleşik havuzdan filtreleme yap
     const filteredMatches = combinedMatches.filter(m => teamVal === 'all' || m.team1Tag === teamVal || m.team2Tag === teamVal);
+
+    // Bütün maçları kronolojik olarak sırala (En yeniden en eskiye doğru şekilde)
+    filteredMatches.sort((a, b) => new Date(b.matchDate) - new Date(a.matchDate));
 
     if (filteredMatches.length === 0) {
         tbody.innerHTML = `<tr><td colspan="16" class="px-6 py-20 text-center text-gray-600 text-xs font-black uppercase tracking-[0.2em]">Please add regular 3V3 or tournament 3V3 matches from Admın Panel to generate 3V3 team stats</td></tr>`;
@@ -6814,7 +6869,7 @@ function renderFavPlayerStats() {
             const matchDate = m.matchDate || '—';
             const arenaOrTourney = m.source === 'arena' ? (m.type || m.arenaTag || 'Arena') : (m.arena || 'Arena');
             
-            // MANTIK GÜNCELLEMESİ: Maç genelindeki takım skorları yerine oyuncunun bireysel maç istatistiklerini yansıt
+            // Maç genelindeki takım skorları yerine oyuncunun bireysel maç istatistiklerini yansıt
             const pMatch = m.players ? m.players.find(p => p.id === player.id) : null;
             const goals = pMatch ? (pMatch.goals || 0) : 0;
             const acc = pMatch ? (pMatch.shots || pMatch.shotsAccuracy || pMatch.acc || 0) : 0;
@@ -6840,7 +6895,11 @@ function renderFavPlayerStats() {
 
             return `
             <tr class="hover:bg-white/[0.02] transition-colors group border-b border-gray-800/30">
-                <td class="px-6 py-4.5 text-xs font-mono text-gray-400">${matchDate}</td>
+                <td class="px-6 py-5 text-left">
+                    <span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-400 w-max font-mono">
+                        <i data-lucide="calendar" class="w-3 h-3 text-emerald-500"></i> ${matchDate}
+                    </span>
+                </td>
                 <td class="px-6 py-4.5 text-left">${matchTypeBadge}</td>
                 <td class="px-6 py-4.5 text-[10px] font-black text-gray-300 tracking-wider">${arenaOrTourney}</td>
                 <td class="px-6 py-4.5 text-xs font-black text-blue-400 tracking-wider truncate max-w-[120px]">${teamName}</td>
@@ -6892,7 +6951,7 @@ function renderFavPlayerStats() {
                 <thead class="bg-white/[0.02] border-b border-gray-800">
                     <tr>
                         <th class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[30%]">Stat Category</th>
-                        <th class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[15%]">Platform</th>
+                        <th class="px-8 py-5 translate-x-6 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[15%]">Platform</th>
                         <th class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[20%] text-center">Matches</th>
                         <th class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[20%] text-center">Value</th>
                         <th class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[25%] text-right">Global Rank</th>
@@ -7049,7 +7108,11 @@ function renderFavTeamStats() {
 
             return `
             <tr class="hover:bg-white/[0.02] transition-colors group border-b border-gray-800/30">
-                <td class="px-6 py-4.5 text-xs font-mono text-gray-400">${matchDate}</td>
+                <td class="px-6 py-5 text-left">
+                    <span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-400 w-max font-mono">
+                        <i data-lucide="calendar" class="w-3 h-3 text-emerald-500"></i> ${matchDate}
+                    </span>
+                </td>
                 <td class="px-6 py-4.5 text-left">${matchTypeBadge}</td>
                 <td class="px-6 py-4.5 text-[10px] font-black text-gray-300 tracking-wider">${arenaOrTourney}</td>
                 <td class="px-6 py-4.5 text-xs font-black text-blue-400 tracking-wider truncate max-w-[120px] pl-12">${opponentName}</td>
@@ -7101,7 +7164,7 @@ function renderFavTeamStats() {
                 <thead class="bg-white/[0.02] border-b border-gray-800">
                     <tr>
                         <th class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[35%]">Stat Category</th>
-                        <th class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[20%]">Region</th>
+                        <th class="px-8 py-5 translate-x-8 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[20%]">Regıon</th>
                         <th class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[20%] text-center">Matches</th>
                         <th class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[20%] text-center">Value</th>
                         <th class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[25%] text-right">Global Rank</th>
@@ -7537,7 +7600,6 @@ function loadSavedPlayerPerformance(prefix) {
 
         toggleButtons(true); // Change butonu gösterilir, Save butonu gizlenir
     } else {
-        // --- VERİ YOK (YENİ OYUNCU): ALANLARI TEMİZLE ---
         if (goalsInput) goalsInput.value = '';
         if (accInput) accInput.value = '';
         if (assInput) assInput.value = '';
@@ -7724,8 +7786,8 @@ function renderPlayerMatchStats() {
     const aMatches = (arenaMatchDB || []).map(m => ({ ...m, source: 'arena' }));
     const allMatches = [...tMatches, ...aMatches];
 
-    // Bütün maçları kronolojik olarak sırala (En eskiden en yeniye doğru şekilde)
-    allMatches.sort((a, b) => new Date(a.matchDate) - new Date(b.matchDate));
+    // Bütün maçları kronolojik olarak sırala (En yeniden en eskiye doğru şekilde)
+    allMatches.sort((a, b) => new Date(b.matchDate) - new Date(a.matchDate));
 
     let rowAccumulator = [];
     let absoluteRankIndex = 1;
@@ -7823,15 +7885,15 @@ function renderPlayerMatchStats() {
     });
 
     if (rowAccumulator.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="14" class="px-8 py-20 text-center text-gray-600 text-xs font-black uppercase tracking-[0.2em]">Please add regular 3V3 or tournament 3V3 matches from Admın Panel to generate 3V3 Indıvıdual Player stats</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="14" class="px-8 py-20 text-center text-gray-600 text-xs font-black uppercase tracking-[0.2em]">Please add regular 3V3 or tournament 3V3 matches from Admın Panel to generate 3V3 Indıvıdevil Player stats</td></tr>`;
         return;
     }
 
     tbody.innerHTML = rowAccumulator.join('');
     
-    setTimeout(() => {
-        if (typeof lucide !== 'undefined') lucide.createIcons();
-    }, 20);
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
 }
 
 function handleMvpDropdownChange(currentSelect) {

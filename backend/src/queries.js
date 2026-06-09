@@ -6,7 +6,7 @@ const SQL_PATH = path.resolve(
   "..",
   "..",
   "database",
-  "advancedqueries.sql"
+  "advanced_queries.sql"
 );
 
 // Parses a .sql file annotated with `-- name: <slug>` markers and returns
