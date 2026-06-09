@@ -134,4 +134,70 @@ router.post("/:id/stats", requireAuth, requireAdmin, async (req, res) => {
   res.status(201).json(result.rows[0]);
 });
 
+// PLAYER_MATCH_STATS and PLAYS_AS only make sense in the context of a match,
+// so cascade them inside a single transaction. PLAYER_MATCH_STATS goes first
+// because PLAYS_AS does not reference it.
+router.delete("/:id", requireAuth, requireAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  const client = await db.pool.connect();
+  try {
+    await client.query("BEGIN");
+    await client.query(
+      "DELETE FROM PLAYER_MATCH_STATS WHERE match_id = $1",
+      [id]
+    );
+    await client.query("DELETE FROM PLAYS_AS WHERE match_id = $1", [id]);
+    const result = await client.query(
+      "DELETE FROM MATCH_DATA WHERE match_id = $1",
+      [id]
+    );
+    await client.query("COMMIT");
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Match not found" });
+    }
+    res.status(204).end();
+  } catch (err) {
+    await client.query("ROLLBACK");
+    throw err;
+  } finally {
+    client.release();
+  }
+});
+
+router.delete(
+  "/:match_id/plays-as/:team_id",
+  requireAuth,
+  requireAdmin,
+  async (req, res) => {
+    const match_id = Number(req.params.match_id);
+    const team_id = Number(req.params.team_id);
+    const result = await db.query(
+      "DELETE FROM PLAYS_AS WHERE match_id = $1 AND team_id = $2",
+      [match_id, team_id]
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Team assignment not found" });
+    }
+    res.status(204).end();
+  }
+);
+
+router.delete(
+  "/:match_id/stats/:player_id",
+  requireAuth,
+  requireAdmin,
+  async (req, res) => {
+    const match_id = Number(req.params.match_id);
+    const player_id = Number(req.params.player_id);
+    const result = await db.query(
+      "DELETE FROM PLAYER_MATCH_STATS WHERE match_id = $1 AND player_id = $2",
+      [match_id, player_id]
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Stat row not found" });
+    }
+    res.status(204).end();
+  }
+);
+
 module.exports = router;

@@ -65,4 +65,29 @@ router.post("/", requireAuth, requireAdmin, async (req, res) => {
   res.status(201).json(result.rows[0]);
 });
 
+router.delete("/:id", requireAuth, requireAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  const counts = await db.query(
+    `SELECT
+       (SELECT COUNT(*) FROM PLAYS_FOR WHERE team_id = $1)::int AS contracts,
+       (SELECT COUNT(*) FROM PLAYS_AS WHERE team_id = $1)::int AS matches,
+       (SELECT COUNT(*) FROM FAV_TEAM WHERE team_id = $1)::int AS favorites`,
+    [id]
+  );
+  const { contracts, matches, favorites } = counts.rows[0];
+  if (contracts + matches + favorites > 0) {
+    return res.status(409).json({
+      error: `Cannot delete team: ${contracts} contract(s), ${matches} match assignment(s), ${favorites} favorite(s) reference it. Delete those first.`,
+    });
+  }
+  const result = await db.query(
+    "DELETE FROM TEAM WHERE team_id = $1",
+    [id]
+  );
+  if (result.rowCount === 0) {
+    return res.status(404).json({ error: "Team not found" });
+  }
+  res.status(204).end();
+});
+
 module.exports = router;

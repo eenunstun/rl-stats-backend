@@ -82,4 +82,56 @@ router.post("/:id/plays-for", requireAuth, requireAdmin, async (req, res) => {
   res.status(201).json(result.rows[0]);
 });
 
+router.delete("/:id", requireAuth, requireAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  const counts = await db.query(
+    `SELECT
+       (SELECT COUNT(*) FROM PLAYER_MATCH_STATS WHERE player_id = $1)::int AS stats,
+       (SELECT COUNT(*) FROM PLAYS_FOR WHERE player_id = $1)::int AS contracts,
+       (SELECT COUNT(*) FROM FAV_PLAYER WHERE player_id = $1)::int AS favorites`,
+    [id]
+  );
+  const { stats, contracts, favorites } = counts.rows[0];
+  if (stats + contracts + favorites > 0) {
+    return res.status(409).json({
+      error: `Cannot delete player: ${stats} stat row(s), ${contracts} contract(s), ${favorites} favorite(s) reference it. Delete those first.`,
+    });
+  }
+  const result = await db.query(
+    "DELETE FROM PLAYER WHERE player_id = $1",
+    [id]
+  );
+  if (result.rowCount === 0) {
+    return res.status(404).json({ error: "Player not found" });
+  }
+  res.status(204).end();
+});
+
+// Composite key on PLAYS_FOR is (player_id, team_id, since). The `since` query
+// param targets a specific contract; without it, all contracts for the pair
+// are removed.
+router.delete(
+  "/:player_id/plays-for/:team_id",
+  requireAuth,
+  requireAdmin,
+  async (req, res) => {
+    const player_id = Number(req.params.player_id);
+    const team_id = Number(req.params.team_id);
+    const { since } = req.query;
+    const result = since
+      ? await db.query(
+          "DELETE FROM PLAYS_FOR WHERE player_id = $1 AND team_id = $2 AND since = $3::date",
+          [player_id, team_id, since]
+        )
+      : await db.query(
+          "DELETE FROM PLAYS_FOR WHERE player_id = $1 AND team_id = $2",
+          [player_id, team_id]
+        );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Contract not found" });
+    }
+    res.status(204).end();
+  }
+);
+
 module.exports = router;

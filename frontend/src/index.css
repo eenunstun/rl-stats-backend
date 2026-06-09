@@ -1,0 +1,100 @@
+/* Reset bits Tailwind's preflight doesn't cover for our specific look. */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* Slim purple scrollbar — only colors in on hover. */
+::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 20px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: background 0.3s;
+}
+body:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(157, 78, 237, 0.2);
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(157, 78, 237, 0.5) !important;
+}
+
+/* Kill the yellow autofill blob that browsers add. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #16171a inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #ffffff !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+
+/* Reusable utility classes for things Tailwind makes verbose. */
+.glass {
+  background-color: rgba(26, 27, 30, 0.85);
+  backdrop-filter: blur(12px);
+}
+
+.rl-input {
+  background: #16171a;
+  border: 1px solid #2e303a;
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: white;
+  outline: none;
+  transition: all 0.3s;
+  width: 100%;
+  font-size: 14px;
+}
+.rl-input::placeholder {
+  color: #4b5563;
+}
+.rl-input:focus {
+  border-color: #9d4edd;
+  box-shadow: 0 0 0 3px rgba(157, 78, 237, 0.12);
+}
+
+.purple-glow {
+  box-shadow: 0 0 25px rgba(157, 78, 237, 0.4);
+  transition: all 0.3s ease;
+}
+.purple-glow:hover {
+  box-shadow: 0 0 40px rgba(157, 78, 237, 0.6);
+  transform: translateY(-1px);
+}
+
+/* Background panel with image and dark wash, used by leaderboards / admin. */
+.bg-leaderboard {
+  background-image: linear-gradient(
+      rgba(18, 18, 20, 0.92),
+      rgba(18, 18, 20, 0.96)
+    ),
+    url("/Rlstats-image.png");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.bg-admin {
+  background-image: linear-gradient(
+      rgba(13, 13, 15, 0.92),
+      rgba(13, 13, 15, 0.96)
+    ),
+    url("/rocket-league-admin-dashboard-image.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}

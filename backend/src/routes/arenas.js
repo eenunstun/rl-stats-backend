@@ -25,4 +25,25 @@ router.post("/", requireAuth, requireAdmin, async (req, res) => {
   res.status(201).json(result.rows[0]);
 });
 
+router.delete("/:id", requireAuth, requireAdmin, async (req, res) => {
+  const id = Number(req.params.id);
+  const matchCount = await db.query(
+    "SELECT COUNT(*)::int AS count FROM MATCH_DATA WHERE arena_id = $1",
+    [id]
+  );
+  if (matchCount.rows[0].count > 0) {
+    return res.status(409).json({
+      error: `Cannot delete arena: ${matchCount.rows[0].count} match(es) reference it. Delete those matches first.`,
+    });
+  }
+  const result = await db.query(
+    "DELETE FROM ARENA WHERE arena_id = $1",
+    [id]
+  );
+  if (result.rowCount === 0) {
+    return res.status(404).json({ error: "Arena not found" });
+  }
+  res.status(204).end();
+});
+
 module.exports = router;
