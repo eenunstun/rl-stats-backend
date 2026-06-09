@@ -12,7 +12,7 @@ HAVING  AVG(S.shot_accuracy) >= 60
 ORDER BY goal_total DESC 
 LIMIT 5;
 
---Top 5 Teams wth Most Matches Played
+--Top 5 Teams with Most Matches Played
 
 SELECT  T.team_name, 
         COUNT(*) AS played_total
