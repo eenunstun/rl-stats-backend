@@ -4,7 +4,7 @@ const queries = require("../queries");
 
 const router = express.Router();
 
-// All four endpoints below read their SQL from database/advancedqueries.sql
+// The four endpoints below read their SQL from database/advancedqueries.sql
 // (single source of truth). Add a new endpoint by adding `-- name: <slug>`
 // to that file and wiring a route here.
 
