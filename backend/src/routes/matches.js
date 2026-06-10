@@ -183,6 +183,28 @@ router.post("/tournament", requireAuth, requireAdmin, async (req, res) => {
     const orangeTeamId = Number(team2_id);
     const playerIds = players.map((p) => Number(p.player_id));
 
+    const duplicateMatchup = await db.query(
+      `
+      SELECT M.match_id
+      FROM MATCH_DATA M
+      JOIN PLAYS_AS PA1
+        ON PA1.match_id = M.match_id
+      JOIN PLAYS_AS PA2
+        ON PA2.match_id = M.match_id
+      WHERE M.tournament_id = $1
+        AND PA1.team_id = $2
+        AND PA2.team_id = $3
+      LIMIT 1
+      `,
+      [Number(tournament_id), blueTeamId, orangeTeamId]
+    );
+
+    if (duplicateMatchup.rowCount > 0) {
+      return res.status(409).json({
+        error: "These two teams already have a recorded match in this tournament",
+      });
+    }
+
     if (playerIds.some((id) => !Number.isInteger(id))) {
       return res.status(400).json({
         error: "Each player must have a valid player_id",

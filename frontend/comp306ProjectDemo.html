@@ -741,11 +741,11 @@ body:has(#page-loader:not(.loader-hidden)) main {
         </div>
     </div>
 
-    <!-- SaÄŸ: Auth BÃ¶lÃ¼mÃ¼  -->
+    <!-- Authentication section -->
     <div class="flex items-center gap-4">
         <!-- USER LOGGED IN SECTION - GLASS TASARIM -->
     <div id="user-logged-badge" class="hidden">
-    <!-- bg-white/[0.03] ve backdrop-blur-md ile ÅŸeffaf cam efekti var -->
+    <!-- Transparent glass effect styling -->
     <div class="flex items-center gap-3 bg-white/[0.03] border border-white/10 rounded-2xl px-3 py-1.5 shadow-2xl backdrop-blur-md transition-all duration-500 hover:border-purple-500">
         
         <!-- Avatar & Username -->
@@ -856,7 +856,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
                 </div>
                 
                 <div class="flex items-center gap-4 w-full xl:w-auto relative z-10 justify-end mt-4 xl:mt-0">
-                    <select id="user-fav-player-sel" onchange="saveDropdownState('user-fav-player-sel', 'myFavPlayerId'); renderFavoriteDashboardHighlights()" class="admin-input text-sm text-gray-300 cursor-pointer min-w-[250px] bg-[#1a1b1e]/80 backdrop-blur-md border-gray-700 hover:border-purple-500 transition-colors">
+                    <select id="user-fav-player-sel" onchange="handleFavoritePlayerChange(this.value)" class="admin-input text-sm text-gray-300 cursor-pointer min-w-[250px] bg-[#1a1b1e]/80 backdrop-blur-md border-gray-700 hover:border-purple-500 transition-colors">
                         <option value="">- Select Player -</option>
                     </select>
                     <button onclick="openFavPlayerPage()" class="bg-purple-600 hover:bg-purple-500 px-6 py-4 rounded-xl font-black uppercase tracking-widest transition-all text-white shadow-[0_0_15px_rgba(157,78,237,0.4)] active:scale-95 flex items-center gap-2 text-xs shrink-0">
@@ -877,7 +877,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
             </div>
             
             <div class="group relative rounded-2xl overflow-hidden cursor-default bg-gray-900 border border-gray-800 hover:border-sky-500/50 transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(14,165,233,0.15)] transform-gpu p-8 flex flex-col xl:flex-row items-center gap-6 justify-between w-full">
-                <!-- Takim temali espor arka plan gÃ¶rseli -->
+                <!-- Team-themed esports background image -->
                 <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200" 
                      class="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-40 transition-opacity duration-500 will-change-transform pointer-events-none" alt="Team Background">
 
@@ -895,7 +895,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
                 </div>
                 
                 <div class="flex items-center gap-4 w-full xl:w-auto relative z-10 justify-end mt-4 xl:mt-0">
-                    <select id="user-fav-team-sel" onchange="saveDropdownState('user-fav-team-sel', 'myFavTeamId'); renderFavoriteDashboardHighlights()" class="admin-input text-sm text-gray-300 cursor-pointer min-w-[250px] bg-[#1a1b1e]/80 backdrop-blur-md border-gray-700 hover:border-sky-500 transition-colors">
+                    <select id="user-fav-team-sel" onchange="handleFavoriteTeamChange(this.value)" class="admin-input text-sm text-gray-300 cursor-pointer min-w-[250px] bg-[#1a1b1e]/80 backdrop-blur-md border-gray-700 hover:border-sky-500 transition-colors">
                         <option value="">- Select Team -</option>
                     </select>
                     <button onclick="openFavTeamPage()" class="bg-sky-600 hover:bg-sky-500 px-6 py-4 rounded-xl font-black uppercase tracking-widest transition-all text-white shadow-[0_0_15px_rgba(14,165,233,0.4)] active:scale-95 flex items-center gap-2 text-xs shrink-0">
@@ -1181,7 +1181,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
             <!-- Logo & Header -->
             <div class="text-center mb-8">
                 <img src="rocket-league-logo.png" class="h-16 w-auto mx-auto mb-6 drop-shadow-lg" alt="RLstats Logo">
-                <!-- RLstats yazisi yerine profesyonel dinamik baÅŸlik geldi -->
+                <!-- Dynamic professional page title -->
                  <h2 id="auth-dynamic-title" class="text-2xl font-black uppercase tracking-tight text-white">
                     USER SIGN IN
                 </h2>
@@ -1271,12 +1271,12 @@ body:has(#page-loader:not(.loader-hidden)) main {
             </button>
         </div>
 
-        <!-- Åifre gÃ¼Ã§ bari yapisi -->
+        <!-- Password validation UI -->
         <div class="h-1 bg-gray-800 rounded-full overflow-hidden mt-1">
             <div id="strength-bar-fill" class="h-full rounded-full w-0 bg-red-500 transition-all duration-300"></div>
         </div>
 
-        <!-- Åifre Gereksinimleri -->
+        <!-- Password validation UI -->
 <div id="password-checklist" class="flex flex-col gap-1 mt-1">
     <!-- 1. Password Strength (Genel Durum) -->
     <div id="req-strength" class="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-red-500 transition-all">
@@ -1290,7 +1290,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
         <span>8 to 30 characters</span>
     </div>
 
-    <!-- 3. BÃ¼yÃ¼k ve KÃ¼Ã§Ã¼k Harf -->
+    <!-- UI structure note -->
     <div id="req-case" class="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-red-500 transition-all">
         <span class="status-icon"><i data-lucide="x" class="w-3.5 h-3.5"></i></span>
         <span>Lower and uppercase letters</span>
@@ -1302,13 +1302,13 @@ body:has(#page-loader:not(.loader-hidden)) main {
         <span>Contain 1 number</span>
     </div>
 
-    <!-- 5. Ã–zel Karakter -->
+    <!-- UI structure note -->
     <div id="req-special" class="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-red-500 transition-all">
         <span class="status-icon"><i data-lucide="x" class="w-3.5 h-3.5"></i></span>
         <span>Contain 1 special character</span>
     </div>
 
-    <!-- 6. Kullanici Adi KontrolÃ¼ -->
+    <!-- UI structure note -->
     <div id="req-username-check" class="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-red-500 transition-all">
         <span class="status-icon"><i data-lucide="x" class="w-3.5 h-3.5"></i></span>
         <span>Does not contain username</span>
@@ -1328,14 +1328,14 @@ body:has(#page-loader:not(.loader-hidden)) main {
                oninput="checkPasswordMatch()" 
                onkeydown="if(event.key==='Enter') handleUserSignup()">
         
-        <!-- Åifreyi GÃ¶ster Butonu -->
+        <!-- Password validation UI -->
         <button type="button" onclick="togglePassVis('signup-password2', 'eye-signup-2')"
             class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-300 transition-colors">
             <i id="eye-signup-2" data-lucide="eye" class="w-4 h-4"></i>
         </button>
     </div>
 
-    <!-- Dinamik EÅŸleÅŸme Durumu -->
+    <!-- UI structure note -->
     <div id="match-status" class="hidden text-[9px] font-black uppercase tracking-widest mt-1 flex items-center gap-1.5 transition-all">
         <span id="match-icon" class="status-icon"></span>
         <span id="match-text"></span>
@@ -1454,7 +1454,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
 
 <div class="px-8 py-8 max-w-[1400px] mx-auto">
 
-    <!-- â•â• 1. BÃ–LÃœM: OVERVIEW (Istatistik Kartlari ve Son Oyuncular) â•â• -->
+    <!-- Admin dashboard section -->
     <div id="dash-overview" class="space-y-6">
         <div class="grid grid-cols-2 lg:grid-cols-6 gap-4">
             
@@ -1614,14 +1614,14 @@ body:has(#page-loader:not(.loader-hidden)) main {
 </div>
 </div>
 
-<!-- â•â• 2. BÃ–LÃœM: PLAYERS (Oyuncu Ekleme Formu ve Oyuncu Listesi) â•â• -->
+<!-- Admin dashboard section -->
 <div id="dash-players" class="hidden space-y-6">
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
         <div class="lg:col-span-2 space-y-6">
             
 <!-- ADD NEW PLAYER KARTI -->
 <div class="bg-[#1a1b1e] border border-gray-800 rounded-2xl overflow-hidden p-6 space-y-4 shadow-xl">
-    <!-- BaÅŸlik Alani -->
+    <!-- Dynamic professional page title -->
     <div class="flex items-center gap-3 pb-2 border-b border-gray-800">
         <div class="w-7 h-7 rounded-lg bg-purple-500/10 flex items-center justify-center">
             <i data-lucide="user-plus" class="w-3.5 h-3.5 text-purple-400"></i>
@@ -1684,7 +1684,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
     </div>
 </div>
 
-    <!-- â•â• 3. BÃ–LÃœM: TEAMS (Takim OluÅŸturma ve Oyuncu Atama) â•â• -->
+    <!-- Team-themed esports background image -->
     <div id="dash-teams" class="hidden space-y-6">
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
         
@@ -1811,7 +1811,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
     </div>
 </div>
 
-<!-- â•â• 4. BÃ–LÃœM: LEADERBOARD (Oyuncu Bazli Istatistik GÃ¼ncelleme) â•â• -->
+<!-- Admin dashboard section -->
 <div id="dash-leaderboard" class="hidden space-y-6">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
@@ -2352,6 +2352,26 @@ body:has(#page-loader:not(.loader-hidden)) main {
                     <div id="m-msg" class="hidden text-xs font-black rounded-xl px-4 py-3"></div>
                 </div>
             </div>
+
+            <div class="bg-[#1a1b1e] border border-gray-800 rounded-2xl overflow-hidden p-6 shadow-xl">
+                <div class="flex items-center gap-3 pb-2 border-b border-gray-800 mb-4">
+                    <div class="w-7 h-7 rounded-lg bg-red-500/10 flex items-center justify-center">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5 text-red-400"></i>
+                    </div>
+                    <h3 class="text-xs font-black uppercase tracking-widest text-white">Delete Match By ID</h3>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Match ID *</label>
+                        <input type="number" id="delete-match-id-input" class="admin-input text-sm w-full" placeholder="Enter match_id">
+                    </div>
+                    <button onclick="previewMatchDeletionById()" class="w-full bg-red-600/80 hover:bg-red-500 py-3 rounded-xl font-black uppercase tracking-widest text-white text-xs active:scale-95 flex items-center justify-center gap-2 transition-all">
+                        <i data-lucide="search" class="w-4 h-4"></i> Preview Match
+                    </button>
+                    <div id="delete-match-preview" class="hidden rounded-xl border border-red-500/20 bg-red-500/5 p-4 text-xs text-gray-300"></div>
+                    <div id="delete-match-msg" class="hidden text-xs font-black rounded-xl px-4 py-3"></div>
+                </div>
+            </div>
         </div>
 
         <div class="lg:col-span-3 bg-[#1a1b1e] border border-gray-800 rounded-2xl flex flex-col shadow-xl h-full overflow-hidden">
@@ -2397,13 +2417,13 @@ body:has(#page-loader:not(.loader-hidden)) main {
     </div>
 
 
-<!-- Stat TÃ¼rleri Navigasyonu (Sol BaÅŸlik - SaÄŸ Butonlar) -->
+<!-- Dynamic professional page title -->
 <div class="px-12 py-6 sticky top-[168px] z-40">
     <div class="stats-header-bar">
-        <!-- SOL: KÃ¼Ã§Ã¼k BaÅŸlik -->
+        <!-- Dynamic professional page title -->
         <div class="stat-types-label">Stat Types</div>
 
-        <!-- SAÄ: Yatay ve KÃ¼Ã§Ã¼k Tablar -->
+        <!-- UI structure note -->
         <div class="stats-tabs-group" id="leaderboard-tabs">
             <button onclick="switchStatTab('wins')" class="stat-tab-btn active" data-stat="wins">
                 <i data-lucide="trophy"></i> Wins
@@ -2526,7 +2546,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
 
 <!-- UNIFIED TOURNAMENT STATS LEADERBOARD PAGE -->
 <main id="page-tournament-stats" class="hidden min-h-screen stats-leaderboard-custom-bg admin-login-animate">
-    <!-- Header: Dropdown ve BaÅŸlik -->
+    <!-- Dynamic professional page title -->
     <div class="px-12 py-8 border-b border-gray-800/50 flex items-center justify-between stats-glass sticky top-20 z-40">
         <div class="flex items-center gap-6">
             <button onclick="showPage('user')" class="group flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-blue-500 transition-all active:scale-95">
@@ -2553,7 +2573,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
     </div>
 
         <div class="w-full overflow-hidden rounded-2xl stats-glass border border-white/5 shadow-2xl overflow-x-auto relative z-10">
-            <table class="w-full text-left border-collapse min-w-[2000px]"> <!-- GeniÅŸlik 2000px yapildi ki kolonlar sikiÅŸmasin -->
+            <table class="w-full text-left border-collapse min-w-[2000px]"> <!-- Wide table layout prevents columns from collapsing -->
 <!-- TOURNAMENT MATCHES STATS HEADER -->
 <thead class="bg-white/[0.02] border-b border-gray-800">
     <tr class="text-[10px] font-black uppercase tracking-widest whitespace-nowrap">
@@ -2776,13 +2796,13 @@ body:has(#page-loader:not(.loader-hidden)) main {
         <!-- Dynamic Favorite Player Selection Dropdown -->
         <div class="flex items-center gap-3">
             <span class="text-xs font-black text-gray-500 uppercase tracking-widest">Favorite Player</span>
-            <select id="fav-player-page-select" onchange="localStorage.setItem('myFavPlayerId', this.value); renderFavPlayerStats();" class="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-[11px] font-black text-white outline-none focus:border-purple-500 cursor-pointer transition-all hover:bg-white/10 min-w-[200px]">
+            <select id="fav-player-page-select" onchange="handleFavoritePlayerChange(this.value, { renderDetail: true });" class="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-[11px] font-black text-white outline-none focus:border-purple-500 cursor-pointer transition-all hover:bg-white/10 min-w-[200px]">
                 <!-- JS (refreshUserFavDropdown) Burayi Dinamik olarak dolduracak -->
             </select>
         </div>
     </div>
 
-    <!-- JS (renderFavPlayerStats) fonksiyonun hedef aldiÄŸi kritik dinamik iÃ§erik alani -->
+    <!-- Players management section -->
     <div class="px-12 py-10" id="fav-player-content-container">
     </div>
 </main>
@@ -2804,13 +2824,13 @@ body:has(#page-loader:not(.loader-hidden)) main {
         <!-- Dynamic Favorite Team Selection Navbar Dropdown -->
         <div class="flex items-center gap-3">
             <span class="text-xs font-black text-gray-500 uppercase tracking-widest">Favorite Team</span>
-            <select id="fav-team-page-select" onchange="localStorage.setItem('myFavTeamId', this.value); renderFavTeamStats();" class="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-[11px] font-black text-white outline-none focus:border-sky-500 cursor-pointer transition-all hover:bg-white/10 min-w-[200px]">
+            <select id="fav-team-page-select" onchange="handleFavoriteTeamChange(this.value, { renderDetail: true });" class="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-[11px] font-black text-white outline-none focus:border-sky-500 cursor-pointer transition-all hover:bg-white/10 min-w-[200px]">
                 <!-- JS (refreshUserFavDropdown) Burayi Dinamik olarak dolduracak -->
             </select>
         </div>
     </div>
 
-    <!-- JS (renderFavTeamStats) fonksiyonun hedef aldiÄŸi kritik dinamik iÃ§erik alani -->
+    <!-- Team-themed esports background image -->
     <div class="px-12 py-10" id="fav-team-content-container">
     </div>
 </main>
@@ -2935,12 +2955,111 @@ body:has(#page-loader:not(.loader-hidden)) main {
     return await res.json();
 }
 
+    async function fetchFavoritePlayerStats(playerId) {
+    const res = await fetch(`${API_BASE}/players/${playerId}/stats`);
+    if (!res.ok) {
+        throw new Error("Failed to fetch favorite player stats");
+    }
+    return await res.json();
+}
+
     async function fetchFavoriteTeamLastMatch(teamId) {
     const res = await fetch(`${API_BASE}/teams/${teamId}/last-match`);
     if (!res.ok) {
         throw new Error("Failed to fetch favorite team last match");
     }
     return await res.json();
+}
+
+    async function fetchFavoriteTeamStats(teamId) {
+    const res = await fetch(`${API_BASE}/teams/${teamId}/stats`);
+    if (!res.ok) {
+        throw new Error("Failed to fetch favorite team stats");
+    }
+    return await res.json();
+}
+
+    function getAuthHeaders() {
+    const token = localStorage.getItem("token");
+    return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+    async function fetchMyFavoritePlayers() {
+    const res = await fetch(`${API_BASE}/users/me/fav-players`, {
+        headers: getAuthHeaders()
+    });
+    if (!res.ok) {
+        throw new Error("Failed to fetch favorite players");
+    }
+    return await res.json();
+}
+
+    async function fetchMyFavoriteTeams() {
+    const res = await fetch(`${API_BASE}/users/me/fav-teams`, {
+        headers: getAuthHeaders()
+    });
+    if (!res.ok) {
+        throw new Error("Failed to fetch favorite teams");
+    }
+    return await res.json();
+}
+
+    async function replaceFavoritePlayer(playerId) {
+    const token = localStorage.getItem("token");
+    if (!token || !playerId) return;
+
+    const favorites = await fetchMyFavoritePlayers();
+    await Promise.all(favorites
+        .filter(player => Number(player.player_id) !== Number(playerId))
+        .map(player => fetch(`${API_BASE}/users/me/fav-players/${player.player_id}`, {
+            method: "DELETE",
+            headers: getAuthHeaders()
+        }))
+    );
+
+    if (!favorites.some(player => Number(player.player_id) === Number(playerId))) {
+        const res = await fetch(`${API_BASE}/users/me/fav-players`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                ...getAuthHeaders()
+            },
+            body: JSON.stringify({ player_id: Number(playerId) })
+        });
+        if (!res.ok && res.status !== 409) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.error || "Failed to update favorite player");
+        }
+    }
+}
+
+    async function replaceFavoriteTeam(teamId) {
+    const token = localStorage.getItem("token");
+    if (!token || !teamId) return;
+
+    const favorites = await fetchMyFavoriteTeams();
+    await Promise.all(favorites
+        .filter(team => Number(team.team_id) !== Number(teamId))
+        .map(team => fetch(`${API_BASE}/users/me/fav-teams/${team.team_id}`, {
+            method: "DELETE",
+            headers: getAuthHeaders()
+        }))
+    );
+
+    if (!favorites.some(team => Number(team.team_id) === Number(teamId))) {
+        const res = await fetch(`${API_BASE}/users/me/fav-teams`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                ...getAuthHeaders()
+            },
+            body: JSON.stringify({ team_id: Number(teamId) })
+        });
+        if (!res.ok && res.status !== 409) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.error || "Failed to update favorite team");
+        }
+    }
 }
 
     async function fetchTournaments() {
@@ -3008,10 +3127,10 @@ body:has(#page-loader:not(.loader-hidden)) main {
     return await res.json();
     }
 
-    //Backend API'dan en skorer oyunculari Ã§ekme fonksiyonu
+    // Fetches or sends data through the backend API.
     async function fetchTopScorers() {
     const res = await fetch(`${API_BASE}/stats/top-scorers`);
-    // JSON'dan JavaScript arrayine Ã§eviri 
+    // Converts the backend JSON response into JavaScript data.
     return await res.json(); 
     }
 
@@ -3110,16 +3229,16 @@ body:has(#page-loader:not(.loader-hidden)) main {
     }
     }
 
-    //Leaderboard tablosunda API verisini alip gÃ¶steren fonksiyon
+    // Renders leaderboard data in the UI.
     async function renderTopScorersFromAPI() {
         
-        //HTML'de table body bulunabilmesi iÃ§in gerekli
+        // Finds the table body before rendering rows.
         const tbody = document.getElementById("leaderboard-table-body");
 
-        //Backendden oyuncu verisi Ã§ek
+        // Fetches or sends data through the backend API.
         const players = await fetchTopScorers(); //
 
-           //Tabloyu yeni veriyle gÃ¼ncelle
+           // Updates the table with the latest data.
           tbody.innerHTML = players.map((p, index) => `
         <tr class="border-b border-white/5 hover:bg-white/[0.03] transition">
             <td class="px-8 py-4 font-black text-gray-500">#${index + 1}</td>
@@ -3129,10 +3248,10 @@ body:has(#page-loader:not(.loader-hidden)) main {
             <td class="px-8 py-4 text-yellow-400 font-black">${p.average_shot_accuracy}%</td>
             <td class="px-8 py-4 text-green-400 font-black">${p.saves_total}</td>
         </tr>
-    `).join(""); //TÃ¼m satirlari tek bir HTML stringinde birleÅŸtir
+    `).join(""); // Updates the table with the latest data.
     }
 
-    // ========== YUKARIYA Ã‡IK BUTONU ==========
+    // Scrolls the page back to the top.
     const backToTopBtn = document.getElementById('backToTopBtn');
     window.onscroll = function() {
         if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
@@ -3142,7 +3261,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
         }
 
         // ANLIK SCROLL HAFIZASI (Aktif sayfanin scroll pozisyonunu her an kaydet)
-        // Kullanici sayfada gezinirken o an aÃ§ik olan alt panelin konumunu localStorage'a kalici iÅŸler
+        // Stores or restores UI state from browser storage.
         const pages = ['page-user', 'page-admin-login', 'page-admin-dashboard', 
             'page-user-auth', 'page-stats-leaderboard', 'page-team-stats-leaderboard', 'page-tournament-stats', 'page-arenas-stats', 'page-fav-player', 'page-fav-team'];
 
@@ -3157,15 +3276,15 @@ body:has(#page-loader:not(.loader-hidden)) main {
     };
     function scrollToTop() { window.scrollTo({top: 0, behavior: 'smooth'}); }
 
-    // SAYFA YÃ–NETIMI
+    // Handles page navigation and page-level UI state.
     const ADMIN_USER = "admin";
     const ADMIN_PASS = "rl123";
-    // Verileri localStorage'dan Ã§ek, yoksa boÅŸ obje oluÅŸtur
+    // Stores or restores UI state from browser storage.
     let userDB = JSON.parse(localStorage.getItem('registeredUsers')) || {};
     let currentUser = null;
 
     // Temel Veritabani Yapisi
-    // Oyuncu ve Takim dizilerini kalici hafizaya baÄŸliyoruz ÅŸu anlik
+    // Stores or restores UI state from browser storage.
     let playerDB = JSON.parse(localStorage.getItem('playerDB')) || []; 
     let teamDB = JSON.parse(localStorage.getItem('teamDB')) || [];
     let nextPlayerId = parseInt(localStorage.getItem('nextPlayerId')) || 1;
@@ -3179,7 +3298,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
         localStorage.setItem('nextTeamId', nextTeamId);
     }
 
-// Global Turnuva Isimleri Veritabani Hatti
+// Global tournament names data store
 let tournamentNamesDB = JSON.parse(localStorage.getItem('tournamentNamesDB')) || [];
 
 let tournamentMatchDB = JSON.parse(localStorage.getItem('tournamentMatchDB')) || [];
@@ -3344,7 +3463,7 @@ async function addNewTournament() {
         showAdminMsg('new-t-msg', err.message, 'error');
     }
 }
-// 1. Ãœlke dropdown'ini sistemdeki tÃ¼m benzersiz Ã¼lkelerle dolduran temel fonksiyon
+// Keeps country and tournament dropdowns synchronized.
 function populateAllCountriesDropdown() {
     const countrySelect = document.getElementById('t-country');
     if (!countrySelect) return;
@@ -3360,7 +3479,7 @@ function populateAllCountriesDropdown() {
     }
 }
 
-// 2. [onchange] - Turnuva Ismi SeÃ§ildiÄŸinde Tarihleri ve Ãœlkeyi Otomatik Dolduran Fonksiyon
+// Tournament management workflow.
 function handleTournamentChange() {
     const tourneySelect = document.getElementById('t-type-sel');
     const countryInput = document.getElementById('t-country');
@@ -3400,7 +3519,7 @@ function handleTournamentChange() {
     }
 }
 
-// â•â• TARIH GIRILDIÄINDE BENZERSIZ TURNUVAYI VE ÃœLKEYI BULAN FONKSIYON â•â•
+// Tournament management workflow.
 function handleTournamentDateInputChange(type) {
     const startInput = document.getElementById('t-start-date');
     const endInput = document.getElementById('t-end-date');
@@ -3413,9 +3532,9 @@ function handleTournamentDateInputChange(type) {
         const startDateVal = startInput.value;
         if (!startDateVal) return;
         
-        // Bu baÅŸlangiÃ§ tarihine sahip turnuvalari filtrele
+        // Tournament management workflow.
         const matches = tournamentNamesDB.filter(t => t.startDate === startDateVal);
-        // EÄŸer benzersiz (unique) tek bir turnuva eÅŸleÅŸtiyse alanlari doldur
+        // Tournament management workflow.
         if (matches.length === 1) {
             const tourney = matches[0];
             tourneySelect.value = tourney.id;
@@ -3427,9 +3546,9 @@ function handleTournamentDateInputChange(type) {
         const endDateVal = endInput.value;
         if (!endDateVal) return;
         
-        // Bu bitiÅŸ tarihine sahip turnuvalari filtrele
+        // Tournament management workflow.
         const matches = tournamentNamesDB.filter(t => t.endDate === endDateVal);
-        // EÄŸer benzersiz (unique) tek bir turnuva eÅŸleÅŸtiyse alanlari doldur
+        // Tournament management workflow.
         if (matches.length === 1) {
             const tourney = matches[0];
             tourneySelect.value = tourney.id;
@@ -3440,7 +3559,7 @@ function handleTournamentDateInputChange(type) {
     }
 }
 
-// 3. [onchange] - Ãœlke SeÃ§ildiÄŸinde Turnuva Isimlerini Filtreleyen ve Otomatik Dolduran Fonksiyon
+// Tournament management workflow.
 function handleCountryChange() {
     const countrySelect = document.getElementById('t-country');
     const tourneySelect = document.getElementById('t-type-sel');
@@ -3450,7 +3569,7 @@ function handleCountryChange() {
     
     const selectedCountry = countrySelect.value;
     
-    // EÄŸer Ã¼lke seÃ§imi temizlendiyse tÃ¼m turnuvalari geri yÃ¼kle ve tarihleri sifirla
+    // Tournament management workflow.
     if (!selectedCountry) {
         const optionsHtml = tournamentNamesDB.map(t => `<option value="${t.id}" class="bg-[#1a1b1e]">${t.name}</option>`).join('');
         tourneySelect.innerHTML = '<option value="">- Select Tournament Name -</option>' + optionsHtml;
@@ -3459,29 +3578,29 @@ function handleCountryChange() {
         return;
     }
     
-    // Sadece seÃ§ilen Ã¼lkeye ait turnuvalari ayikla
+    // Tournament management workflow.
     const filteredTourneys = tournamentNamesDB.filter(t => (t.country || 'Global') === selectedCountry);
     const currentTourneyVal = tourneySelect.value;
     
     tourneySelect.innerHTML = '<option value="">- Select Tournament Name -</option>' + 
                               filteredTourneys.map(t => `<option value="${t.id}" class="bg-[#1a1b1e]">${t.name}</option>`).join('');
     
-    // â•â• UNIQUE TURNUVA OTOMASYON KONTROLÃœ â•â•
-    // EÄŸer seÃ§ilen Ã¼lkede sadece bir adet turnuva kayitliysa, tÃ¼m alanlari otomatik doldur
+    // Tournament management workflow.
+    // Tournament management workflow.
     if (filteredTourneys.length === 1) {
         const uniqueTourney = filteredTourneys[0];
         tourneySelect.value = uniqueTourney.id;
         if (startInput) startInput.value = uniqueTourney.startDate || "";
         if (endInput) endInput.value = uniqueTourney.endDate || "";
         
-        // SeÃ§im durumunu kalici hafizaya iÅŸle
+        // Stores or restores UI state from browser storage.
         saveDropdownState('t-type-sel', 'lastAdminTourneyType');
     } else {
-        // EÄŸer o Ã¼lkede birden fazla turnuva varsa, eski seÃ§ili olan turnuva bu Ã¼lkeye aitse koru
+        // Tournament management workflow.
         if (filteredTourneys.some(t => t.id === currentTourneyVal)) {
             tourneySelect.value = currentTourneyVal;
         } else {
-            // Ait deÄŸilse veya henÃ¼z seÃ§im yapilmadiysa alanlari boÅŸa Ã§ikar ki eski veriler kalmasin
+            // Validates required input fields.
             tourneySelect.value = "";
             if (startInput) startInput.value = "";
             if (endInput) endInput.value = "";
@@ -3489,7 +3608,7 @@ function handleCountryChange() {
     }
 }
 
-// 4. Turnuva GiriÅŸlerini EÅŸzamanli Yenileyen Ana YÃ¶netici Fonksiyon
+// Tournament management workflow.
 async function refreshTournamentDropdowns() {
     const tournamentSelect = document.getElementById("t-type-sel");
     const arenaSelect = document.getElementById("t-arena");
@@ -3699,7 +3818,7 @@ function refreshTournamentWinnerDropdown() {
         winnerSelect.innerHTML += `<option value="${team2Id}">${team2Name}</option>`;
     }
 }
-// TOURNAMENT MAÃ‡ VERISI EKLEME MOTORU
+// Tournament management workflow.
 const tournamentPlayerSelectIds = [
     "t-team1-player1",
     "t-team1-player2",
@@ -4245,7 +4364,7 @@ function preventDuplicateMatchPlayers() {
     refreshMatchMvpDropdown();
 }
 
-// ARENA MATCH MAÃ‡ VERISI EKLEME MOTORU
+// Match management workflow.
 async function addArenaMatch() {
     ensureMatchPlayerStatInputs();
 
@@ -4494,7 +4613,7 @@ async function renderAdminArenaMatches() {
     }
 }
 
-// MERKEZI LIDER HESAPLAMA VE KART GÃœNCELLEME MOTOR FONKSIYONU
+// Central synchronization workflow for dashboard data.
 function formatTop3(data, field, isPercentage = false, emptyHtml = `<div class="text-gray-500 font-mono text-xs mt-1.5 select-none">-</div>`) {
     const validData = data ? data.filter(item => (item[field] || 0) > 0) : [];
     
@@ -4536,9 +4655,9 @@ function formatTop3(data, field, isPercentage = false, emptyHtml = `<div class="
 }
 
 async function updateGlobalTopCards() {
-    // TAKIM ISTATISTIKLERINI TÃœM KAYDEDILEN MAÃ‡LARA GÃ–RE DINAMIK HESAPLAYAN MANTIK
+    // Team management workflow.
     if (typeof teamDB !== 'undefined') {
-        // Sistemdeki genel arena ve turnuva maÃ§ havuzunu gÃ¼venli bir ÅŸekilde birleÅŸtiriyoruz ilk olarak
+        // Tournament management workflow.
         const allMatches = [
             ...(typeof arenaMatchDB !== 'undefined' ? arenaMatchDB : []),
             ...(typeof tournamentMatchDB !== 'undefined' ? tournamentMatchDB : [])
@@ -4554,14 +4673,14 @@ async function updateGlobalTopCards() {
             let accuracyCount = 0;
 
             allMatches.forEach(m => {
-                // MaÃ§taki takimlardan biri aradiÄŸimiz takim mi? kontrolÃ¼
+                // Team management workflow.
                 const isTeam1 = m.team1Tag === team.name;
                 const isTeam2 = m.team2Tag === team.name;
 
                 if (isTeam1 || isTeam2) {
                     matchesPlayed++;
                     
-                    // Takim bu maÃ§i kazandi mi? kontrolÃ¼
+                    // Team management workflow.
                     const isWinner = m.winnerName === team.name;
                     
                     if (isWinner) {
@@ -4587,7 +4706,7 @@ async function updateGlobalTopCards() {
                 }
             });
 
-            // Hesaplanan dinamik maÃ§ verilerini takim objesine kaydet
+            // Team management workflow.
             team.wins = wins;
             team.goals = goals;
             team.assists = assists;
@@ -4597,7 +4716,7 @@ async function updateGlobalTopCards() {
         });
     }
 
-    // â•â• TAKIM STATS KARTLARINA TOP 3 SIRALAMASINI YAZDIR â•â•
+    // Team management workflow.
     if (document.getElementById('team-display-wins')) document.getElementById('team-display-wins').innerHTML = formatTop3(teamDB, 'wins', false, '');
     if (document.getElementById('team-display-goals')) document.getElementById('team-display-goals').innerHTML = formatTop3(teamDB, 'goals', false, '');
     if (document.getElementById('team-display-accuracy')) document.getElementById('team-display-accuracy').innerHTML = formatTop3(teamDB, 'accuracy', true, '');
@@ -4617,7 +4736,7 @@ async function updateGlobalTopCards() {
         console.error("Failed to load player stat cards:", err);
     }
 
-    // â•â• OYUNCU STATS KARTLARINA TOP 3 SIRALAMASINI YAZDIR â•â•
+    // Player management workflow.
     if (document.getElementById('display-wins')) document.getElementById('display-wins').innerHTML = formatTop3(playerStatsForCards, 'wins');
     if (document.getElementById('display-mvps')) document.getElementById('display-mvps').innerHTML = formatTop3(playerStatsForCards, 'mvps');
     if (document.getElementById('display-goals')) document.getElementById('display-goals').innerHTML = formatTop3(playerStatsForCards, 'goals');
@@ -4625,7 +4744,7 @@ async function updateGlobalTopCards() {
     if (document.getElementById('display-assists')) document.getElementById('display-assists').innerHTML = formatTop3(playerStatsForCards, 'assists');
     if (document.getElementById('display-saves')) document.getElementById('display-saves').innerHTML = formatTop3(playerStatsForCards, 'saves');
 
-    // â•â• SAVED GLOBAL RECORDS BÃ–LÃœMÃœ â•â•
+    // Persists the latest calculated data.
     const displayContainer = document.getElementById('global-records-display');
     const globalBadge = document.getElementById('global-records-count-badge');
     
@@ -4641,7 +4760,7 @@ async function updateGlobalTopCards() {
     ];
 
     displayContainer.innerHTML = metricsConfig.map(m => {
-        // Player nesnesinin kendisinin de varliÄŸi gÃ¼venli hale getirildi
+        // Player management workflow.
         const validPlayers = playerStatsForCards.filter(p => p && p[m.field] !== undefined);
         
         let playerInfoHtml = `<span class="text-xs font-mono font-black text-gray-600">-</span>`;
@@ -4649,12 +4768,12 @@ async function updateGlobalTopCards() {
         if (validPlayers.length > 0) {
             const leaderPlayer = [...validPlayers].sort((a, b) => (b[m.field] || 0) - (a[m.field] || 0))[0];
             
-            // LeaderPlayer nesnesi ve name alani iÃ§in tam koruma saÄŸlandi
+            // Player management workflow.
             if (leaderPlayer && leaderPlayer.name) {
                 const val = leaderPlayer[m.field] || 0;
                 const isPct = m.field === 'shots';
                 
-                // toLocaleString() eklenerek yÃ¼ksek sayilar espor formatina uygun olarak ayrildi (Ã–rn: 1.250 ÅŸeklinde)
+                // Internal UI workflow note.
                 const formattedVal = isPct ? val + '%' : val.toLocaleString();
                 const avatarLetter = leaderPlayer.name.charAt(0).toUpperCase();
                 
@@ -4693,11 +4812,11 @@ async function updateGlobalTopCards() {
 }
 
 function showPage(page, isPopState = false) {
-    // Admin Dashboard alt sekmelerini (sub-routing) yakalama ve ayriÅŸtirma
+    // Admin dashboard navigation and refresh workflow.
     let targetAdminTab = localStorage.getItem('activeAdminTab') || 'overview';
     if (page.startsWith('admin-')) {
         targetAdminTab = page.replace('admin-', '');
-        page = 'admin'; // Ana panel katman yapisinin bozulmamasi iÃ§in eÅŸitliyoruz
+        page = 'admin'; // Internal UI workflow note.
     }
 
     const pages = ['page-user', 'page-admin-login', 'page-admin-dashboard', 
@@ -4710,14 +4829,14 @@ function showPage(page, isPopState = false) {
     const userBadge = document.getElementById('user-logged-badge'); 
     const adminBadge = document.getElementById('admin-logged-badge'); 
 
-    // Tab kapandiÄŸinda hangi panelde kalindiÄŸini hatirlayan mekanizma
+    // Stores or restores UI state from browser storage.
     if (page === 'admin' || page === 'page-admin-login' || page === 'page-admin-dashboard') {
         localStorage.setItem('lastActivePanel', 'admin');
     } else if (page === 'user' || page === 'login' || page === 'signup' || page.startsWith('page-')) {
         localStorage.setItem('lastActivePanel', 'user');
     }
 
-    // ADMIN PANELINDEN USER PANELE GEÃ‡ERKEN SON AKTIF USER SAYFASINI GERI YÃœKLE
+    // Handles page navigation and page-level UI state.
     if (page === 'user') {
         const adminDash = document.getElementById('page-admin-dashboard');
         const adminLogin = document.getElementById('page-admin-login');
@@ -4732,7 +4851,7 @@ function showPage(page, isPopState = false) {
         }
     }
 
-    // 1. MEVCUT AÃ‡IK OLAN SAYFANIN SCROLL SEVIYESINI KAYDET (KAYIT ALANI)
+    // Scrolls the page back to the top.
     pages.forEach(id => {
         const el = document.getElementById(id);
         if (el && !el.classList.contains('hidden')) {
@@ -4742,14 +4861,14 @@ function showPage(page, isPopState = false) {
         }
     });
 
-    // 2. GEÃ‡MIÅ YÃ–NETIMI
+    // Internal UI workflow note.
     if (!isPopState) {
-        // EÄŸer admin panelindeysek tarayici geÃ§miÅŸine hash kaydini alt sekmeyle kaydeder
+        // Admin dashboard navigation and refresh workflow.
         const finalHash = (page === 'admin') ? 'admin-' + targetAdminTab : page;
         history.pushState({ page: finalHash }, "", "#" + finalHash);
     }
 
-    // 3. SAYFALARI GIZLE VE ESKI TÃœM ANIMASYONLARI KAZI
+    // Handles page navigation and page-level UI state.
     pages.forEach(id => {
         const el = document.getElementById(id);
         if (el) {
@@ -4766,7 +4885,7 @@ function showPage(page, isPopState = false) {
         });
     }
 
-    // 5. MOR PARLAMA VE SAYFA GÃ–STERME MANTIÄI
+    // Handles page navigation and page-level UI state.
     if (page === 'user' || page === 'user-auth' || page === 'login' || page === 'signup' || page.includes('stats') || page.includes('leaderboard') || page.includes('fav-player') || page.includes('fav-team')) {
         document.body.classList.remove('admin-bg-active');
 
@@ -4837,7 +4956,7 @@ function showPage(page, isPopState = false) {
             if (typeof flashAdminTabs === "function") flashAdminTabs();
             if (typeof refreshOverview === "function") refreshOverview(); 
             
-            // Artik sabit son sekmeyi Ã§aÄŸirmak yerine geÃ§miÅŸten ayriÅŸtirilan hedef sekmeyi Ã§aÄŸirir
+            // Coordinates browser history state for navigation.
             if (typeof switchDashTab === "function") switchDashTab(targetAdminTab, true);
         } else {
             document.body.classList.remove('admin-bg-active');
@@ -4855,7 +4974,7 @@ function showPage(page, isPopState = false) {
         }
     }
 
-    // 6. HABER ÅERIDI KONTROLÃœ
+    // Updates the dashboard news strip.
     if (ticker && adminTicker) {
         const isUserZone = page === 'user';
         
@@ -4865,7 +4984,7 @@ function showPage(page, isPopState = false) {
         } else if (page === 'admin' && isLoggedIn) {
             ticker.classList.add('hidden');
             
-            // [GÃœNCELLEME] Alt sekme durumuna gÃ¶re admin haber ÅŸeridini dinamik kontrol eder
+            // Admin dashboard navigation and refresh workflow.
             if (targetAdminTab === 'overview') {
                 adminTicker.classList.remove('hidden');
             } else {
@@ -4877,7 +4996,7 @@ function showPage(page, isPopState = false) {
         }
     }
 
-    // 7. YENI AÃ‡ILAN SAYFANIN ESKI SCROLL KONUMUNU GERI YÃœKLE
+    // Scrolls the page back to the top.
     pages.forEach(id => {
         const el = document.getElementById(id);
         if (el && !el.classList.contains('hidden')) {
@@ -4893,7 +5012,7 @@ function showPage(page, isPopState = false) {
         }
     });
     
-    // 8. NAVI / PANEL GEÃ‡IÅLERI IÃ‡IN MERKEZI SMOOTH REVEAL TETIKLEYICI
+    // Central synchronization workflow for dashboard data.
     const loader = document.getElementById('page-loader');
     const isLoaderActive = loader && !loader.classList.contains('loader-hidden');
     if (!isLoaderActive) {
@@ -4915,13 +5034,13 @@ function showPage(page, isPopState = false) {
     }, 500);
 }
 
-// SAYFA YÃœKLENDIÄINDE VE YENILEMEDE MERKEZI YÃ–NETIM
+// Handles page navigation and page-level UI state.
 window.onload = function() {
 
      const loader = document.getElementById('page-loader');
 
     try {
-    // Tarayici sekmesi kapatilip yeniden aÃ§ildiÄŸinda sadece Admin Dashboard dropdownlarini sifirlar (Ayrica, F5 yenilemesinde korur)
+    // Admin dashboard navigation and refresh workflow.
     if (!sessionStorage.getItem('adminTabSessionActive')) {
         const adminDropdownKeys = [
             'lastAdminPlayerPlatform', 'lastAdminDeletePlayer', 'lastAdminTeamRegion',
@@ -4935,18 +5054,18 @@ window.onload = function() {
             'lastAdminMatchMvp'
         ];
 
-        // TÃ¼m admin dropdown hafiza anahtarlarini temizle
+        // Stores or restores UI state from browser storage.
         adminDropdownKeys.forEach(key => localStorage.removeItem(key));
 
-        // Mevcut sekme iÃ§in oturum bayraÄŸini aktif et
+        // Authentication workflow.
         sessionStorage.setItem('adminTabSessionActive', 'true');
 
     }
 
-    // Sayfa AÃ§ildiÄŸinda TÃ¼m Takim Istatistiklerini Ã–ncelikli Olarak Hesapla
+    // Handles page navigation and page-level UI state.
     if (typeof updateGlobalTopCards === "function") updateGlobalTopCards();
 
-    // Oturum verileri sekme kapandiÄŸinda sifirlanan sessionStorage'dan okunuyor
+    // Authentication workflow.
     const savedUserRaw = localStorage.getItem('currentUser');
     let savedUser = null;
 
@@ -4963,7 +5082,7 @@ window.onload = function() {
     const hash = window.location.hash.replace('#', '');
     const adminCard = document.getElementById('admin-login-card'); 
     
-    // Admin Oturumu Ve Haber Åeridi Geri YÃ¼kleme
+    // Admin dashboard navigation and refresh workflow.
     if (savedIsAdmin && savedToken) {
 
         if (typeof setupAdminUI === "function") setupAdminUI(ADMIN_USER);
@@ -4973,7 +5092,7 @@ window.onload = function() {
         if (adminAvatar) adminAvatar.textContent = ADMIN_USER.charAt(0);
         if (adminName) adminName.textContent = ADMIN_USER;
 
-        // Admin Dashboard ile ilgili tÃ¼m kart listeleri anlik gÃ¼ncellemeleri refreshAdminDashboard merkezi fonksiyonundan Ã§aÄŸriliyor
+        // Central synchronization workflow for dashboard data.
         if (typeof refreshAdminDashboard === "function") refreshAdminDashboard();
     }
 
@@ -4986,7 +5105,7 @@ window.onload = function() {
     }
 
 
-    // Global Dropdown ve Tab Hafizasi Geri YÃ¼kleme
+    // Stores or restores UI state from browser storage.
     const platSel = document.getElementById('platform-select');
 if (platSel) {
     platSel.value = localStorage.getItem('lastPlatform') || 'All Platforms';
@@ -5028,7 +5147,7 @@ if (typeof renderArenaMatchStats === "function") {
 }
 
 
-    // FAVORI OYUNCU DROPDOWN LISTESINI SAYFA AÃ‡ILIÅINDA DINAMIK OLUÅTURULMASI
+    // Handles page navigation and page-level UI state.
     if (typeof refreshUserFavDropdown === "function") refreshUserFavDropdown();
 
     // FAVORI OYUNCU SAYFASI RENDER VE DROPDOWN HAFIZASI
@@ -5036,10 +5155,10 @@ if (typeof renderArenaMatchStats === "function") {
     if (favPlatSel) favPlatSel.value = localStorage.getItem('lastFavPlatform') || 'All Platforms';
     if (typeof renderFavPlayerStats === "function") renderFavPlayerStats();
 
-    // FAVORI TAKIM SAYFASI RENDER HAFIZASINI GERI YÃœKLEYEN FONKSIYON Ã‡AÄRISI
+    // Stores or restores UI state from browser storage.
     if (typeof renderFavTeamStats === "function") renderFavTeamStats();
 
-    // Sayfa yÃ¼klendiÄŸinde player dropdown deÄŸerlerini hafizadan geri yÃ¼kle
+    // Stores or restores UI state from browser storage.
     const lSel = document.getElementById('leaderboard-player-sel');
     if (lSel) {
         const savedPlayer = localStorage.getItem('lastSelectedPlayerStat');
@@ -5051,8 +5170,8 @@ if (typeof renderArenaMatchStats === "function") {
     const lastPanel = localStorage.getItem('lastActivePanel') || 'user';
     const isAdminSession = savedIsAdmin && !!savedToken;
 
-    // GÃœNCEL YÃ–NLENDIRME MANTIÄI YAPISI
-    // 1. EÄŸer admin oturumu aÃ§iksa ve son kalinan panel admin ise veya URL admin'i iÅŸaret ediyorsa, doÄŸrudan Admin Paneline yÃ¶nlendir
+    // Internal UI workflow note.
+    // Admin dashboard navigation and refresh workflow.
     if (isAdminSession && (hash.startsWith('admin-') || hash === 'admin' || lastPanel === 'admin')) {
         const activeAdminPage = (hash.startsWith('admin-') || hash === 'admin') ? hash : 'admin';
         if (typeof showPage === "function") {
@@ -5073,23 +5192,23 @@ if (typeof renderArenaMatchStats === "function") {
             }
         }
 
-    // 3. Admin oturumu var ama kullanici paneline dÃ¶nmek istenmiÅŸse veya giriÅŸ yapilmiÅŸsa durumu
+    // Admin dashboard navigation and refresh workflow.
     } else if (isLoggedIn()) {
-        // EÄŸer giriÅŸ yapilmiÅŸsa ve yenileme aninda URL bir admin alt sekmesi barindiriyorsa orayi koru
+        // Admin dashboard navigation and refresh workflow.
         const activeAdminPage = (hash.startsWith('admin-') || hash === 'admin') ? hash : 'admin';
         if (typeof showPage === "function") {
             showPage(activeAdminPage, true);
         }
 
-    // 4. Oturum yoksa, Auth (Login/Signup) ekranina gÃ¶nder
+    // Authentication workflow.
     } else {
-        // Tab kapatilip tekrar aÃ§ildiÄŸinda (Oturumlar kapaliysa) kalinan panelin giriÅŸ ekranini Ã§aÄŸirir
+        // Authentication workflow.
         if (hash === 'admin' || hash.startsWith('admin-') || (hash === '' && lastPanel === 'admin')) {
-            // URL geÃ§miÅŸini temiz bir ÅŸekilde ana giriÅŸ katmanina eÅŸitliyoruz
+            // Coordinates browser history state for navigation.
             history.replaceState({ page: 'admin' }, "", "#admin");
             if (typeof showPage === "function") {
                 showPage('admin', true);
-            } // Otomatik olarak Admin Login ekranina yÃ¶nlenir
+            } // Admin dashboard navigation and refresh workflow.
         } else if (['login', 'signup'].includes(hash)) {
             if (typeof showPage === "function") {
                 showPage(activeAdminPage, true);
@@ -5098,7 +5217,7 @@ if (typeof renderArenaMatchStats === "function") {
             const savedAuthTab = localStorage.getItem('activeAuthTab') || 'login';
            if (typeof showPage === "function") {
                 showPage(hash, true);
-            } // Otomatik olarak User Auth (Sign In/Sign Up) ekranina yÃ¶nlendir
+            } // Authentication workflow.
         }
     }
     
@@ -5106,19 +5225,19 @@ if (typeof renderArenaMatchStats === "function") {
         updateGlobalTopCards();
     }
     
-    // Sayfa her yÃ¼klendiÄŸinde Remove Player dropdown'ini gÃ¼ncelle
+    // Handles page navigation and page-level UI state.
     if (typeof refreshAssignDropdowns === "function") {
         refreshAssignDropdowns();
     }
 
-    // UI SONLANDIRMA VE LOADER TEMIZLIÄI
+    // Internal UI workflow note.
     setTimeout(() => { 
         if (loader) {
             loader.style.opacity = ""; 
             loader.style.visibility = "";
             loader.classList.add('loader-hidden');
 
-            // SAYFADA KALINAN YERI VE SCROLL'U GERI YÃœKLEME
+            // Scrolls the page back to the top.
             const savedScrolls = JSON.parse(localStorage.getItem('panelScrollPositions')) || {};
             const pages = ['page-user', 'page-admin-login', 'page-admin-dashboard', 
                 'page-user-auth', 'page-stats-leaderboard', 'page-team-stats-leaderboard', 'page-tournament-stats', 'page-arenas-stats', 'page-fav-player', 'page-fav-team'];
@@ -5128,7 +5247,7 @@ if (typeof renderArenaMatchStats === "function") {
                 if (el && !el.classList.contains('hidden')) {
                     el.classList.remove('premium-page-animate', 'admin-login-animate');
                     
-                    // Perde kapandiÄŸi an, aktif olan sayfanin eski scroll konumunu aninda aÃ§ilir
+                    // Scrolls the page back to the top.
                     const targetScroll = savedScrolls[id] || 0;
                     window.scrollTo({
                         top: targetScroll,
@@ -5200,31 +5319,31 @@ window.onpopstate = function(event) {
     // Mevcut sayfayi belirle (State'den veya Hash'ten)
     let page = (event.state && event.state.page) ? event.state.page : window.location.hash.replace('#', '');
     
-    // EÄŸer hash boÅŸsa varsayilan olarak 'user' sayfasini hedefle
+    // Handles page navigation and page-level UI state.
     if (!page) page = 'user';
 
-    // Geri/Ileri yapildiÄŸinda Admin alt sekmelerinin gÃ¼venlik kontrolÃ¼nden geÃ§ebilmesi iÃ§in temizleme yapisi
+    // Admin dashboard navigation and refresh workflow.
     let cleanPage = page;
     if (page.startsWith('admin-')) {
         cleanPage = 'admin';
     }
 
-    // GiriÅŸ yapilmamiÅŸsa durumu
+    // Authentication workflow.
     if (!currentUser) {
         // Izin verilen sayfalar: auth sekmeleri ve admin paneli
         const isAllowed = ['user-auth', 'login', 'signup', 'admin', 'page-user-auth', 'page-admin-login'].includes(cleanPage);
         
         if (!isAllowed) {
-            // Izin verilmeyen bir yerdeyse (Ã¶rn: dashboard veya stats) login'e zorla
+            // Authentication workflow.
             history.replaceState({ page: 'login' }, "", "#login");
             showPage('login', true);
             return;
         }
     }
 
-    // GiriÅŸ yapilmiÅŸsa durumu
+    // Authentication workflow.
     if (currentUser) {
-        // Kullanici giriÅŸliyse auth sayfalarina (login/signup) geri dÃ¶nmesini engelle
+        // Handles page navigation and page-level UI state.
         const isAuthPage = ['user-auth', 'login', 'signup', 'page-user-auth'].includes(cleanPage);
         
         if (isAuthPage) {
@@ -5234,8 +5353,8 @@ window.onpopstate = function(event) {
         }
     }
 
-    // Sayfayi gÃ¶sterme durumu
-    // isPopState: true gÃ¶ndererek showPage'in tekrar pushState yapmasini engelliyoruz (DÃ¶ngÃ¼yÃ¼ kiran kritik nokta)
+    // Handles page navigation and page-level UI state.
+    // Handles page navigation and page-level UI state.
     showPage(page, true);
 };
 
@@ -5282,7 +5401,7 @@ function preventDuplicateTournamentPlayers() {
         avatar.textContent = uname.charAt(0); 
     }
     
-    // Haber ÅŸeridi iÃ§eriÄŸini tekrar oluÅŸtur
+    // Updates the dashboard news strip.
     const content1 = document.getElementById('ticker-content-1');
     const content2 = document.getElementById('ticker-content-2');
     if (content1 && content2) {
@@ -5300,15 +5419,15 @@ function preventDuplicateTournamentPlayers() {
     }
 }
 
-    // ADMIN DASHBOARD SEKME GEÃ‡IÅI
+    // Admin dashboard navigation and refresh workflow.
     function switchDashTab(tab, isPopState = false) {
-    // Her sekme geÃ§iÅŸinde scroll'u en Ã¼ste sabitle
+    // Scrolls the page back to the top.
     window.scrollTo({
         top: 0,
         behavior: 'smooth'
     });
 
-    // EÄŸer Leaderboard sekmesine geÃ§iliyorsa, kayitli deÄŸerleri geri yÃ¼kle
+    // Renders leaderboard data in the UI.
     if (tab === 'leaderboard') {
         const savedPlayer = localStorage.getItem('lastSelectedPlayerStat');
         const selectEl = document.getElementById('leaderboard-player-sel');
@@ -5323,12 +5442,12 @@ function preventDuplicateTournamentPlayers() {
     // Mevcut sekmeyi hafizaya kaydet
     localStorage.setItem('activeAdminTab', tab);
     
-    // EÄŸer el ile tiklandiysa (tarayici butonundan gelinmediyse) geÃ§miÅŸ kaydi ekle
+    // Coordinates browser history state for navigation.
     if (!isPopState) {
         history.pushState({ page: 'admin-' + tab }, "", "#admin-" + tab);
     }
     
-    // Sekmelerin 3 saniye boyunca gÃ¶rÃ¼nÃ¼r kalmasini saÄŸlayan tetikleyici
+    // Internal UI workflow note.
     if (typeof flashAdminTabs === "function") flashAdminTabs();
 
     const tabs = ['overview', 'players', 'teams', 'leaderboard', 'tournaments', 'matches'];
@@ -5342,23 +5461,23 @@ function preventDuplicateTournamentPlayers() {
         'hover:shadow-[0_0_15px_rgba(255,255,255,0.05)]'
     ];
     
-    // Ã–nce tÃ¼m sekmeleri ve buton stillerini temizle
+    // Clears stale form and UI state.
     tabs.forEach(t => {
         const section = document.getElementById('dash-' + t);
         const btn = document.getElementById('dtab-' + t);
         
         if (section) {
-            // Sonra gÃ¶rÃ¼nÃ¼rlÃ¼ÄŸÃ¼ kapat ve eski animasyon sinifini sil
+            // Updates visibility and animation state.
             section.classList.add('hidden');
             section.classList.remove('dash-tab-animate'); 
         }
         
         if (btn) {
-            // Daha sonra aktif veya pasif siniflari ve manuel yazilmiÅŸ hoverlari temizle
+            // Clears stale form and UI state.
             btn.classList.remove(...activeClasses, ...inactiveClasses);
             btn.classList.remove('hover:bg-white/10', 'hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]');
             
-            // EÄŸer seÃ§ilen sekme deÄŸilse, pasif stilleri (gri parlama) ekle
+            // Internal UI workflow note.
             if (t !== tab) {
                 btn.classList.add(...inactiveClasses);
             }
@@ -5369,13 +5488,13 @@ function preventDuplicateTournamentPlayers() {
     const activeBtn = document.getElementById('dtab-' + tab);
     
     if (activeSection) {
-        // BÃ¶lÃ¼mÃ¼ gÃ¶rÃ¼nÃ¼r yap
+        // Internal UI workflow note.
         activeSection.classList.remove('hidden');
         
         // FORCE REFLOW DURUMU (Zamanlama Senkronizasyonu)
         void activeSection.offsetWidth; // Reflow: Animasyonu sifirlar
         
-        // Animasyonun donmadan baÅŸlamasi iÃ§in requestAnimationFrame kullaniyoruz
+        // Updates visibility and animation state.
         requestAnimationFrame(() => {
             activeSection.classList.add('dash-tab-animate');
         });
@@ -5386,10 +5505,10 @@ function preventDuplicateTournamentPlayers() {
         activeBtn.classList.add(...activeClasses);
     }
 
-    // Verileri tazeleme fonksiyonlarini Ã§aÄŸir
+    // Internal UI workflow note.
     if (tab === 'overview') refreshOverview();
 
-    // ADMIN HABER ÅERIDI YALNIZCA OVERVIEW TABINDE GÃ–ZÃœKSÃœN DURUMU
+    // Admin dashboard navigation and refresh workflow.
     const adminTicker = document.getElementById('admin-news-ticker');
     if (adminTicker) {
         if (tab === 'overview') {
@@ -5399,19 +5518,19 @@ function preventDuplicateTournamentPlayers() {
         }
     }
     
-    // Ilgili sekmelerden herhangi birine geÃ§ildiÄŸinde dropdown listelerini anlik tazele
+    // Refreshes dropdown options and restores saved selections.
     if (['teams', 'players', 'tournaments', 'matches'].includes(tab)) {
         refreshAssignDropdowns();
         if (typeof refreshTournamentDropdowns === "function") refreshTournamentDropdowns(); 
     }
 
-    // Ikonlari animasyon akiÅŸini bozmamak iÃ§in hafif gecikmeyle oluÅŸtur
+    // Updates visibility and animation state.
     setTimeout(() => {
         lucide.createIcons();
     }, 50);
 }
 
-// OYUNCU YÃ–NETIMI
+// Player management workflow.
 async function addPlayer() {
   const name = document.getElementById("player-name").value.trim();
   const platform = document.getElementById("player-platform").value;
@@ -5458,7 +5577,7 @@ async function renderPlayerList() {
     const badge = document.getElementById('player-count-badge');
 
     try {
-        //Express/PostgreSQL Ã¼zerinden oyunculari Ã§ek
+        // Player management workflow.
         const players = await fetchPlayers();
 
         if (badge) badge.textContent = players.length;
@@ -5543,7 +5662,7 @@ async function renderPlayerList() {
     }
 }
 
-// DELETE PLAYER (Oyuncu Silme Motoru)
+// Delete player workflow
 async function deletePlayer(id) {
   if (!confirm("Are you sure you want to delete this player?")) return;
 
@@ -5579,7 +5698,7 @@ async function deletePlayer(id) {
   }
 }
 
-// DELETE TEAM (Takim Silme, Oyuncu Serbest Birakma & TÃ¼m GeÃ§miÅŸ MaÃ§lari Silme Motoru)
+// Player management workflow.
 async function deleteTeam(id) {
     if (!confirm("WARNING: Are you sure you want to delete this team?")) return;
 
@@ -5616,7 +5735,7 @@ async function deleteTeam(id) {
     }
 }
 
-// DELETE TOURNAMENT MATCH (Turnuva MaÃ§i Silme Motoru)
+// Tournament management workflow.
 async function deleteTournamentMatch(matchId) {
     if (!confirm('Are you sure you want to delete this tournament match stats?')) return;
 
@@ -5645,7 +5764,7 @@ async function deleteTournamentMatch(matchId) {
     }
 }
 
-// DELETE ARENA MATCH (Arena MaÃ§i Silme Motoru)
+// Match management workflow.
 async function deleteArenaMatch(matchId) {
     if (!confirm('Are you sure you want to delete this match stats?')) return;
 
@@ -5674,7 +5793,104 @@ async function deleteArenaMatch(matchId) {
     }
 }
 
-// TAKIM YÃ–NETIMI
+async function deleteMatchByIdConfirmed(matchId) {
+    try {
+        const res = await fetch(`${API_BASE}/matches/${matchId}`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        });
+
+        if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            throw new Error(data.error || "Failed to delete match");
+        }
+
+        const preview = document.getElementById("delete-match-preview");
+        const input = document.getElementById("delete-match-id-input");
+        if (preview) preview.classList.add("hidden");
+        if (input) input.value = "";
+
+        if (typeof renderAdminTournamentMatches === "function") await renderAdminTournamentMatches();
+        if (typeof renderAdminArenaMatches === "function") await renderAdminArenaMatches();
+        if (typeof refreshOverview === "function") await refreshOverview();
+        if (typeof renderArenaMatchStats === "function") await renderArenaMatchStats();
+        if (typeof renderTournamentMatchStats === "function") await renderTournamentMatchStats();
+        if (typeof refreshAllUserLeaderboards === "function") await refreshAllUserLeaderboards();
+        if (typeof updateGlobalTopCards === "function") await updateGlobalTopCards();
+        showAdminMsg("delete-match-msg", "Match deleted successfully.", "success");
+    } catch (err) {
+        console.error("Delete match by ID error:", err);
+        showAdminMsg("delete-match-msg", err.message, "error");
+    }
+}
+
+async function previewMatchDeletionById() {
+    const input = document.getElementById("delete-match-id-input");
+    const preview = document.getElementById("delete-match-preview");
+    const matchId = Number(input?.value);
+
+    if (!Number.isInteger(matchId) || matchId <= 0) {
+        showAdminMsg("delete-match-msg", "Please enter a valid match_id.", "error");
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/matches/${matchId}`);
+        const match = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+            throw new Error(match.error || "Match not found");
+        }
+
+        const blueTeam = match.teams?.find(team => team.team_type === "BLUE");
+        const orangeTeam = match.teams?.find(team => team.team_type === "ORANGE");
+        const playerRows = (match.player_stats || []).map(stat => `
+            <div class="flex justify-between gap-3 border-t border-white/5 py-2">
+                <span class="text-white">${stat.player_name}${stat.mvp ? " (MVP)" : ""}</span>
+                <span class="font-mono text-gray-400">G:${stat.goals} A:${stat.assists} S:${stat.saves} Acc:${stat.shot_accuracy}%</span>
+            </div>
+        `).join("");
+
+        preview.innerHTML = `
+            <div class="space-y-3">
+                <div class="flex items-center justify-between gap-3">
+                    <span class="text-red-300 font-black uppercase tracking-widest">Match #${match.match_id}</span>
+                    <span class="text-gray-500 font-mono">${(match.match_date || "").split("T")[0] || match.match_date || "-"}</span>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="rounded-lg border border-blue-500/20 bg-blue-500/10 p-3">
+                        <p class="text-[10px] font-black uppercase text-blue-300">Blue Team</p>
+                        <p class="text-white font-black">${blueTeam?.team_name || "-"}</p>
+                    </div>
+                    <div class="rounded-lg border border-orange-500/20 bg-orange-500/10 p-3">
+                        <p class="text-[10px] font-black uppercase text-orange-300">Orange Team</p>
+                        <p class="text-white font-black">${orangeTeam?.team_name || "-"}</p>
+                    </div>
+                </div>
+                <div class="text-gray-400">
+                    <span>${match.tournament_name || "Non-Tournament Match"}</span> |
+                    <span>${match.tournament_stage || "Regular Match"}</span> |
+                    <span>${match.arena_name || "Arena"}</span> |
+                    <span>${match.weather || "Weather"}</span>
+                </div>
+                <div>${playerRows || '<p class="text-gray-500">No player stats recorded.</p>'}</div>
+                <button onclick="deleteMatchByIdConfirmed(${match.match_id})" class="w-full bg-red-600 hover:bg-red-500 py-3 rounded-xl font-black uppercase tracking-widest text-white text-xs active:scale-95 flex items-center justify-center gap-2 transition-all">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i> Confirm Delete Match
+                </button>
+            </div>
+        `;
+        preview.classList.remove("hidden");
+        lucide.createIcons();
+    } catch (err) {
+        console.error("Preview match deletion error:", err);
+        if (preview) preview.classList.add("hidden");
+        showAdminMsg("delete-match-msg", err.message, "error");
+    }
+}
+
+// Team management
 async function createTeam() {
     const nameInput = document.getElementById('team-name');
     const regionSelect = document.getElementById('team-region');
@@ -5979,7 +6195,7 @@ async function refreshAssignTeamDropdown() {
     }
 }
 
-// GÃœNCELLENMIÅ DROPDOWN DOLDURMA MOTORLARI
+// Refreshes dropdown options and restores saved selections.
 async function refreshAssignDropdowns() {
     try {
         if (typeof refreshAssignPlayerDropdown === "function") {
@@ -6048,7 +6264,7 @@ async function refreshOverview() {
         console.error("Overview matches fetch error:", err);
     }
 
-    // Toplam SayaÃ§larin hepsini GÃ¼ncelle
+    // Updates the counter badge.
     if (document.getElementById('ov-user-count')) {
         document.getElementById('ov-user-count').textContent = overviewUsers.length;
     }
@@ -6059,7 +6275,7 @@ async function refreshOverview() {
         document.getElementById('ov-tournament-count').textContent = overviewTournaments.length;
     }
     if (document.getElementById('ov-tourney-match-count')) {
-        document.getElementById('ov-tourney-match-count').textContent = overviewMatches.length;
+        document.getElementById('ov-tourney-match-count').textContent = overviewMatches.filter(match => match.tournament_id).length;
     }
     if (document.getElementById('ov-arena-match-count')) {
         document.getElementById('ov-arena-match-count').textContent = overviewMatches.length;
@@ -6081,7 +6297,7 @@ if (recP) {
             const firstLetter = (p.player_name || '?').charAt(0);
             const assignedTeamName = p.team_name || '';
             
-            // OluÅŸturulma tarihini al (yoksa bugÃ¼nÃ¼ baz al)
+            // Synchronizes tournament date fields from selected data.
             const createdAt = new Date(p.createdAt || Date.now());
             const isNew = (today.getTime() < (createdAt.getTime() + twoWeeksInMs));
 
@@ -6139,7 +6355,7 @@ if (recT) {
         recT.innerHTML = overviewTeams.slice(-5).reverse().map((t) => {
             const firstLetter = (t.team_name || '?').charAt(0);
             
-            // OluÅŸturulma tarihini al (yoksa bugÃ¼nÃ¼ baz al)
+            // Synchronizes tournament date fields from selected data.
             const createdAt = new Date(t.createdAt || Date.now());
             const isNew = (today.getTime() < (createdAt.getTime() + twoWeeksInMs));
             
@@ -6207,11 +6423,11 @@ if (recTour) {
             const startDate = new Date(startDateRaw || '2026-05-15');
             const endDate = new Date(endDateRaw || '2026-05-25');
             
-            // OluÅŸturulma tarihini al (yoksa baÅŸlangiÃ§ tarihini kullan)
+            // Synchronizes tournament date fields from selected data.
             const createdAt = new Date(t.createdAt || startDateRaw || Date.now());
             const isNew = (today.getTime() < (createdAt.getTime() + twoWeeksInMs));
             
-            // Durum Etiketi HazirliÄŸi
+            // Internal UI workflow note.
             let statusHtml = '';
             if (today > endDate) {
                 statusHtml = `<span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gray-500/10 border border-gray-500/20 text-[9px] font-black text-gray-400 uppercase tracking-widest shrink-0"><span class="relative flex h-2 w-2"><span class="relative inline-flex rounded-full h-2 w-2 bg-gray-500"></span></span>FINISHED</span>`;
@@ -6346,12 +6562,12 @@ if (recM) {
 const recTMatches = document.getElementById('ov-recent-tourney-matches');
 if (recTMatches) {
     if (overviewMatches.length > 0) {
-        // 14 GÃ¼nlÃ¼k dinamik sÃ¼re hesabi iÃ§in tarih hesaplamalari
+        // Synchronizes tournament date fields from selected data.
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const twoWeeksInMs = 14 * 24 * 60 * 60 * 1000;
 
-        // Kronolojik siralama yap (En eskiden en yeniye doÄŸru)
+        // Internal UI workflow note.
         const sortedTourneys = [...overviewMatches].sort((a, b) => new Date(a.match_date) - new Date(b.match_date));
         const recentTourneys = sortedTourneys.slice(-5);
 
@@ -6369,7 +6585,7 @@ if (recTMatches) {
                 ? `<span class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-gray-500/10 border border-gray-500/20 text-[9px] font-black text-gray-400 uppercase tracking-widest shrink-0"><span class="relative flex h-2 w-2"><span class="relative inline-flex rounded-full h-2 w-2 bg-gray-500"></span></span>FINISHED</span>`
                 : `<span class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-[9px] font-black text-amber-400 uppercase tracking-widest shrink-0"><span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span></span>UPCOMING</span>`;
 
-            // OluÅŸturulma tarihine gÃ¶re 2 hafta kontrolÃ¼ saÄŸlaniyor
+            // Synchronizes tournament date fields from selected data.
             const createdAt = new Date(m.createdAt || matchDate || Date.now());
             const isNew = (today.getTime() < (createdAt.getTime() + twoWeeksInMs));
 
@@ -6461,7 +6677,7 @@ lucide.createIcons();
     });
 }
 
-    // AUTH TAB GEÃ‡IÅI FONKSIYONU
+    // Authentication workflow.
     function switchAuthTab(tab, animate = true) {
 
     // Aktif auth sekmesini hafizaya al ilk olarak
@@ -6537,18 +6753,18 @@ lucide.createIcons();
         }
     }
 
-    // pushState ile yeni bir geÃ§miÅŸ kaydi oluÅŸtur
+    // Coordinates browser history state for navigation.
     if (animate) {
         history.pushState({ page: tab }, "", "#" + tab);
     }
 
-    // Devasa senkron yÃ¼k bindiren Lucide motorunu Ã¶tele
+    // Refreshes Lucide icons after dynamic rendering.
     setTimeout(() => {
         lucide.createIcons();
     }, 100);
 }
 
-    // ÅIFRE VE GÃœVENLIK FONKSIYONU
+    // Password and security validation workflow.
     function togglePassVis(inputId, iconId) {
         const input = document.getElementById(inputId);
         const icon  = document.getElementById(iconId);
@@ -6568,7 +6784,7 @@ lucide.createIcons();
     const strengthRow = document.getElementById('req-strength');
     const uname = document.getElementById('signup-username')?.value.toLowerCase() || "";
 
-    // 1. Åifre Kurallari KontrolÃ¼ yap
+    // Password and security validation workflow.
     const rules = {
         length: val.length >= 8 && val.length <= 30,
         case: /[a-z]/.test(val) && /[A-Z]/.test(val),
@@ -6577,7 +6793,7 @@ lucide.createIcons();
         usernameCheck: val.length > 0 && (uname === "" || !val.toLowerCase().includes(uname))
     };
 
-    // 2. Alt Gereksinimlerin (X/Check) Renklerini GÃ¼ncelle
+    // Internal UI workflow note.
     const updateRow = (id, isPassed) => {
         const row = document.getElementById(id);
         if (!row) return;
@@ -6599,7 +6815,7 @@ lucide.createIcons();
     updateRow('req-special', rules.special);
     updateRow('req-username-check', rules.usernameCheck);
 
-    // 3. GÃ¼Ã§ Puani ve Renk Seviyelerini GÃ¶ster
+    // Updates visibility and animation state.
     let score = Object.values(rules).filter(Boolean).length;
     const levels = [
         { w: '5%',   color: '#ef4444', text: 'Very Weak' },
@@ -6611,7 +6827,7 @@ lucide.createIcons();
 
     const lvl = val.length === 0 ? {w:'0%', color:'#4b5563', text:'None'} : levels[Math.min(score - 1, 4)];
 
-    // 4. Bar ve Yazi Renklerini EÅŸitle
+    // Internal UI workflow note.
     if (fill) { 
         fill.style.width = lvl.w; 
         fill.style.backgroundColor = lvl.color; 
@@ -6626,14 +6842,14 @@ lucide.createIcons();
     if (strengthRow) {
         // "Password Strength:" etiketini ve ikonu da ayni renge boyar
         strengthRow.style.color = lvl.color;
-        // Tailwind'in default rengini ezmek iÃ§in class temizliÄŸi yap
+        // Validates MVP and win-related values.
         strengthRow.classList.remove('text-red-500', 'text-green-500');
     }
 
     lucide.createIcons();
 }
 
-    // USER AUTH SIGN UP IÅLEMI FONKSIYONU
+    // Authentication workflow.
    async function handleUserSignup() {
     const uname = document.getElementById('signup-username').value.trim();
     const pass1 = document.getElementById('signup-password').value;
@@ -6642,39 +6858,39 @@ lucide.createIcons();
     const errTxt = document.getElementById('signup-error-text');
     const sucEl = document.getElementById('signup-success');
 
-    // BaÅŸlangiÃ§ta hata ve baÅŸari mesajlarini temizle
+    // Updates validation and success messages.
     errEl.classList.add('hidden'); 
     sucEl.classList.add('hidden');
 
-    // 1. BOÅ ALAN KONTROLÃœ
+    // Internal UI workflow note.
     if (!uname || !pass1 || !pass2) return showAuthError(errEl, errTxt, 'Please fill in all fields!');
 
-    // 2. ÅIFRE UZUNLUÄU (8-30 Karakter)
+    // Password and security validation workflow.
     if (pass1.length < 8 || pass1.length > 30) {
         return showAuthError(errEl, errTxt, 'Password must be between 8 and 30 characters!');
     }
 
-    // 3. BÃœYÃœK/KÃœÃ‡ÃœK HARF KONTROLÃœ
+    // Internal UI workflow note.
     if (!/[a-z]/.test(pass1) || !/[A-Z]/.test(pass1)) {
         return showAuthError(errEl, errTxt, 'Password must contain both upper and lower case letters!');
     }
 
-    // 4. SAYI KONTROLÃœ
+    // Internal UI workflow note.
     if (!/[0-9]/.test(pass1)) {
         return showAuthError(errEl, errTxt, 'Password must contain at least one number!');
     }
 
-    // 5. Ã–ZEL KARAKTER KONTROLÃœ
+    // Internal UI workflow note.
     if (!/[-!@#$%^&*()_+'"/}{()|<>.:,;`Â¨â‚¬=Â´?]/.test(pass1)) {
         return showAuthError(errEl, errTxt, 'Password must contain at least one special character!');
     }
 
-    // 6. KULLANICI ADI IÃ‡ERME KONTROLÃœ
+    // Internal UI workflow note.
     if (pass1.toLowerCase().includes(uname.toLowerCase())) {
         return showAuthError(errEl, errTxt, 'Password cannot contain your username!');
     }
 
-    // 7. ÅIFRE EÅLEÅME KONTROLÃœ
+    // Password and security validation workflow.
     if (pass1 !== pass2) {
         return showAuthError(errEl, errTxt, 'Passwords do not match!');
     }
@@ -6706,7 +6922,7 @@ lucide.createIcons();
     sucEl.classList.remove('hidden');
     sucEl.style.display = 'flex'; 
 
-    // Temizlik ve YÃ¶nlendirme iÅŸlemleri
+    // Clears stale form and UI state.
     setTimeout(() => { 
         sucEl.classList.add('hidden');
         sucEl.style.display = 'none';
@@ -6724,7 +6940,7 @@ lucide.createIcons();
     }, 500); 
 }
 
-// USER AUTH SIGN IN IÅLEMI FONKSIYONU
+// Authentication workflow.
 async function handleUserLogin() {
     const uname = document.getElementById('user-login-username').value.trim();
     const pass  = document.getElementById('user-login-password').value;
@@ -6732,7 +6948,7 @@ async function handleUserLogin() {
     const errTxt = document.getElementById('user-login-error-text');
     const sucEl = document.getElementById('user-login-success');
 
-    // 1. Ã–nceki tÃ¼m hata ve baÅŸari mesajlarini temizle
+    // Updates validation and success messages.
     errEl.classList.add('hidden');
     errEl.style.display = 'none';
     if (sucEl) {
@@ -6740,7 +6956,7 @@ async function handleUserLogin() {
         sucEl.style.display = 'none';
     }
 
-    // 2. BoÅŸ alan kontrolÃ¼
+    // Validates required input fields.
     if (!uname || !pass) {
         return showAuthError(errEl, errTxt, 'Please enter both username and password.');
     }
@@ -6754,12 +6970,12 @@ async function handleUserLogin() {
         {
             method: "POST",
 
-            //Backende JSON datasi yollandiÄŸini belirt
+            // Fetches or sends data through the backend API.
             headers: {
                 "Content-Type": "application/json"
             },
 
-            //Kullanici adi/ÅŸifreyi JSON formatina Ã§evir
+            // Converts the backend JSON response into JavaScript data.
             body: JSON.stringify({
                 username: uname,
                 password: pass
@@ -6767,7 +6983,7 @@ async function handleUserLogin() {
         }
     );
 
-    //Backend yanitini JavaScript objesine Ã§evir
+    // Internal UI workflow note.
     const data = await res.json();
 
     //Hatali login
@@ -6779,7 +6995,7 @@ async function handleUserLogin() {
         );
     }
 
-     //BaÅŸari mesajini kullanicinin gÃ¶rmesi iÃ§in bir sÃ¼re izin ver. Ardindan ana sayfaya yÃ¶nlendir.
+     // Handles page navigation and page-level UI state.
     setTimeout(() => {
     document.querySelectorAll("main").forEach(page => {
         page.classList.add("hidden");
@@ -6798,30 +7014,30 @@ async function handleUserLogin() {
 
 }, 700);
 
-    //Lokal olarak giriÅŸ yapan kullanici bilgisini kaydet
+    // Persists the latest calculated data.
     localStorage.setItem(
         "currentUser",
         JSON.stringify(data.user)
     );
 
-    //Backendden dÃ¶nen JSON Web Tokenini kaydet
+    // Fetches or sends data through the backend API.
     localStorage.setItem(
         "token",
         data.token
     );
 
-    //BaÅŸari mesaji
+    // Updates validation and success messages.
     if (sucEl) {
     sucEl.classList.remove('hidden');
     sucEl.style.display = 'flex';
     }
 
-    //Kullaniciyi anasayfaya yÃ¶nlendir
+    // Handles page navigation and page-level UI state.
     showPage("user");
 
 } catch (err) {
 
-    //Backendin Ã§evrimdiÅŸi olduÄŸu vaka iÃ§in
+    // Internal UI workflow note.
     console.error(err);
 
     return showAuthError(
@@ -6833,13 +7049,13 @@ async function handleUserLogin() {
     }
 }
 
-// Kullanici GiriÅŸi Fonksiyonu
+// Authentication workflow.
 function loginUser(uname) {
     const loader = document.getElementById('page-loader');
     
-    // Loader'i yani giriÅŸ perdesini aktif et
+    // Authentication workflow.
     if (loader) {
-        // Loader'i en Ã¼ste Ã§ekerek tÃ¼m ekrani kaplamasini saÄŸliyoruz
+        // Internal UI workflow note.
         loader.style.top = "0"; 
         loader.style.zIndex = "999999";
         loader.style.opacity = "1";
@@ -6847,20 +7063,20 @@ function loginUser(uname) {
         loader.classList.remove('loader-hidden');
     }
 
-    // 1. Oturumu tarayici hafizasina kaydet (Sayfa yenilense de hatirlanmasi iÃ§in)
+    // Stores or restores UI state from browser storage.
     sessionStorage.setItem('currentUser', uname);
     currentUser = uname;
     
-    // 2. ArayÃ¼z elemanlarini (avatar, isim, ÅŸerit) hazirla
+    // Internal UI workflow note.
     setupUserUI(uname);
 
-    // Kullanici ilk kez login butonuna bastiÄŸi an kartlari veritabanina gÃ¶re eÅŸitle
+    // Authentication workflow.
     if (typeof updateGlobalTopCards === "function") updateGlobalTopCards();
 
-    // GeÃ§miÅŸi temizle ve yerine sadece ana sayfayi koy
+    // Handles page navigation and page-level UI state.
     history.replaceState({ page: 'user' }, "", "#user");
 
-    // 4. Sayfayi gÃ¶ster (Arka planda sayfa iÃ§eriÄŸi deÄŸiÅŸir)
+    // Handles page navigation and page-level UI state.
     showPage('user', true); 
 
     setTimeout(() => {
@@ -6874,24 +7090,24 @@ function loginUser(uname) {
             const targetPageId = savedUserPage.startsWith('page-') ? savedUserPage : 'page-' + savedUserPage;
             const targetPageEl = document.getElementById(targetPageId);
             if (targetPageEl) {
-                // Ã‡akiÅŸabilecek tÃ¼m eski animasyon siniflarini temizle
+                // Updates visibility and animation state.
                 targetPageEl.classList.remove('premium-page-animate', 'admin-login-animate');
                 void targetPageEl.offsetWidth; // Reflow: Animasyonu sifirlar
                 
-                // requestAnimationFrame ile tarayicinin render dÃ¶ngÃ¼sÃ¼nÃ¼ yakalayip akici geÃ§iÅŸi baÅŸlat
+                // Updates visibility and animation state.
                 requestAnimationFrame(() => {
                     targetPageEl.classList.add('premium-page-animate');
                 });
             }
             
-            // Loader gÃ¶rÃ¼nmez olduktan sonra onu sayfanin Ã¼zerinden Ã§ekiyoruz 
-            // BÃ¶ylece ana sayfadaki butonlar hemen tiklanabilir hale geliyor
+            // Handles page navigation and page-level UI state.
+            // Handles page navigation and page-level UI state.
             setTimeout(() => {
                 loader.style.top = "5rem"; 
                 loader.style.zIndex = "40";
             }, 500);
             
-            // IÅŸlemciyi yoran aÄŸir ikon yÃ¼kleme motorunu, donma (frame drop) yapmamasi iÃ§in animasyon karesinin 100ms diÅŸina, arkasina Ã¶teliyoruz
+            // Updates visibility and animation state.
             setTimeout(() => {
                 lucide.createIcons();
             }, 100);
@@ -6899,9 +7115,9 @@ function loginUser(uname) {
     }, 500);
 }
 
-// Kullanici Ã‡ikiÅŸi Fonksiyonu
+// Internal UI workflow note.
 function userLogout() {
-    // Loader'i yani giriÅŸ perdesini aktif et
+    // Authentication workflow.
     const loader = document.getElementById('page-loader');
     if (loader) {
         loader.style.top = "0"; 
@@ -6922,11 +7138,11 @@ function userLogout() {
     currentUser = null;
    
     
-    // GÃ¼venlik iÃ§in Navbar'daki admin badge'ini de gizle
+    // Admin dashboard navigation and refresh workflow.
     const adminBadge = document.getElementById('admin-logged-badge');
     if (adminBadge) adminBadge.classList.add('hidden');
     
-    // 2. FORMLARI VE ARAYÃœZÃœ SIFIRLA
+    // Internal UI workflow note.
     const inputs = ['user-login-username', 'user-login-password', 'signup-username', 'signup-password', 'signup-password2'];
     inputs.forEach(id => {
         const el = document.getElementById(id);
@@ -6971,7 +7187,7 @@ function userLogout() {
         setTimeout(() => { errEl.classList.add('hidden'); }, 3000);
     }
 
-    // ADMIN GIRIÅI VE YÃ–NETIMI
+    // Admin dashboard navigation and refresh workflow.
     async function handleLogin() {
     const user = document.getElementById('username').value.trim();
     const pass = document.getElementById('password').value;
@@ -6987,19 +7203,19 @@ function userLogout() {
         errEl.style.display = 'none';
     }
 
-    //Eski baÅŸari mesajini temizle
+    // Updates validation and success messages.
     if (sucEl) {
         sucEl.classList.add('hidden');
         sucEl.style.display = 'none';
     }
 
-    //GÃ¶rÃ¼nÃ¼rse loaderi temizle
+    // Clears stale form and UI state.
     if (loader) {
         loader.classList.add('hidden');
         loader.style.display = 'none';
     }
 
-    //BoÅŸ alan mesaji
+    // Validates required input fields.
     if (!user || !pass) {
         return showAuthError(
             errEl,
@@ -7022,7 +7238,7 @@ function userLogout() {
 
         const data = await res.json();
 
-        //Hatali kullanici adi/ÅŸifre
+        // Updates validation and success messages.
         if (!res.ok) {
             return showAuthError(
                 errEl,
@@ -7044,13 +7260,13 @@ function userLogout() {
         localStorage.setItem("currentUser", JSON.stringify(data.user));
         localStorage.setItem("token", data.token);
 
-        //BaÅŸarili giriÅŸ 
+        // Authentication workflow.
         if (sucEl) {
             sucEl.classList.remove('hidden');
             sucEl.style.display = 'flex';
         }
 
-        //Admin rozetini gÃ¶ster
+        // Admin dashboard navigation and refresh workflow.
         const badge = document.getElementById("admin-logged-badge");
         const displayName = document.getElementById("admin-display-name");
         const avatar = document.getElementById("admin-avatar-initial");
@@ -7059,7 +7275,7 @@ function userLogout() {
         if (displayName) displayName.textContent = data.user.username;
         if (avatar) avatar.textContent = data.user.username.charAt(0).toUpperCase();
 
-        //Admin sayfasina yÃ¶nlendirme
+        // Handles page navigation and page-level UI state.
         setTimeout(() => {
             document.querySelectorAll("main").forEach(page => {
                 page.classList.add("hidden");
@@ -7082,7 +7298,7 @@ function userLogout() {
 function handleAdminLogout() {
     const loader = document.getElementById('page-loader');
 
-    // Loader'i yani giriÅŸ perdesini aktif et
+    // Authentication workflow.
     if (loader) {
         loader.style.top = "0"; 
         loader.style.zIndex = "999999";
@@ -7114,10 +7330,10 @@ function handleAdminLogout() {
         'lastAdminMatchTeam1', 'lastAdminMatchTeam2', 'lastAdminMatchWinner',
         'lastAdminMatchMvp'
     ];
-    // LocalStorage'daki admin seÃ§im dropdown kalintilarini temizle
+    // Stores or restores UI state from browser storage.
     adminDropdownKeys.forEach(key => localStorage.removeItem(key));
 
-    // DOM Elemanlarini DoÄŸrudan BoÅŸa Ã‡ekme Mekanizmasi
+    // Validates required input fields.
     const adminSelectIds = [
         'player-platform', 'delete-player-sel', 'team-region',
         'assign-player-sel', 'assign-team-sel', 'remove-team-sel',
@@ -7127,20 +7343,20 @@ function handleAdminLogout() {
         'delete-tourney-sel', 'm-stadium', 'm-weather',
         'm-team1-sel', 'm-team2-sel', 'm-winner-sel', 'm-mvp-sel'
     ];
-    // Sayfa yenilenmesine gerek kalmadan tÃ¼m select elementlerini aninda '-- Select... --' konumuna getirir
+    // Handles page navigation and page-level UI state.
     adminSelectIds.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = '';
     });
     
-    // ArayÃ¼zdeki dropdownlari aninda eski (baÅŸlangiÃ§) konumlarina geri Ã§ek
+    // Refreshes dropdown options and restores saved selections.
     if (typeof refreshAssignDropdowns === "function") refreshAssignDropdowns();
 
-    // Navbar'daki admin badge'ini gizle (GÃ¼venlik iÃ§in)
+    // Admin dashboard navigation and refresh workflow.
     const adminBadge = document.getElementById('admin-logged-badge');
     if (adminBadge) adminBadge.classList.add('hidden');
 
-    // ADMIN GIRIÅ ALANLARINI TEMIZLE
+    // Admin dashboard navigation and refresh workflow.
     const uField = document.getElementById('username'); 
     const pField = document.getElementById('password'); 
     if (uField) uField.value = '';
@@ -7169,33 +7385,33 @@ function handleAdminLogout() {
     }, 500);
 }
 /*
-// Oyuncu bazli stat gÃ¼ncelleme fonksiyonu
+// Player management workflow.
 function updateStats() {
     const pSel = document.getElementById('leaderboard-player-sel');
     const pId = parseInt(document.getElementById('leaderboard-player-sel').value);
 
     const resetDropdown = () => { if (pSel) pSel.value = ''; };
     
-    // Sadece Select Player Alaninin Zorunlu Kilinmasi ve Ona Ã–zel Hata Mesaji
+    // Player management workflow.
     if (!pId) { resetDropdown(); return showAdminMsg('update-success', 'Please select a player to update statistics.', 'error'); }
 
     const player = playerDB.find(p => p.id === pId);
     const fields = ['wins', 'mvps', 'goals', 'shots', 'assists', 'saves']; 
     let changed = false;
 
-    // Ã–n DoÄŸrulama DÃ¶ngÃ¼sÃ¼ (Herhangi bir input hataliysa gÃ¼ncellemeyi tamamen durdurur)
+    // Updates validation and success messages.
     for (const field of fields) {
         const input = document.getElementById(`input-${field}`);
         if (input && input.value.trim() !== "") {
             const numVal = parseInt(input.value);
             
-            // Negatif DeÄŸer KontrolÃ¼
+            // Rejects negative numeric values.
             if (isNaN(numVal) || numVal < 0) {
                 resetDropdown();
                 showAdminMsg('update-success', 'Statistics cannot be negative values!', 'error');
                 return;
             }
-            // Åut DoÄŸruluÄŸu Ãœst Sinir KontrolÃ¼
+            // Validates shot accuracy limits.
             if (field === 'shots' && numVal > 100) {
                 resetDropdown();
                 showAdminMsg('update-success', 'Shot accuracy cannot exceed 100%!', 'error');
@@ -7204,22 +7420,22 @@ function updateStats() {
         }
     }
 
-    // MVP ve Win DeÄŸerleri IÃ§in GÃ¼venlik KontrolÃ¼
+    // Password and security validation workflow.
     const winsInput = document.getElementById('input-wins');
     const mvpsInput = document.getElementById('input-mvps');
     
-    // Inputlar boÅŸsa oyuncunun veritabanindaki mevcut statlarini temel al
+    // Player management workflow.
     const finalWins = (winsInput && winsInput.value.trim() !== "") ? parseInt(winsInput.value) : (player.wins || 0);
     const finalMvps = (mvpsInput && mvpsInput.value.trim() !== "") ? parseInt(mvpsInput.value) : (player.mvps || 0);
 
-    // MVP DeÄŸerlerinin Winden DeÄŸerlerinden BÃ¼yÃ¼k Olmasini Engelleme KontrolÃ¼
+    // Validates MVP and win-related values.
     if (finalMvps > finalWins) {
         resetDropdown();
         showAdminMsg('update-success', 'MVPs cannot be higher than wins!', 'error');
         return;
     }
 
-    // TÃ¼m inputlar kurallara uygunsa kaydetme iÅŸlemi baÅŸlar
+    // Persists the latest calculated data.
     fields.forEach(field => {
         const input = document.getElementById(`input-${field}`);
         if (input && input.value.trim() !== "") {
@@ -7247,7 +7463,7 @@ function updateStats() {
             updateGlobalTopCards();
         }
 
-        // Istatistik gÃ¼ncellendiÄŸi an Player Leaderboard verilerini yeniden gÃ¼nceller ve siralar
+        // Renders leaderboard data in the UI.
         refreshAllUserLeaderboards();
         
         resetDropdown();
@@ -7443,10 +7659,10 @@ function renderUpdatedPlayers() {
     const updatedPlayers = getRecentPlayerStatUpdates()
         .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
 
-    // SayaÃ§ rozetini gÃ¼ncelle
+    // Updates the counter badge.
     if (badge) badge.textContent = updatedPlayers.length;
 
-    // BoÅŸ durum yapisi
+    // Validates required input fields.
     if (updatedPlayers.length === 0) {
         const emptyHtml = `
             <div class="px-6 py-4 text-center">
@@ -7461,7 +7677,7 @@ function renderUpdatedPlayers() {
         return;
     }
 
-    // Ortak ÅŸablon motoru: Iki karti(Updated Player Records ve Recent Updated Players) da besler, hover parametresine gÃ¶re siniflari ve metinleri ayirir
+    // Player management workflow.
     function generatePlayerRowHtml(p, includeHover) {
         const date = new Date(p.updatedAt).toLocaleString('tr-TR', { 
             day: '2-digit', 
@@ -7541,16 +7757,16 @@ function renderUpdatedPlayers() {
         </div>`;
     }
 
-    // Ana listede(Updated Player Records kartinda) tÃ¼m gÃ¼ncellenen oyunculari gÃ¶ster
+    // Player management workflow.
     if (display) display.innerHTML = updatedPlayers.map(p => generatePlayerRowHtml(p, true)).join('');
     
-    // Overview alanindaki listeye(Recent Updated Players kartina) .slice(0, 5) ile sadece updatelenen son 5 oyuncuyu gÃ¶ster
+    // Player management workflow.
     if (overviewDisplay) overviewDisplay.innerHTML = updatedPlayers.slice(0, 5).map(p => generatePlayerRowHtml(p, false)).join('');
     
     lucide.createIcons();
 }
 
-// Sayfa aÃ§ildiÄŸinda baÅŸlangiÃ§ listesini yÃ¼kle
+// Handles page navigation and page-level UI state.
 document.addEventListener('DOMContentLoaded', renderUpdatedPlayers);
 
     function checkPasswordMatch() {
@@ -7560,23 +7776,23 @@ document.addEventListener('DOMContentLoaded', renderUpdatedPlayers);
     const iconContainer = document.getElementById('match-icon');
     const textSpan = document.getElementById('match-text');
 
-    // EÄŸer onay kutusu boÅŸsa uyariyi tamamen gizle
+    // Updates visibility and animation state.
     if (pass2.length === 0) {
         statusRow.classList.add('hidden');
         return;
     }
 
-    // Kutuda yazi varsa gÃ¶rÃ¼nÃ¼r yap
+    // Internal UI workflow note.
     statusRow.classList.remove('hidden');
 
     if (pass1 === pass2 && pass1.length > 0) {
-        // Åifreler eÅŸleÅŸiyor durumu
+        // Password and security validation workflow.
         statusRow.classList.remove('text-red-500');
         statusRow.classList.add('text-green-500');
         iconContainer.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5"></i>';
         textSpan.textContent = "Passwords Match";
     } else {
-        // Åifreler eÅŸleÅŸmiyor durumu
+        // Password and security validation workflow.
         statusRow.classList.remove('text-green-500');
         statusRow.classList.add('text-red-500');
         iconContainer.innerHTML = '<i data-lucide="x" class="w-3.5 h-3.5"></i>';
@@ -7588,7 +7804,7 @@ document.addEventListener('DOMContentLoaded', renderUpdatedPlayers);
 }
 
 function openLeaderboard(statType) {
-    window.scrollTo(0, 0); // Sayfayi en baÅŸa Ã§eker
+    window.scrollTo(0, 0); // Scrolls the page back to the top.
     showPage('page-stats-leaderboard');
     if (typeof switchStatTab === "function") {
         switchStatTab(statType || localStorage.getItem('lastPlayerStatTab') || 'wins');
@@ -7609,16 +7825,16 @@ function switchStatTab(statType) {
         btn.classList.toggle('active', btn.getAttribute('data-stat') === statType);
     });
 
-    // Dropdown'dan seÃ§ili olan platformu al
+    // Refreshes dropdown options and restores saved selections.
     const platformSelect = document.getElementById('platform-select');
     const platform = platformSelect ? platformSelect.value : 'All Platforms';
     
 
-    // DINAMIK BAÅLIK ADLANDIRMASI 
+    // Internal UI workflow note.
     const baseTitle = statType === 'shot_accuracy' ? 'Shot Accuracy' : statType.toUpperCase();
     const title = `GLOBAL ${baseTitle} LEADERBOARD FROM ${platform.toUpperCase()}`;
 
-    // HTML Ã¼zerindeki baÅŸliÄŸi gÃ¼ncelle
+    // Internal UI workflow note.
     const titleEl = document.getElementById('leaderboard-title');
     if (titleEl) titleEl.innerText = title;
     
@@ -7729,7 +7945,7 @@ async function renderLeaderboardTable(statType) {
     }
 }
 
-// Takim Tablosunu Render Etme Fonksiyonu
+// Renders the team leaderboard table
 async function renderTeamLeaderboardTable(statType) {
     const tbody = document.getElementById('team-leaderboard-table-body');
     const regionSelect = document.getElementById('team-region-select');
@@ -7852,26 +8068,26 @@ async function renderTeamLeaderboardTable(statType) {
     }
 }
 
-// Takim istatistikleri leaderboard sayfasini aÃ§an fonksiyon
+// Renders leaderboard data in the UI.
 function openTeamLeaderboard(statType) {
     window.scrollTo(0, 0);
     showPage('page-team-stats-leaderboard');
     switchTeamStatTab(statType);
 }
 
-// Team Stats Leaderboard iÃ§in Yardimci Fonksiyon: Hem baÅŸliÄŸi gÃ¼nceller hem tabloyu yeniler
+// Renders leaderboard data in the UI.
 function updateTeamLeaderboardHeader() {
     const activeBtn = document.querySelector('#team-leaderboard-tabs .stat-tab-btn.active');
     const currentStat = activeBtn ? activeBtn.getAttribute('data-team-stat') : 'wins';
     
-    // Tabloyu ve baÅŸliÄŸi gÃ¼ncellemek iÃ§in mevcut switch fonksiyonunu tetikle
+    // Updates the table with the latest data.
     return switchTeamStatTab(currentStat);
 }
 
-// Takim sekmeleri arasi geÃ§iÅŸ fonksiyonu
+// Team management workflow.
 function switchTeamStatTab(statType) {
 
-    // Tablo Ã§izilmeden Ã¶nce takimlarin verilerini anlik hesapla
+    // Updates the table with the latest data.
     if (typeof updateGlobalTopCards === "function") updateGlobalTopCards();
     
     localStorage.setItem('lastTeamStatTab', statType); // Sekmeyi kaydet
@@ -7879,20 +8095,20 @@ function switchTeamStatTab(statType) {
         btn.classList.toggle('active', btn.getAttribute('data-team-stat') === statType);
     });
 
-    // Dropdown'dan seÃ§ili olan bÃ¶lge ismini al
+    // Refreshes dropdown options and restores saved selections.
     const regionSelect = document.getElementById('team-region-select');
     const selectedRegion = regionSelect ? regionSelect.value.toUpperCase() : 'GLOBAL';
 
     const titleEl = document.getElementById('team-leaderboard-title');
     const headerEl = document.getElementById('team-table-stat-header');
     
-    // DINAMIK BAÅLIK ADLANDIRMASI (ACCURACY -> SHOT ACCURACY)
+    // Validates shot accuracy limits.
     const baseTitle = statType === 'accuracy' ? 'Shot Accuracy' : statType.toUpperCase();
     
-    // BaÅŸliÄŸi formatlar: Ã¶rn. "EUROPE TEAM SHOT ACCURACY LEADERBOARD" gibi
+    // Renders leaderboard data in the UI.
     if (titleEl) titleEl.innerText = `${selectedRegion} TEAM ${baseTitle} LEADERBOARD`;
     
-    // Tablonun en saÄŸindaki sÃ¼tun baÅŸliÄŸini gÃ¼nceller
+    // Updates the table with the latest data.
     if (headerEl) {
         headerEl.innerText = statType === 'accuracy' ? 'Shot Accuracy' : statType.charAt(0).toUpperCase() + statType.slice(1);
     }
@@ -7906,14 +8122,14 @@ function openTournamentLeaderboard(type) {
     
     const sel = document.getElementById('tournament-name-select');
     if (sel) {
-        // Daha Ã¶nce bir seÃ§im yapilmiÅŸ mi? kontrolÃ¼
+        // Internal UI workflow note.
         const savedType = localStorage.getItem('lastSelectedTournament');
         
         if (savedType) {
-            // EÄŸer hafizada kayit varsa onu Ã¶ncelikli olarak getir
+            // Stores or restores UI state from browser storage.
             sel.value = savedType;
         } else {
-            // EÄŸer ilk defa giriliyorsa karttan gelen veriyi kullan
+            // Internal UI workflow note.
             sel.value = type;
         }
     }
@@ -7924,13 +8140,13 @@ function openTournamentLeaderboard(type) {
 
 }
 
-// 15 Kolonlu Dev Turnuva Tablosunu GÃ¼ncelleyen Fonksiyon
+// Updates the table with the latest data.
 async function renderTournamentMatchStats() {
     const select = document.getElementById('tournament-name-select');
     if (!select) return;
 
     const type = select.value;
-    // EÄŸer seÃ§enek bulunamazsa (selectedIndex -1) Ã§Ã¶kmesini engeller
+    // Refreshes dropdown options and restores saved selections.
     const selectedText = select.selectedIndex >= 0 ? select.options[select.selectedIndex].text : 'All Tournaments';
     
     localStorage.setItem('lastSelectedTournament', type);
@@ -7939,7 +8155,7 @@ async function renderTournamentMatchStats() {
     const subTitle = document.getElementById('tournament-dynamic-sub-title');
 
     if (subTitle) {
-        // Satir iÃ§i stiller ve !important sayesinde Tailwind derleme engelleri tamamen aÅŸilir
+        // Updates the table with the latest data.
         subTitle.innerHTML = `
             <span style="text-transform: none !important; color: #38bdf8 !important;">${selectedText}</span> 
             <span style="text-transform: uppercase !important; color: #6b7280 !important; margin-left: 4px;">Matches Stats</span>
@@ -8056,7 +8272,7 @@ async function renderTournamentMatchStats() {
     }, 20);
 }
 
-// Arena Sayfasini BaÅŸlatan Fonksiyon
+// Handles page navigation and page-level UI state.
 function openArenaLeaderboard() {
     window.scrollTo(0, 0);
     showPage('page-arenas-stats');
@@ -8093,13 +8309,13 @@ function getArenaTagFromName(arenaName = "") {
     return cleanString || 'arena';
 }
 
-// ARENA VERILERINI VE TURNUVA MAÃ‡LARINI BIRLEÅTIREREK RENDER EDEN MOTOR FONKSIYON
+// Tournament management workflow.
 async function renderArenaMatchStats() {
     const select = document.getElementById('arena-name-select');
     if (!select) return;
 
     const arenaVal = select.value;
-    // EÄŸer seÃ§enek bulunamazsa (selectedIndex -1) Ã§Ã¶kmesini engeller
+    // Refreshes dropdown options and restores saved selections.
     const selectedText = select.selectedIndex >= 0 ? select.options[select.selectedIndex].text : 'All Arenas';
     
     const tbody = document.getElementById('arena-stats-body');
@@ -8221,7 +8437,7 @@ async function renderArenaMatchStats() {
     }, 20);
 }
 
-// Dropdown deÄŸiÅŸimlerini yakalamak iÃ§in (Platform, Region vb. her deÄŸiÅŸimde kaydeden fonksiyon)
+// Refreshes dropdown options and restores saved selections.
 function saveDropdownState(id, key) {
     const el = document.getElementById(id);
     if (el) localStorage.setItem(key, el.value);
@@ -8249,7 +8465,7 @@ function flashAdminTabs() {
     }
 }
 
-// KARTLARA Ã–ZEL BUTON SILME TETIKLEYICILERI
+// Internal UI workflow note.
 function deletePlayerFromCard() {
     const el = document.getElementById('delete-player-sel');
     const id = parseInt(document.getElementById('delete-player-sel').value);
@@ -8321,7 +8537,7 @@ async function deleteTournamentFromCard(passedId) {
     }
 }
 
-// Kullanici panelindeki hem Favorite Player Dropdown'u oyuncularla dolduran hem de Favorite Team Dropdown'u takimlarla dolduran fonksiyon
+// Populates the favorite player and favorite team dropdowns from the backend.
 async function refreshUserFavDropdown() {
     const sel = document.getElementById('user-fav-player-sel');
     const pageSel = document.getElementById('fav-player-page-select');
@@ -8329,10 +8545,21 @@ async function refreshUserFavDropdown() {
     const teamPageSel = document.getElementById('fav-team-page-select');
 
     try {
-        const players = await fetchPlayers();
-        const teams = await fetchTeams();
+        const [players, teams] = await Promise.all([fetchPlayers(), fetchTeams()]);
+        let currentFavoritePlayers = [];
+        let currentFavoriteTeams = [];
 
-        //Favorite Player Dropdowns
+        if (localStorage.getItem("token")) {
+            try {
+                [currentFavoritePlayers, currentFavoriteTeams] = await Promise.all([
+                    fetchMyFavoritePlayers(),
+                    fetchMyFavoriteTeams()
+                ]);
+            } catch (favoriteErr) {
+                console.warn("Favorite preference fetch failed, falling back to local storage:", favoriteErr);
+            }
+        }
+
         const playersOptionsHtml = players
             .map(p => `<option value="${p.player_id}" class="bg-[#1a1b1e]">${p.player_name}</option>`)
             .join('');
@@ -8345,7 +8572,7 @@ async function refreshUserFavDropdown() {
             pageSel.innerHTML = '<option value="">- Select Player -</option>' + playersOptionsHtml;
         }
 
-        const savedFav = localStorage.getItem('myFavPlayerId');
+        const savedFav = currentFavoritePlayers[0]?.player_id || localStorage.getItem('myFavPlayerId');
 
         if (savedFav) {
             const exists = players.some(p => p.player_id.toString() === savedFav.toString());
@@ -8353,6 +8580,7 @@ async function refreshUserFavDropdown() {
             if (exists) {
                 if (sel) sel.value = savedFav;
                 if (pageSel) pageSel.value = savedFav;
+                localStorage.setItem('myFavPlayerId', savedFav);
             } else {
                 if (sel) sel.value = "";
                 if (pageSel && players.length > 0) pageSel.value = players[0].player_id;
@@ -8360,7 +8588,6 @@ async function refreshUserFavDropdown() {
             }
         }
 
-        //Favorite Team Dropdown
         const teamsOptionsHtml = teams
             .map(t => `<option value="${t.team_id}" class="bg-[#1a1b1e]">${t.team_name}</option>`)
             .join('');
@@ -8373,7 +8600,7 @@ async function refreshUserFavDropdown() {
             teamPageSel.innerHTML = '<option value="">- Select Team -</option>' + teamsOptionsHtml;
         }
 
-        const savedTeamFav = localStorage.getItem('myFavTeamId');
+        const savedTeamFav = currentFavoriteTeams[0]?.team_id || localStorage.getItem('myFavTeamId');
 
         if (savedTeamFav) {
             const teamExists = teams.some(t => t.team_id.toString() === savedTeamFav.toString());
@@ -8381,6 +8608,7 @@ async function refreshUserFavDropdown() {
             if (teamExists) {
                 if (teamSel) teamSel.value = savedTeamFav;
                 if (teamPageSel) teamPageSel.value = savedTeamFav;
+                localStorage.setItem('myFavTeamId', savedTeamFav);
             } else {
                 if (teamSel) teamSel.value = "";
                 if (teamPageSel && teams.length > 0) teamPageSel.value = teams[0].team_id;
@@ -8392,6 +8620,58 @@ async function refreshUserFavDropdown() {
         }
     } catch (err) {
         console.error('Failed to refresh favorite dropdowns:', err);
+    }
+}
+
+async function handleFavoritePlayerChange(playerId, options = {}) {
+    if (!playerId) {
+        localStorage.removeItem('myFavPlayerId');
+        await renderFavoriteDashboardHighlights();
+        return;
+    }
+
+    localStorage.setItem('myFavPlayerId', playerId);
+    const dashboardSelect = document.getElementById('user-fav-player-sel');
+    const pageSelect = document.getElementById('fav-player-page-select');
+    if (dashboardSelect) dashboardSelect.value = playerId;
+    if (pageSelect) pageSelect.value = playerId;
+
+    try {
+        await replaceFavoritePlayer(playerId);
+    } catch (err) {
+        console.error("Favorite player update error:", err);
+        alert(err.message);
+    }
+
+    await renderFavoriteDashboardHighlights();
+    if (options.renderDetail && typeof renderFavPlayerStats === "function") {
+        await renderFavPlayerStats();
+    }
+}
+
+async function handleFavoriteTeamChange(teamId, options = {}) {
+    if (!teamId) {
+        localStorage.removeItem('myFavTeamId');
+        await renderFavoriteDashboardHighlights();
+        return;
+    }
+
+    localStorage.setItem('myFavTeamId', teamId);
+    const dashboardSelect = document.getElementById('user-fav-team-sel');
+    const pageSelect = document.getElementById('fav-team-page-select');
+    if (dashboardSelect) dashboardSelect.value = teamId;
+    if (pageSelect) pageSelect.value = teamId;
+
+    try {
+        await replaceFavoriteTeam(teamId);
+    } catch (err) {
+        console.error("Favorite team update error:", err);
+        alert(err.message);
+    }
+
+    await renderFavoriteDashboardHighlights();
+    if (options.renderDetail && typeof renderFavTeamStats === "function") {
+        await renderFavTeamStats();
     }
 }
 
@@ -8462,24 +8742,24 @@ async function renderFavoriteDashboardHighlights() {
     }
 }
 
-// Favori oyuncu sayfasini aÃ§an fonksiyon
-function openFavPlayerPage() {
+// Opens the favorite player stats page.
+async function openFavPlayerPage() {
     const sel = document.getElementById('user-fav-player-sel');
     const pId = parseInt(sel.value);
     
     if (!pId) return alert("Please select a player first!");
     
-    localStorage.setItem('myFavPlayerId', pId);
+    await handleFavoritePlayerChange(pId);
     window.scrollTo(0, 0);
     showPage('page-fav-player');
-    renderFavPlayerStats();
+    await renderFavPlayerStats();
 }
 
-// Stat tipine ve seÃ§ilen platforma gÃ¶re oyuncunun siralamasini bulan fonksiyon
+// Player management workflow.
 function getPlayerGlobalRank(playerId, statField, platform = 'All Platforms') {
     let filteredPlayers = [...playerDB];
     
-    // EÄŸer spesifik bir platform seÃ§ildiyse oyunculari filtrele
+    // Player management workflow.
     if (platform !== 'All Platforms') {
         filteredPlayers = filteredPlayers.filter(p => p.platform === platform);
     }
@@ -8489,43 +8769,58 @@ function getPlayerGlobalRank(playerId, statField, platform = 'All Platforms') {
     return index !== -1 ? `#${index + 1}` : '-';
 }
 
-// FAVORI OYUNCU EKRANINI VE SON MAÃ‡ STATLARINI RENDER EDEN MOTOR FONKSIYON
-function renderFavPlayerStats() {
+// Renders the selected favorite player's complete backend stats and match history.
+async function renderFavPlayerStats() {
     const container = document.getElementById('fav-player-content-container');
     const pId = parseInt(localStorage.getItem('myFavPlayerId'));
-    const player = playerDB.find(p => p.id === pId);
-    
-    if (!player) {
+
+    if (!pId) {
         container.innerHTML = `<div class="text-center text-gray-500 font-black uppercase tracking-widest mt-20">Player data not found.</div>`;
         return;
     }
 
-    // Sayfadaki yeni dropdown'in deÄŸerini anlik olarak seÃ§ili oyuncuya gÃ¶re eÅŸitle
     const pageSel = document.getElementById('fav-player-page-select');
     if (pageSel) pageSel.value = pId;
 
-    let teamName = 'No Team';
-    let assignedTeam = null; 
-    if (typeof teamDB !== 'undefined') {
-        assignedTeam = teamDB.find(t => t.playerIds && t.playerIds.includes(player.id));
-        if (assignedTeam) {
-            teamName = assignedTeam.name;
-        }
+    container.innerHTML = `<div class="text-center text-gray-500 font-black uppercase tracking-widest mt-20">Loading player stats...</div>`;
+
+    let payload;
+    let leaderboard = [];
+    try {
+        [payload, leaderboard] = await Promise.all([
+            fetchFavoritePlayerStats(pId),
+            fetchPlayerLeaderboard()
+        ]);
+    } catch (err) {
+        console.error("Favorite player stats error:", err);
+        container.innerHTML = `<div class="text-center text-red-400 font-black uppercase tracking-widest mt-20">Failed to load player stats.</div>`;
+        return;
     }
+
+    const player = payload.player;
+    const stats = payload.stats || {};
+    const matches = payload.matches || [];
+    const teamName = player.team_name || 'No Team';
 
     const statsConfig = [
         { key: 'wins', label: 'Total Wins', icon: 'trophy', color: 'text-red-400' },
         { key: 'mvps', label: 'Total MVPs', icon: 'star', color: 'text-purple-400' },
         { key: 'goals', label: 'Total Goals', icon: 'loader-pinwheel', color: 'text-orange-400' },
-        { key: 'shots', label: 'Shot Accuracy', icon: 'target', color: 'text-yellow-400', isPct: true },
+        { key: 'shot_accuracy', label: 'Shot Accuracy', icon: 'target', color: 'text-yellow-400', isPct: true },
         { key: 'assists', label: 'Total Assists', icon: 'users', color: 'text-cyan-400' },
         { key: 'saves', label: 'Total Saves', icon: 'shield', color: 'text-green-400' }
     ];
 
+    const getRank = (field) => {
+        const sorted = [...leaderboard].sort((a, b) => Number(b[field] || 0) - Number(a[field] || 0));
+        const idx = sorted.findIndex(row => Number(row.player_id) === pId);
+        return idx >= 0 ? `#${idx + 1}` : '-';
+    };
+
     let tableRowsHtml = statsConfig.map(stat => {
-        const val = player[stat.key] || 0;
+        const val = Number(stats[stat.key] || 0);
         const formattedVal = stat.isPct ? val + '%' : val.toLocaleString();
-        const rank = val > 0 ? getPlayerGlobalRank(player.id, stat.key, 'All Platforms') : '-';
+        const rank = val > 0 ? getRank(stat.key) : '-';
         
         return `
         <tr class="hover:bg-white/[0.02] transition-colors group border-b border-gray-800/30">
@@ -8553,39 +8848,31 @@ function renderFavPlayerStats() {
     }).join('');
 
     let matchRowsHtml = '';
-    const tMatches = (typeof tournamentMatchDB !== 'undefined' ? tournamentMatchDB : []).map(m => ({...m, source: 'tournament'}));
-    const aMatches = (typeof arenaMatchDB !== 'undefined' ? arenaMatchDB : []).map(m => ({...m, source: 'arena'}));
-    const allMatches = [...tMatches, ...aMatches];
-    const playerMatches = allMatches.filter(m => m.team1Tag === teamName || m.team2Tag === teamName);
-
-    const sortedMatches = [...playerMatches].sort((a, b) => new Date(b.matchDate) - new Date(a.matchDate));
-
-    if (sortedMatches.length === 0) {
+    if (matches.length === 0) {
         matchRowsHtml = `<tr><td colspan="10" class="px-8 py-10 text-center text-gray-500 font-black uppercase tracking-widest text-xs">No recent matches recorded.</td></tr>`;
 
     } else {
-        matchRowsHtml = sortedMatches.map(m => {
-            const isWinnerTeam = m.winnerName === teamName;
-            const matchDate = m.matchDate || '-';
-            const arenaOrTourney = m.source === 'arena' ? (m.type || m.arenaTag || 'Arena') : (m.arena || 'Arena');
-            const goals = isWinnerTeam ? m.wGoals : m.lGoals;
-            const acc = isWinnerTeam ? m.wAcc : m.lAcc;
-            const assists = isWinnerTeam ? m.wAss : m.lAss;
-            const saves = isWinnerTeam ? m.wSav : m.lSav;
-            const formattedAcc = acc.toString().includes('%') ? acc : acc + '%';
-            const isMvp = m.mvp === player.name;
+        matchRowsHtml = matches.map(m => {
+            const blueScore = Number(m.blue_score || 0);
+            const orangeScore = Number(m.orange_score || 0);
+            const isBlue = m.player_team_type === 'BLUE';
+            const won = (isBlue && blueScore > orangeScore) || (!isBlue && orangeScore > blueScore);
+            const matchDate = m.match_date || '-';
+            const arenaOrTourney = m.arena_name || 'Arena';
+            const formattedAcc = `${m.shot_accuracy || 0}%`;
+            const isMvp = Boolean(m.mvp);
 
             const mvpBadge = isMvp
                 ? `<span class="inline-flex items-center justify-center w-12 h-6 text-[10px] font-black text-purple-400 bg-purple-500/10 rounded border border-purple-500/20">YES</span>`
                 : `<span class="inline-flex items-center justify-center w-12 h-6 text-[10px] font-black text-gray-400 bg-white/5 border border-white/10 rounded shadow-sm tracking-wide">NO</span>`;
 
-            const resultBadge = isWinnerTeam
+            const resultBadge = won
                 ? `<span class="inline-flex items-center justify-center w-8 h-8 text-[10px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-500/10 rounded-lg border border-emerald-500/20">WON</span>`
                 : `<span class="inline-flex items-center justify-center w-9 h-9 text-[10px] font-black uppercase tracking-widest text-red-400 bg-red-500/10 rounded-lg border border-red-500/20">LOST</span>`;
 
            
 
-            const matchTypeBadge = m.source === 'tournament'
+            const matchTypeBadge = m.tournament_name !== 'Non-Tournament Match'
                 ? `<span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-blue-500/10 border border-blue-500/20 text-[10px] font-bold text-blue-400 w-max tracking-wide uppercase">
                     <i data-lucide="award" class="w-3 h-3 text-blue-400"></i> Tourney Match</span>`
                 : `<span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-gray-500/10 border border-gray-700 text-[10px] font-bold text-gray-400 w-max tracking-wide uppercase">
@@ -8597,10 +8884,10 @@ function renderFavPlayerStats() {
                 <td class="px-6 py-4.5 text-left">${matchTypeBadge}</td>
                 <td class="px-6 py-4.5 text-[10px] font-black text-gray-300 tracking-wider">${arenaOrTourney}</td>
                 <td class="px-6 py-4.5 text-xs font-black text-blue-400 tracking-wider truncate max-w-[120px]">${teamName}</td>
-                <td class="px-6 py-4.5 text-center font-mono text-sm font-black text-orange-400 pl-9">${goals}</td>
+                <td class="px-6 py-4.5 text-center font-mono text-sm font-black text-orange-400 pl-9">${m.goals || 0}</td>
                 <td class="px-6 py-4.5 text-center font-mono text-sm font-black text-yellow-400 pl-6">${formattedAcc}</td>
-                <td class="px-6 py-4.5 text-center font-mono text-sm font-black text-cyan-400 pl-8">${assists}</td>
-                <td class="px-6 py-4.5 text-center font-mono text-sm font-black text-green-400 pl-9">${saves}</td>
+                <td class="px-6 py-4.5 text-center font-mono text-sm font-black text-cyan-400 pl-8">${m.assists || 0}</td>
+                <td class="px-6 py-4.5 text-center font-mono text-sm font-black text-green-400 pl-9">${m.saves || 0}</td>
                 <td class="px-6 py-4.5 text-center pl-8">${mvpBadge}</td>
                 <td class="px-6 py-4.5 text-center pl-12">${resultBadge}</td>
             </tr>`;
@@ -8610,22 +8897,22 @@ function renderFavPlayerStats() {
     container.innerHTML = `
         <div class="flex items-center gap-6 mb-8 p-8 rounded-2xl stats-glass border border-white/5 relative overflow-hidden">
             <div class="w-24 h-24 rounded-2xl bg-purple-600/20 flex items-center justify-center font-black text-purple-400 text-5xl border border-purple-500/30 shrink-0 shadow-[0_0_20px_rgba(157,78,237,0.2)]">
-                ${player.name[0]}
+                ${player.player_name[0]}
             </div>
             <div class="z-10">
-                <h2 class="text-4xl font-black text-white tracking-tight">${player.name}</h2>
+                <h2 class="text-4xl font-black text-white tracking-tight">${player.player_name}</h2>
                 <div class="flex items-center gap-3 mt-3">
                     <span class="text-[11px] font-black tracking-widest text-sky-400 bg-sky-500/10 px-3 py-1.5 rounded-lg border border-sky-500/20 flex items-center gap-1.5">
                         <i data-lucide="shield" class="w-3.5 h-3.5"></i> Team: ${teamName}
                     </span>
                     <span class="px-3 py-1.5 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-[11px] font-black tracking-widest text-yellow-400 flex items-center gap-1.5">
-                        <i data-lucide="calendar-cog" class="w-3.5 h-3.5 text-yellow-400"></i> Since in Team: <span class="font-mono text-white/90">${assignedTeam ? (player.sinceInTeam || '28/05/2026') : '-'}</span>
+                        <i data-lucide="calendar-cog" class="w-3.5 h-3.5 text-yellow-400"></i> Since in Team: <span class="font-mono text-white/90">${player.since || '-'}</span>
                     </span>
                     <span class="px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-[11px] font-black tracking-widest text-blue-400 flex items-center gap-1.5">
                         <i data-lucide="monitor" class="w-3.5 h-3.5"></i> Platform: ${player.platform || 'PC'}
                     </span>
                     <span class="px-3 py-1.5 rounded-lg bg-purple-500/10 border border-purple-500/20 text-[11px] font-black tracking-widest text-purple-400 flex items-center gap-1.5">
-                        <i data-lucide="award" class="w-3.5 h-3.5"></i> Competitive Rank: ${getCompetitiveRank(player.wins, player.mvps)}
+                        <i data-lucide="award" class="w-3.5 h-3.5"></i> Competitive Rank: ${getCompetitiveRank(stats.wins, stats.mvps)}
                     </span>
                 </div>
             </div>
@@ -8633,7 +8920,7 @@ function renderFavPlayerStats() {
         </div>
 
         <div class="flex items-center gap-4 mb-6">
-            <h3 class="text-xs font-black uppercase tracking-[0.2em] text-gray-500 whitespace-nowrap">Overall <span class="text-purple-400 normal-case">${player.name}</span> Player Performance</h3>
+            <h3 class="text-xs font-black uppercase tracking-[0.2em] text-gray-500 whitespace-nowrap">Overall <span class="text-purple-400 normal-case">${player.player_name}</span> Player Performance</h3>
             <div class="h-[1px] bg-gray-800 w-full"></div>
         </div>
 
@@ -8654,7 +8941,7 @@ function renderFavPlayerStats() {
         </div>
 
         <div class="flex items-center gap-4 mb-6">
-            <h3 class="text-xs font-black uppercase tracking-[0.2em] text-gray-500 whitespace-nowrap">Last 3V3 <span class="text-purple-400 normal-case">${player.name}'s</span> Team Matches Stats</h3>
+            <h3 class="text-xs font-black uppercase tracking-[0.2em] text-gray-500 whitespace-nowrap">Last 3V3 <span class="text-purple-400 normal-case">${player.player_name}'s</span> Team Matches Stats</h3>
             <div class="h-[1px] bg-gray-800 w-full"></div>
         </div>
 
@@ -8690,7 +8977,7 @@ function renderFavPlayerStats() {
 }
 
 /*
-// Takim istatistik tipine gÃ¶re takimin global siralamasini dinamik hesaplayan fonksiyon
+// Team management workflow.
 function getTeamGlobalRank(teamId, statField) {
     if (typeof teamDB === 'undefined' || teamDB.length === 0) return '-';
     const sorted = [...teamDB].sort((a, b) => (b[statField] || 0) - (a[statField] || 0));
@@ -8698,7 +8985,7 @@ function getTeamGlobalRank(teamId, statField) {
     return index !== -1 ? `#${index + 1}` : '-';
 }
 */
-// FAVORI TAKIM EKRANINI, TAKIM KADROSUNU VE SON TAKIM MAÃ‡LARI STATLARINI YÃœKLEYEN MOTOR FONKSIYON
+// Team management workflow.
 /*
 function renderFavTeamStats() {
     const container = document.getElementById('fav-team-content-container');
@@ -8710,11 +8997,11 @@ function renderFavTeamStats() {
         return;
     }
 
-    // Navbar dropdown deÄŸerini anlik olarak seÃ§ili takima eÅŸitle
+    // Team management workflow.
     const teamPageSel = document.getElementById('fav-team-page-select');
     if (teamPageSel) teamPageSel.value = tId;
 
-    // Takima atanmiÅŸ esporculari filtrele
+    // Team management workflow.
     const assignedPlayers = (typeof playerDB !== 'undefined' ? playerDB : []).filter(p => team.playerIds && team.playerIds.includes(p.id));
 
     let rosterHtml = '<span class="text-[10px] font-black text-gray-500 italic uppercase">No players assigned</span>';
@@ -8726,7 +9013,7 @@ function renderFavTeamStats() {
         `).join('');
     }
 
-    // Performans kategorilerini ve lig derecelerini eÅŸle
+    // Internal UI workflow note.
     const statsConfig = [
         { key: 'wins', label: 'Team Wins', icon: 'trophy', color: 'text-red-400' },
         { key: 'goals', label: 'Team Goals', icon: 'loader-pinwheel', color: 'text-orange-400' },
@@ -8765,7 +9052,7 @@ function renderFavTeamStats() {
         `;
     }).join('');
 
-    // Takimin oynadiÄŸi tÃ¼m maÃ§lari filtrele (Turnuva ve Arena birleÅŸik havuzu)
+    // Team management workflow.
     let matchRowsHtml = '';
     const tMatches = (typeof tournamentMatchDB !== 'undefined' ? tournamentMatchDB : []).map(m => ({...m, source: 'tournament'}));
     const aMatches = (typeof arenaMatchDB !== 'undefined' ? arenaMatchDB : []).map(m => ({...m, source: 'arena'}));
@@ -8903,6 +9190,185 @@ function renderFavTeamStats() {
 }
 */
 
+async function renderFavTeamStats() {
+    const container = document.getElementById('fav-team-content-container');
+    const tId = parseInt(localStorage.getItem('myFavTeamId'));
+
+    if (!tId) {
+        container.innerHTML = `<div class="text-center text-gray-500 font-black uppercase tracking-widest mt-20">Team data not found.</div>`;
+        return;
+    }
+
+    const teamPageSel = document.getElementById('fav-team-page-select');
+    if (teamPageSel) teamPageSel.value = tId;
+
+    container.innerHTML = `<div class="text-center text-gray-500 font-black uppercase tracking-widest mt-20">Loading team stats...</div>`;
+
+    let payload;
+    let leaderboard = [];
+    try {
+        [payload, leaderboard] = await Promise.all([
+            fetchFavoriteTeamStats(tId),
+            fetchTeamLeaderboard()
+        ]);
+    } catch (err) {
+        console.error("Favorite team stats error:", err);
+        container.innerHTML = `<div class="text-center text-red-400 font-black uppercase tracking-widest mt-20">Failed to load team stats.</div>`;
+        return;
+    }
+
+    const team = payload.team;
+    const stats = payload.stats || {};
+    const roster = payload.current_roster || [];
+    const matches = payload.matches || [];
+
+    const rosterHtml = roster.length
+        ? roster.map(p => `
+            <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-[11px] font-black text-white">
+                <i data-lucide="user" class="w-3 h-3 text-white"></i> ${p.player_name}
+            </span>
+        `).join('')
+        : '<span class="text-[10px] font-black text-gray-500 italic uppercase">No players assigned</span>';
+
+    const statsConfig = [
+        { key: 'wins', label: 'Team Wins', icon: 'trophy', color: 'text-red-400' },
+        { key: 'goals', label: 'Team Goals', icon: 'loader-pinwheel', color: 'text-orange-400' },
+        { key: 'accuracy', label: 'Shot Accuracy', icon: 'target', color: 'text-yellow-400', isPct: true },
+        { key: 'assists', label: 'Team Assists', icon: 'users', color: 'text-cyan-400' },
+        { key: 'saves', label: 'Team Saves', icon: 'shield', color: 'text-green-400' }
+    ];
+
+    const getRank = (field) => {
+        const sorted = [...leaderboard].sort((a, b) => Number(b[field] || 0) - Number(a[field] || 0));
+        const idx = sorted.findIndex(row => Number(row.team_id) === tId);
+        return idx >= 0 ? `#${idx + 1}` : '-';
+    };
+
+    const tableRowsHtml = statsConfig.map(stat => {
+        const val = Number(stats[stat.key] || 0);
+        const formattedVal = stat.isPct ? `${val}%` : val.toLocaleString();
+        const rank = val > 0 ? getRank(stat.key) : '-';
+
+        return `
+        <tr class="hover:bg-white/[0.02] transition-colors group border-b border-gray-800/30">
+            <td class="px-8 py-5 w-[35%]">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-white/20 transition-all">
+                        <i data-lucide="${stat.icon}" class="w-4 h-4 ${stat.color}"></i>
+                    </div>
+                    <span class="text-xs font-black uppercase tracking-widest text-white group-hover:${stat.color} transition-colors">${stat.label}</span>
+                </div>
+            </td>
+            <td class="px-8 py-5 w-[20%]">
+                <span class="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] font-black text-blue-400 tracking-widest flex items-center gap-1.5 w-max">
+                    <i data-lucide="map-pin" class="w-3 h-3"></i> ${team.region || 'Global'}
+                </span>
+            </td>
+            <td class="px-8 py-5 text-center font-mono text-sm font-black text-gray-300 group-hover:text-white transition-colors w-[20%]">${formattedVal}</td>
+            <td class="px-8 py-5 text-right font-mono text-xs font-black ${rank === '#1' ? 'text-yellow-400' : 'text-sky-400'} w-[25%]">
+                ${rank === '#1' ? '<i data-lucide="crown" class="w-3.5 h-3.5 inline mb-0.5 mr-1 text-yellow-400"></i>' : ''}${rank}
+            </td>
+        </tr>`;
+    }).join('');
+
+    const matchRowsHtml = matches.length ? matches.map(m => {
+        const blueScore = Number(m.blue_score || 0);
+        const orangeScore = Number(m.orange_score || 0);
+        const isBlue = m.selected_team_type === 'BLUE';
+        const won = (isBlue && blueScore > orangeScore) || (!isBlue && orangeScore > blueScore);
+        const opponentName = isBlue ? m.orange_team : m.blue_team;
+        const matchTypeBadge = m.tournament_name !== 'Non-Tournament Match'
+            ? `<span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-blue-500/10 border border-blue-500/20 text-[10px] font-bold text-blue-400 w-max tracking-wide uppercase"><i data-lucide="award" class="w-3 h-3 text-blue-400"></i> Tourney Match</span>`
+            : `<span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-gray-500/10 border border-gray-700 text-[10px] font-bold text-gray-400 w-max tracking-wide uppercase"><i data-lucide="swords" class="w-3 h-3 text-gray-400"></i> Regular Match</span>`;
+        const resultBadge = won
+            ? `<span class="inline-flex items-center justify-center w-8 h-8 text-[10px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-500/10 rounded-lg border border-emerald-500/20">WON</span>`
+            : `<span class="inline-flex items-center justify-center w-9 h-9 text-[10px] font-black uppercase tracking-widest text-red-400 bg-red-500/10 rounded-lg border border-red-500/20">LOST</span>`;
+
+        return `
+        <tr class="hover:bg-white/[0.02] transition-colors group border-b border-gray-800/30">
+            <td class="px-6 py-4.5 text-xs font-mono text-gray-400">${m.match_date || '-'}</td>
+            <td class="px-6 py-4.5 text-left">${matchTypeBadge}</td>
+            <td class="px-6 py-4.5 text-[10px] font-black text-gray-300 tracking-wider">${m.arena_name || 'Arena'}</td>
+            <td class="px-6 py-4.5 text-xs font-black text-blue-400 tracking-wider truncate max-w-[120px] pl-12">${opponentName || '-'}</td>
+            <td class="px-6 py-4.5 text-center font-mono text-sm font-black text-orange-400 pl-10">${m.selected_team_score || 0}</td>
+            <td class="px-6 py-4.5 text-center font-mono text-sm font-black text-yellow-400 pl-10">${m.selected_team_accuracy || 0}%</td>
+            <td class="px-6 py-4.5 text-center font-mono text-sm font-black text-cyan-400 pl-10">${m.selected_team_assists || 0}</td>
+            <td class="px-6 py-4.5 text-center font-mono text-sm font-black text-green-400 pl-10">${m.selected_team_saves || 0}</td>
+            <td class="px-6 py-4.5 text-center pl-12"><span class="inline-block mr-3 bg-purple-500/20 text-purple-400 px-3 py-1.5 rounded-lg border border-purple-500/40 text-[10px] font-black tracking-widest">${m.mvp_player_name || '-'}</span></td>
+            <td class="px-6 py-4.5 text-center pl-10">${resultBadge}</td>
+        </tr>`;
+    }).join('') : `<tr><td colspan="10" class="px-8 py-10 text-center text-gray-500 font-black uppercase tracking-widest text-xs">No recent matches recorded for this team.</td></tr>`;
+
+    container.innerHTML = `
+        <div class="flex items-center gap-6 mb-8 p-8 rounded-2xl stats-glass border border-white/5 relative overflow-hidden">
+            <div class="w-24 h-24 rounded-2xl bg-sky-600/20 flex items-center justify-center font-black text-sky-400 text-5xl border border-sky-500/30 shrink-0">
+                ${team.team_name[0]}
+            </div>
+            <div class="z-10">
+                <h2 class="text-4xl font-black text-white tracking-tight">${team.team_name}</h2>
+                <div class="flex flex-wrap items-center gap-3 mt-3">
+                    <span class="text-[11px] font-black tracking-widest text-blue-400 bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20 flex items-center gap-1.5">
+                        <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Region: ${team.region || 'Global'}
+                    </span>
+                    <span class="text-[11px] font-black tracking-widest text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20 flex items-center gap-1.5">
+                        <i data-lucide="swords" class="w-3.5 h-3.5 text-emerald-400"></i> Matches Played: <span class="font-mono text-emerald-400">${stats.matches_played || 0}</span>
+                    </span>
+                    <div class="flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg text-[11px] font-black tracking-widest text-gray-400">
+                        <i data-lucide="users" class="w-3.5 h-3.5 text-gray-400"></i>
+                        <span>Players of Team:</span>
+                        <div class="flex items-center gap-1.5 flex-wrap">${rosterHtml}</div>
+                    </div>
+                </div>
+            </div>
+            <i data-lucide="shield" class="absolute -right-4 -bottom-8 w-48 h-48 text-white/[0.02] -rotate-12 pointer-events-none"></i>
+        </div>
+        <div class="flex items-center gap-4 mb-6">
+            <h3 class="text-xs font-black uppercase tracking-[0.2em] text-gray-500 whitespace-nowrap">Overall <span class="text-sky-400 normal-case">${team.team_name}</span> Team Performance</h3>
+            <div class="h-[1px] bg-gray-800 w-full"></div>
+        </div>
+        <div class="w-full overflow-hidden rounded-2xl stats-glass border border-white/5 shadow-2xl mb-12">
+            <table class="w-full text-left border-collapse table-fixed">
+                <thead class="bg-white/[0.02] border-b border-gray-800">
+                    <tr>
+                        <th class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[35%]">Stat Category</th>
+                        <th class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[20%]">Region</th>
+                        <th class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[20%] text-center">Value</th>
+                        <th class="px-8 py-5 text-[10px] font-black uppercase text-gray-500 tracking-widest w-[25%] text-right">Global Rank</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-800/50">${tableRowsHtml}</tbody>
+            </table>
+        </div>
+        <div class="flex items-center gap-4 mb-6">
+            <h3 class="text-xs font-black uppercase tracking-[0.2em] text-gray-500 whitespace-nowrap">Last 3V3 <span class="text-sky-400 normal-case">${team.team_name}</span> Team Matches Stats</h3>
+            <div class="h-[1px] bg-gray-800 w-full"></div>
+        </div>
+        <div class="w-full overflow-hidden rounded-2xl stats-glass border border-white/5 shadow-2xl overflow-x-auto relative z-10">
+            <table class="w-full text-left border-collapse min-w-[1100px]">
+                <thead class="bg-white/[0.02] border-b border-gray-800">
+                    <tr class="text-[10px] font-black uppercase tracking-widest whitespace-nowrap">
+                        <th class="px-6 py-5 text-left text-gray-500"><div class="flex items-center gap-2 pr-4"><i data-lucide="clock" class="w-3 h-3"></i>Match Date</div></th>
+                        <th class="px-6 py-5 text-left text-gray-500"><div class="flex items-center gap-2 pl-4"><i data-lucide="gamepad-2" class="w-3 h-3"></i>Match Type</div></th>
+                        <th class="px-6 py-5 text-left text-gray-500"><div class="flex items-center gap-2 pl-2"><i data-lucide="land-plot" class="w-3 h-3"></i>Arena</div></th>
+                        <th class="px-6 py-5 text-left text-gray-500"><div class="flex items-center gap-2 pl-0"><i data-lucide="users-2" class="w-3 h-3"></i>Opponent Team</div></th>
+                        <th class="px-6 py-5 text-center text-orange-500"><div class="flex items-center justify-center gap-2"><i data-lucide="loader-pinwheel" class="w-3 h-3"></i>Goals</div></th>
+                        <th class="px-6 py-5 text-center text-yellow-500"><div class="flex items-center justify-center gap-2"><i data-lucide="target" class="w-3 h-3"></i>Shot Accuracy</div></th>
+                        <th class="px-6 py-5 text-center text-cyan-400"><div class="flex items-center justify-center gap-2"><i data-lucide="users" class="w-3 h-3"></i>Assists</div></th>
+                        <th class="px-6 py-5 text-center text-green-500"><div class="flex items-center justify-center gap-2"><i data-lucide="shield" class="w-3 h-3"></i>Saves</div></th>
+                        <th class="px-6 py-5 text-center text-purple-500"><div class="flex items-center justify-center gap-2"><i data-lucide="star" class="w-3 h-3"></i>Match MVP</div></th>
+                        <th class="px-6 py-5 text-right text-white-500"><div class="flex items-center justify-end gap-2"><i data-lucide="medal" class="w-3 h-3"></i>Result</div></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-800/50">${matchRowsHtml}</tbody>
+            </table>
+        </div>
+        <p class="text-[9px] text-gray-600 mt-4 uppercase font-black tracking-widest flex items-center gap-2">
+            <i data-lucide="info" class="w-3 h-3"></i> Stats represent the team's total performance during the match
+        </p>`;
+
+    lucide.createIcons();
+}
+
 async function refreshRemovePlayerDropdown() {
     const tId = parseInt(document.getElementById("remove-team-sel").value);
     const pSel = document.getElementById("remove-player-sel");
@@ -8934,7 +9400,7 @@ async function refreshRemovePlayerDropdown() {
         console.error("Refresh remove player dropdown error:", err);
     }
 }
-// Sayfa veya takim listesi yenilendiÄŸinde takim dropdown'ini dolduran fonksiyon
+// Handles page navigation and page-level UI state.
 async function refreshRemoveTeamDropdown() {
     const tSel = document.getElementById("remove-team-sel");
     if (!tSel) return;
@@ -9033,7 +9499,7 @@ async function refreshDeletePlayerDropdown() {
     }
 }
 
-// Saved Tournaments Listesini gÃ¼ncelleyen fonksiyon
+// Tournament management workflow.
 async function renderSavedTournaments() {
     const container = document.getElementById("admin-tournaments-list-container");
 
@@ -9097,13 +9563,13 @@ if (countBadge) {
     }
 }
 
-// HAFIZADAN GERI YÃœKLEME FONKSIYONU
+// Stores or restores UI state from browser storage.
 function restoreDropdownValue(id, key) {
     const el = document.getElementById(id);
     if (el) {
         const savedVal = localStorage.getItem(key);
         if (savedVal) {
-            // SeÃ§eneÄŸin listede gerÃ§ekten var olup olduÄŸundan emin olma kontrolÃ¼
+            // Internal UI workflow note.
             const optionExists = Array.from(el.options).some(opt => opt.value === savedVal);
             if (optionExists) {
                 el.value = savedVal;
@@ -9112,7 +9578,7 @@ function restoreDropdownValue(id, key) {
     }
 }
 
-// Statik (Sabit) Dropdownlari geri yÃ¼klemeyi saÄŸlayan fonksiyon
+// Refreshes dropdown options and restores saved selections.
 function restoreStaticDropdowns() {
     restoreDropdownValue('player-platform', 'lastAdminPlayerPlatform');
     restoreDropdownValue('team-region', 'lastAdminTeamRegion');
@@ -9142,9 +9608,9 @@ function getCompetitiveRank(wins, mvps) {
     return 'Unranked';
 }
 
-// â•â•â•â• Ã–ZEL VERI DOÄRULAMA VE UI YARDIMCI FONKSIYONLARI â•â•â•â•
+// Internal UI workflow note.
 
-// Dinamik Hata ve BaÅŸari Mesaji YÃ¶netici Fonksiyonu
+// Updates validation and success messages.
 function showAdminMsg(elementId, message, type = 'success') {
     const msgEl = document.getElementById(elementId);
     if (!msgEl) return;
@@ -9156,7 +9622,7 @@ function showAdminMsg(elementId, message, type = 'success') {
         // Hata durumunda kirmizi parlama efekti ve arka plan
         msgEl.className = "text-red-400 font-black bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 animate-pulse mt-2 text-xs";
     } else {
-        // BaÅŸari durumunda orijinal yeÅŸil tasarim
+        // Updates validation and success messages.
         msgEl.className = "text-green-400 font-black bg-green-500/10 border border-green-500/20 rounded-xl px-4 py-3 mt-2 text-xs";
     }
     
@@ -9165,13 +9631,13 @@ function showAdminMsg(elementId, message, type = 'success') {
     }, 3000);
 }
 
-// Ãœlke Adlari IÃ§in Otomatik Kelime BaÅŸliÄŸi (Title Case) Fonksiyonu
+// Keeps country and tournament dropdowns synchronized.
 function convertToTitleCase(str) {
     if (!str) return '';
     return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 }
 
-// MaÃ§ GiriÅŸleri IÃ§in Ortak DoÄŸrulama Fonksiyonu
+// Match management workflow.
 function validateMatchData(t1, t2, winner, wG, lG, wAc, lAc, wAs, lAs, wS, lS, msgElementId) {
     const accuracyRegex = /^(100(\.0{1,2})?|[0-9]{1,2}(\.[0-9]{1,2})?)$/;
 
@@ -9235,22 +9701,22 @@ function validateMatchData(t1, t2, winner, wG, lG, wAc, lAc, wAs, lAs, wS, lS, m
 
 // KULLANICI LIDERLIK TABLOLARI MERKEZI SENKRONIZASYON MOTOR FONKSIYONU
 async function refreshAllUserLeaderboards() {
-    // 1. Player Stats Leaderboard'u o an aÃ§ik olan sekme ve platform filtresine gÃ¶re anlik yeniler
+    // Renders leaderboard data in the UI.
     if (typeof updatePlayerLeaderboardHeader === "function") await updatePlayerLeaderboardHeader();
     
-    // 2. Team Stats Leaderboard'u o an seÃ§ili olan bÃ¶lge ve aktif sekmeye gÃ¶re anlik yeniler
+    // Renders leaderboard data in the UI.
     if (typeof updateTeamLeaderboardHeader === "function") await updateTeamLeaderboardHeader();
     
-    // 3. Matches leaderboard'u o an seÃ§ili olan arenaya ve aktif sekmeye gÃ¶re anlik yeniler
+    // Renders leaderboard data in the UI.
     if (typeof renderArenaMatchStats === "function") await renderArenaMatchStats();
     
-    // 4. Tournament Matches Stats tablosunu o an seÃ§ili turnuvaya ve aktif sekmeye gÃ¶re anlik yeniler
+    // Updates the table with the latest data.
     if (typeof renderTournamentMatchStats === "function") await renderTournamentMatchStats();
     
-    // 5. Advanced query showcase kartlari da PLAYER_MATCH_STATS Ã¼zerinden hesaplandiÄŸi iÃ§in anlik yenilenir
+    // Player management workflow.
     if (typeof renderAdvancedQueryShowcase === "function") await renderAdvancedQueryShowcase();
     
-    // 6. Kullanici panelindeki favori oyuncu dropdown ve favori takim dropdown listelerini de anlik yeniler ve bu sayede gÃ¼ncel tutar
+    // Player management workflow.
     if (typeof refreshUserFavDropdown === "function") {
         await refreshUserFavDropdown();
     } else if (typeof renderFavoriteDashboardHighlights === "function") {
@@ -9258,7 +9724,7 @@ async function refreshAllUserLeaderboards() {
     }
 }
 
-// ADMIN DASHBOARD'DAKI TAKIM KARTLARI VE LISTELERI ANLIK GÜNCELLEYEN MERKEZ MOTOR FONKSIYONU
+// Team management workflow.
 async function refreshAdminDashboard() {
     if (typeof renderAdminTournamentMatches === "function") await renderAdminTournamentMatches();
 
@@ -9297,29 +9763,18 @@ async function refreshAdminDashboard() {
 
     if (typeof refreshOverview === "function") refreshOverview();
 }
-// Favori takım overview sayfasını akıllı filtreyle alan fonksiyon
-function openFavTeamPage() {
+// Opens the favorite team stats page.
+async function openFavTeamPage() {
     const sel = document.getElementById('user-fav-team-sel');
     const tId = parseInt(sel.value);
     
     if (!tId) return alert("Please select a team first!");
     
-    localStorage.setItem('myFavTeamId', tId); 
-    
-    // Seçilen takimin bölgesini bulup global filtre dropdown'ini otomatik ayarla
-    const team = teamDB.find(t => t.id === tId);
-    if (team) {
-        const regionSelect = document.getElementById('team-region-select');
-        if (regionSelect) {
-            regionSelect.value = team.region || 'Global';
-            localStorage.setItem('lastRegion', regionSelect.value);
-        }
-    }
-    
+    await handleFavoriteTeamChange(tId);
     window.scrollTo(0, 0);
     
     showPage('page-fav-team');
-    if (typeof renderFavTeamStats === "function") renderFavTeamStats();
+    if (typeof renderFavTeamStats === "function") await renderFavTeamStats();
 }
 
 </script>

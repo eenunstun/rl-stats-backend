@@ -14,12 +14,53 @@ router.get("/", async (req, res) => {
 router.get("/leaderboard", async (req, res) => {
   try {
     const { rows } = await db.query(`
+      WITH team_scores AS (
+        SELECT
+          PA.match_id,
+          PA.team_id,
+          PA.team_type,
+          COALESCE(SUM(PMS.goals), 0)::int AS team_score
+        FROM PLAYS_AS PA
+        JOIN MATCH_DATA M
+          ON M.match_id = PA.match_id
+        LEFT JOIN PLAYS_FOR PF
+          ON PF.team_id = PA.team_id
+         AND M.match_date >= PF.since
+         AND (PF.until IS NULL OR M.match_date <= PF.until)
+        LEFT JOIN PLAYER_MATCH_STATS PMS
+          ON PMS.match_id = PA.match_id
+         AND PMS.player_id = PF.player_id
+        GROUP BY PA.match_id, PA.team_id, PA.team_type
+      ),
+      match_scores AS (
+        SELECT
+          match_id,
+          COALESCE(MAX(team_score) FILTER (WHERE team_type = 'BLUE'), 0)::int AS blue_score,
+          COALESCE(MAX(team_score) FILTER (WHERE team_type = 'ORANGE'), 0)::int AS orange_score
+        FROM team_scores
+        GROUP BY match_id
+      ),
+      team_wins AS (
+        SELECT
+          TS.team_id,
+          COUNT(*) FILTER (
+            WHERE
+              (TS.team_type = 'BLUE' AND MS.blue_score > MS.orange_score)
+              OR
+              (TS.team_type = 'ORANGE' AND MS.orange_score > MS.blue_score)
+          )::int AS wins
+        FROM team_scores TS
+        JOIN match_scores MS
+          ON MS.match_id = TS.match_id
+        GROUP BY TS.team_id
+      )
       SELECT
         T.team_id,
         T.team_name,
         T.region,
 
         COUNT(DISTINCT PA.match_id)::int AS matches_played,
+        COALESCE(TW.wins, 0)::int AS wins,
 
         COALESCE(SUM(PMS.goals), 0)::int AS goals,
         COALESCE(SUM(PMS.assists), 0)::int AS assists,
@@ -47,10 +88,14 @@ router.get("/leaderboard", async (req, res) => {
         ON PMS.match_id = PA.match_id
         AND PMS.player_id = PF.player_id
 
+      LEFT JOIN team_wins TW
+        ON TW.team_id = T.team_id
+
       GROUP BY
         T.team_id,
         T.team_name,
-        T.region
+        T.region,
+        TW.wins
 
       ORDER BY goals DESC
     `);
@@ -63,6 +108,142 @@ router.get("/leaderboard", async (req, res) => {
     res.status(500).json({
       error: "Failed to fetch team leaderboard"
     });
+  }
+});
+
+router.get("/:id/stats", async (req, res) => {
+  const teamId = Number(req.params.id);
+
+  if (!Number.isInteger(teamId)) {
+    return res.status(400).json({ error: "Valid team_id is required" });
+  }
+
+  try {
+    const [teamResult, leaderboardResult, rosterResult, matchResult] = await Promise.all([
+      db.query("SELECT * FROM TEAM WHERE team_id = $1", [teamId]),
+      db.query(`
+        WITH team_scores AS (
+          SELECT
+            PA.match_id,
+            PA.team_id,
+            PA.team_type,
+            COALESCE(SUM(PMS.goals), 0)::int AS team_score
+          FROM PLAYS_AS PA
+          JOIN MATCH_DATA M ON M.match_id = PA.match_id
+          LEFT JOIN PLAYS_FOR PF
+            ON PF.team_id = PA.team_id
+           AND M.match_date >= PF.since
+           AND (PF.until IS NULL OR M.match_date <= PF.until)
+          LEFT JOIN PLAYER_MATCH_STATS PMS
+            ON PMS.match_id = PA.match_id
+           AND PMS.player_id = PF.player_id
+          GROUP BY PA.match_id, PA.team_id, PA.team_type
+        ),
+        match_scores AS (
+          SELECT
+            match_id,
+            COALESCE(MAX(team_score) FILTER (WHERE team_type = 'BLUE'), 0)::int AS blue_score,
+            COALESCE(MAX(team_score) FILTER (WHERE team_type = 'ORANGE'), 0)::int AS orange_score
+          FROM team_scores
+          GROUP BY match_id
+        )
+        SELECT
+          COUNT(DISTINCT PA.match_id)::int AS matches_played,
+          COUNT(DISTINCT PA.match_id) FILTER (
+            WHERE
+              (PA.team_type = 'BLUE' AND MS.blue_score > MS.orange_score)
+              OR
+              (PA.team_type = 'ORANGE' AND MS.orange_score > MS.blue_score)
+          )::int AS wins,
+          COALESCE(SUM(PMS.goals), 0)::int AS goals,
+          COALESCE(SUM(PMS.assists), 0)::int AS assists,
+          COALESCE(SUM(PMS.saves), 0)::int AS saves,
+          COALESCE(ROUND(AVG(PMS.shot_accuracy), 2), 0) AS accuracy
+        FROM TEAM T
+        LEFT JOIN PLAYS_AS PA ON PA.team_id = T.team_id
+        LEFT JOIN MATCH_DATA M ON M.match_id = PA.match_id
+        LEFT JOIN PLAYS_FOR PF
+          ON PF.team_id = T.team_id
+         AND M.match_date >= PF.since
+         AND (PF.until IS NULL OR M.match_date <= PF.until)
+        LEFT JOIN PLAYER_MATCH_STATS PMS
+          ON PMS.match_id = PA.match_id
+         AND PMS.player_id = PF.player_id
+        LEFT JOIN match_scores MS ON MS.match_id = PA.match_id
+        WHERE T.team_id = $1
+      `, [teamId]),
+      db.query(`
+        SELECT P.player_id, P.player_name, P.platform, TO_CHAR(PF.since, 'YYYY-MM-DD') AS since
+        FROM PLAYS_FOR PF
+        JOIN PLAYER P ON P.player_id = PF.player_id
+        WHERE PF.team_id = $1 AND PF.until IS NULL
+        ORDER BY P.player_name
+      `, [teamId]),
+      db.query(`
+        WITH team_scores AS (
+          SELECT
+            PA.match_id,
+            PA.team_type,
+            PA.team_id,
+            T.team_name,
+            COALESCE(SUM(PMS.goals), 0)::int AS team_score,
+            COALESCE(SUM(PMS.assists), 0)::int AS assists,
+            COALESCE(SUM(PMS.saves), 0)::int AS saves,
+            COALESCE(ROUND(AVG(PMS.shot_accuracy), 2), 0) AS accuracy
+          FROM PLAYS_AS PA
+          JOIN TEAM T ON T.team_id = PA.team_id
+          JOIN MATCH_DATA M ON M.match_id = PA.match_id
+          LEFT JOIN PLAYS_FOR PF
+            ON PF.team_id = PA.team_id
+           AND M.match_date >= PF.since
+           AND (PF.until IS NULL OR M.match_date <= PF.until)
+          LEFT JOIN PLAYER_MATCH_STATS PMS
+            ON PMS.match_id = PA.match_id
+           AND PMS.player_id = PF.player_id
+          GROUP BY PA.match_id, PA.team_type, PA.team_id, T.team_name
+        )
+        SELECT
+          M.match_id,
+          TO_CHAR(M.match_date, 'YYYY-MM-DD') AS match_date,
+          M.tournament_stage,
+          M.weather,
+          COALESCE(TR.tournament_name, 'Non-Tournament Match') AS tournament_name,
+          A.arena_name,
+          MAX(CASE WHEN TS.team_type = 'BLUE' THEN TS.team_name END) AS blue_team,
+          MAX(CASE WHEN TS.team_type = 'ORANGE' THEN TS.team_name END) AS orange_team,
+          MAX(CASE WHEN TS.team_type = 'BLUE' THEN TS.team_score END) AS blue_score,
+          MAX(CASE WHEN TS.team_type = 'ORANGE' THEN TS.team_score END) AS orange_score,
+          MAX(CASE WHEN TS.team_id = $1 THEN TS.team_type END) AS selected_team_type,
+          MAX(CASE WHEN TS.team_id = $1 THEN TS.team_score END) AS selected_team_score,
+          MAX(CASE WHEN TS.team_id = $1 THEN TS.assists END) AS selected_team_assists,
+          MAX(CASE WHEN TS.team_id = $1 THEN TS.saves END) AS selected_team_saves,
+          MAX(CASE WHEN TS.team_id = $1 THEN TS.accuracy END) AS selected_team_accuracy,
+          MVP.player_name AS mvp_player_name
+        FROM MATCH_DATA M
+        JOIN PLAYS_AS PA ON PA.match_id = M.match_id AND PA.team_id = $1
+        JOIN ARENA A ON A.arena_id = M.arena_id
+        LEFT JOIN TOURNAMENT TR ON TR.tournament_id = M.tournament_id
+        LEFT JOIN team_scores TS ON TS.match_id = M.match_id
+        LEFT JOIN PLAYER_MATCH_STATS MVP_STATS ON MVP_STATS.match_id = M.match_id AND MVP_STATS.mvp = TRUE
+        LEFT JOIN PLAYER MVP ON MVP.player_id = MVP_STATS.player_id
+        GROUP BY M.match_id, M.match_date, M.tournament_stage, M.weather, TR.tournament_name, A.arena_name, MVP.player_name
+        ORDER BY M.match_date DESC, M.match_id DESC
+      `, [teamId])
+    ]);
+
+    if (teamResult.rowCount === 0) {
+      return res.status(404).json({ error: "Team not found" });
+    }
+
+    res.json({
+      team: teamResult.rows[0],
+      stats: leaderboardResult.rows[0],
+      current_roster: rosterResult.rows,
+      matches: matchResult.rows
+    });
+  } catch (err) {
+    console.error("Team stats fetch error:", err);
+    res.status(500).json({ error: "Failed to fetch team stats" });
   }
 });
 
