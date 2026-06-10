@@ -60,7 +60,7 @@ LIMIT 3;
 
 
 -- name: rank-tournaments-by-goals
--- Ranks all tournaments by total goals per tournament
+-- Top 5 Tournaments Ranked by Goals
 
 SELECT
     T.tournament_id,
@@ -81,7 +81,8 @@ GROUP BY
     T.tournament_name
 ORDER BY
     goal_rank,
-    tournament_total_goals DESC;
+    tournament_total_goals DESC
+LIMIT 5;
     
 -- name: match-scores
 -- Final Scores of Matches using plays_for and match_data dates
