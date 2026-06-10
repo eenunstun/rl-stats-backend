@@ -159,4 +159,8 @@ frontend/
 ## Contributors
 
 - Evrim Enustun
-- Project collaborators
+- Oğuz Kağan Hitit
+- Ayberk Özcan
+- Arda Robin Özkeskin
+- Çağlar Çoban
+- Poyraz Pala
