@@ -4,82 +4,162 @@ const { requireAuth, requireAdmin } = require("../middleware/auth");
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  const { rows } = await db.query(
-    "SELECT * FROM PLAYER ORDER BY player_id"
-  );
-  res.json(rows);
+router.get("/leaderboard", async (req, res) => {
+  try {
+    const { rows } = await db.query(`
+      SELECT
+        P.player_id,
+        P.player_name,
+        P.platform,
+
+        COALESCE(SUM(PMS.goals), 0)::int AS goals,
+        COALESCE(SUM(PMS.assists), 0)::int AS assists,
+        COALESCE(SUM(PMS.saves), 0)::int AS saves,
+
+        COALESCE(
+          ROUND(AVG(PMS.shot_accuracy), 2),
+          0
+        ) AS shot_accuracy
+
+      FROM PLAYER P
+
+      LEFT JOIN PLAYER_MATCH_STATS PMS
+        ON P.player_id = PMS.player_id
+
+      GROUP BY
+        P.player_id,
+        P.player_name,
+        P.platform
+
+      ORDER BY goals DESC
+    `);
+
+    res.json(rows);
+
+  } catch (err) {
+    console.error("Leaderboard fetch error:", err);
+    res.status(500).json({
+      error: "Failed to fetch leaderboard"
+    });
+  }
 });
 
-router.get("/:id", async (req, res) => {
-  const id = Number(req.params.id);
-  const playerQ = await db.query(
-    "SELECT * FROM PLAYER WHERE player_id = $1",
-    [id]
-  );
-  if (playerQ.rowCount === 0) {
-    return res.status(404).json({ error: "Player not found" });
+router.get("/", async (req, res) => {
+  try {
+    const { rows } = await db.query(`
+      SELECT
+        P.player_id,
+        P.player_name,
+        P.platform,
+        T.team_id,
+        T.team_name,
+        TO_CHAR(PF.since, 'YYYY-MM-DD') AS since
+      FROM PLAYER P
+      LEFT JOIN PLAYS_FOR PF
+        ON PF.player_id = P.player_id
+        AND PF.until IS NULL
+      LEFT JOIN TEAM T
+        ON T.team_id = PF.team_id
+      ORDER BY P.player_id
+    `);
+
+    res.json(rows);
+
+  } catch (err) {
+    console.error("Players fetch error:", err);
+
+    res.status(500).json({
+      error: "Failed to fetch players"
+    });
   }
-  const teams = await db.query(
-    `SELECT T.team_id, T.team_name, T.region, PF.since, PF.until
-     FROM PLAYS_FOR PF
-     JOIN TEAM T ON T.team_id = PF.team_id
-     WHERE PF.player_id = $1
-     ORDER BY PF.since DESC`,
-    [id]
-  );
-  const stats = await db.query(
-    `SELECT COUNT(*)::int AS matches_played,
-            COALESCE(SUM(goals), 0)::int AS total_goals,
-            COALESCE(SUM(assists), 0)::int AS total_assists,
-            COALESCE(SUM(saves), 0)::int AS total_saves,
-            COALESCE(ROUND(AVG(shot_accuracy), 2), 0) AS avg_shot_accuracy,
-            COALESCE(SUM(CASE WHEN mvp THEN 1 ELSE 0 END), 0)::int AS mvp_count
-     FROM PLAYER_MATCH_STATS
-     WHERE player_id = $1`,
-    [id]
-  );
-  res.json({
-    ...playerQ.rows[0],
-    teams: teams.rows,
-    career_stats: stats.rows[0],
-  });
 });
 
 router.post("/", requireAuth, requireAdmin, async (req, res) => {
-  const { player_name, platform } = req.body || {};
-  if (!player_name || !platform) {
-    return res.status(400).json({ error: "player_name and platform are required" });
+  try {
+    const { player_name, platform } = req.body || {};
+
+    if (!player_name || !platform) {
+      return res.status(400).json({
+        error: "player_name and platform are required",
+      });
+    }
+
+    const result = await db.query(
+      `INSERT INTO PLAYER (player_name, platform)
+       VALUES ($1, $2)
+       RETURNING *`,
+      [player_name.trim(), platform]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error("Create player error:", err);
+    res.status(500).json({ error: "Failed to create player" });
   }
-  const result = await db.query(
-    `INSERT INTO PLAYER (player_id, player_name, platform)
-     VALUES ((SELECT COALESCE(MAX(player_id), 0) + 1 FROM PLAYER), $1, $2)
-     RETURNING *`,
-    [player_name, platform]
-  );
-  res.status(201).json(result.rows[0]);
 });
 
 router.post("/:id/plays-for", requireAuth, requireAdmin, async (req, res) => {
-  const player_id = Number(req.params.id);
-  const { team_id, since, until } = req.body || {};
-  if (!team_id || !since) {
-    return res.status(400).json({ error: "team_id and since are required" });
+  try {
+    const player_id = Number(req.params.id);
+    const { team_id, since, until } = req.body || {};
+
+    if (!team_id || !since) {
+      return res.status(400).json({
+        error: "team_id and since are required",
+      });
+    }
+
+    await db.query(
+      `UPDATE PLAYS_FOR
+       SET until = $1::date
+       WHERE player_id = $2 
+         AND until IS NULL 
+         AND since < $1::date`,
+      [since, player_id]
+    );
+
+    const result = await db.query(
+      `INSERT INTO PLAYS_FOR (player_id, team_id, since, until)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [player_id, team_id, since, until || null]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error("Assign player to team error:", err);
+    res.status(500).json({ error: "Failed to assign player to team" });
   }
-  // Close any currently open contract before opening a new one.
-  await db.query(
-    `UPDATE PLAYS_FOR
-     SET until = $1::date
-     WHERE player_id = $2 AND until IS NULL AND since < $1::date`,
-    [since, player_id]
-  );
-  const result = await db.query(
-    `INSERT INTO PLAYS_FOR (player_id, team_id, since, until)
-     VALUES ($1, $2, $3, $4)
-     RETURNING *`,
-    [player_id, team_id, since, until || null]
-  );
-  res.status(201).json(result.rows[0]);
+});
+
+router.delete("/:id", requireAuth, requireAdmin, async (req, res) => {
+  try {
+    const player_id = Number(req.params.id);
+
+    const result = await db.query(
+      `DELETE FROM PLAYER
+       WHERE player_id = $1
+       RETURNING *`,
+      [player_id]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        error: "Player not found"
+      });
+    }
+
+    res.json({
+      message: "Player deleted successfully",
+      player: result.rows[0]
+    });
+
+  } catch (err) {
+    console.error("Delete player error:", err);
+    res.status(500).json({
+      error: "Failed to delete player"
+    });
+  }
 });
 
 module.exports = router;

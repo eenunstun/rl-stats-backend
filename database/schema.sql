@@ -48,16 +48,13 @@ arena_id INT PRIMARY KEY,
 arena_name VARCHAR(50) NOT NULL UNIQUE
 );
 
-CREATE TABLE MATCH_DATA	
-(
-match_id INT PRIMARY KEY,
+CREATE TABLE MATCH_DATA (
+match_id SERIAL PRIMARY KEY,
 match_date DATE NOT NULL,
-tournament_stage VARCHAR(50) NOT NULL,
+tournament_stage VARCHAR(30) NOT NULL,
 weather VARCHAR(20) NOT NULL,
 tournament_id INT NOT NULL,
-arena_id INT NOT NULL ,
-FOREIGN KEY (tournament_id) REFERENCES TOURNAMENT(tournament_id),
-FOREIGN KEY (arena_id) REFERENCES ARENA(arena_id)
+arena_id INT NOT NULL
 );
 
 CREATE TABLE PLAYER_MATCH_STATS	
