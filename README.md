@@ -158,7 +158,7 @@ frontend/
 
 ## Contributors
 
-- Evrim Enustun
+- Evrim Enüstün
 - Oğuz Kağan Hitit
 - Ayberk Özcan
 - Arda Robin Özkeskin
