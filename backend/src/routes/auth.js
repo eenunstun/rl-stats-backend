@@ -1,6 +1,6 @@
 const express = require("express");
 const db = require("../db");
-const { signToken, requireAuth } = require("../middleware/auth");
+const { signToken, requireAuth, requireAdmin } = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -48,6 +48,24 @@ router.post("/login", async (req, res) => {
 
 router.get("/me", requireAuth, (req, res) => {
   res.json(req.user);
+});
+
+router.get("/users", requireAuth, requireAdmin, async (req, res) => {
+  try {
+    const { rows } = await db.query(`
+      SELECT
+        user_id,
+        username,
+        is_admin
+      FROM APP_USER
+      ORDER BY user_id
+    `);
+
+    res.json(rows);
+  } catch (err) {
+    console.error("Users fetch error:", err);
+    res.status(500).json({ error: "Failed to fetch users" });
+  }
 });
 
 module.exports = router;

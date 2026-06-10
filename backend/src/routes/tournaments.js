@@ -5,18 +5,35 @@ const { requireAuth, requireAdmin } = require("../middleware/auth");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const { rows } = await db.query(
-    "SELECT * FROM TOURNAMENT ORDER BY start_date DESC"
-  );
+  const { rows } = await db.query(`
+    SELECT
+      tournament_id,
+      tournament_name,
+      country,
+      TO_CHAR(start_date, 'YYYY-MM-DD') AS start_date,
+      TO_CHAR(end_date, 'YYYY-MM-DD') AS end_date
+    FROM TOURNAMENT
+    ORDER BY start_date DESC
+  `);
+
   res.json(rows);
 });
 
 router.get("/:id", async (req, res) => {
   const id = Number(req.params.id);
   const tournamentQ = await db.query(
-    "SELECT * FROM TOURNAMENT WHERE tournament_id = $1",
-    [id]
-  );
+  `
+  SELECT
+    tournament_id,
+    tournament_name,
+    country,
+    TO_CHAR(start_date, 'YYYY-MM-DD') AS start_date,
+    TO_CHAR(end_date, 'YYYY-MM-DD') AS end_date
+  FROM TOURNAMENT
+  WHERE tournament_id = $1
+  `,
+  [id]
+);
   if (tournamentQ.rowCount === 0) {
     return res.status(404).json({ error: "Tournament not found" });
   }
@@ -45,6 +62,63 @@ router.post("/", requireAuth, requireAdmin, async (req, res) => {
     [tournament_name, country, start_date, end_date]
   );
   res.status(201).json(result.rows[0]);
+});
+
+router.delete("/:id", requireAuth, requireAdmin, async (req, res) => {
+  const tournament_id = Number(req.params.id);
+
+  try {
+    await db.query(
+      `
+      DELETE FROM PLAYER_MATCH_STATS
+      WHERE match_id IN (
+        SELECT match_id FROM MATCH_DATA WHERE tournament_id = $1
+      )
+      `,
+      [tournament_id]
+    );
+
+    await db.query(
+      `
+      DELETE FROM PLAYS_AS
+      WHERE match_id IN (
+        SELECT match_id FROM MATCH_DATA WHERE tournament_id = $1
+      )
+      `,
+      [tournament_id]
+    );
+
+    await db.query(
+      `
+      DELETE FROM MATCH_DATA
+      WHERE tournament_id = $1
+      `,
+      [tournament_id]
+    );
+
+    const result = await db.query(
+      `
+      DELETE FROM TOURNAMENT
+      WHERE tournament_id = $1
+      RETURNING *
+      `,
+      [tournament_id]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Tournament not found" });
+    }
+
+    res.json({
+      message: "Tournament and related matches deleted successfully",
+      tournament: result.rows[0],
+    });
+  } catch (err) {
+    console.error("Delete tournament error:", err);
+    res.status(500).json({
+      error: err.message || "Failed to delete tournament",
+    });
+  }
 });
 
 module.exports = router;

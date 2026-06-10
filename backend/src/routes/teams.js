@@ -229,11 +229,31 @@ router.post("/", requireAuth, requireAdmin, async (req, res) => {
       });
     }
 
+    const normalizedName = team_name.trim();
+    const normalizedRegion = region.trim();
+
+    const existing = await db.query(
+      `SELECT team_id
+       FROM TEAM
+       WHERE LOWER(team_name) = LOWER($1)`,
+      [normalizedName]
+    );
+
+    if (existing.rowCount > 0) {
+      return res.status(409).json({
+        error: "A team with this name already exists"
+      });
+    }
+
     const result = await db.query(
-      `INSERT INTO TEAM (team_name, region)
-       VALUES ($1, $2)
+      `INSERT INTO TEAM (team_id, team_name, region)
+       VALUES (
+         (SELECT COALESCE(MAX(team_id), 0) + 1 FROM TEAM),
+         $1,
+         $2
+       )
        RETURNING *`,
-      [team_name.trim(), region.trim()]
+      [normalizedName, normalizedRegion]
     );
 
     res.status(201).json(result.rows[0]);
@@ -278,18 +298,55 @@ router.delete("/:teamId/players/:playerId", requireAuth, requireAdmin, async (re
 });
 
 router.delete("/:id", requireAuth, requireAdmin, async (req, res) => {
+  const client = await db.connect();
+
   try {
     const teamId = Number(req.params.id);
 
-    await db.query(
-      `UPDATE PLAYS_FOR
-       SET until = CURRENT_DATE
-       WHERE team_id = $1
-         AND until IS NULL`,
+    await client.query("BEGIN");
+
+    const matchIdsResult = await client.query(
+      `SELECT match_id
+       FROM PLAYS_AS
+       WHERE team_id = $1`,
       [teamId]
     );
 
-    const result = await db.query(
+    const matchIds = matchIdsResult.rows.map(row => row.match_id);
+
+    if (matchIds.length > 0) {
+      await client.query(
+        `DELETE FROM PLAYER_MATCH_STATS
+         WHERE match_id = ANY($1::int[])`,
+        [matchIds]
+      );
+
+      await client.query(
+        `DELETE FROM PLAYS_AS
+         WHERE match_id = ANY($1::int[])`,
+        [matchIds]
+      );
+
+      await client.query(
+        `DELETE FROM MATCH_DATA
+         WHERE match_id = ANY($1::int[])`,
+        [matchIds]
+      );
+    }
+
+    await client.query(
+      `DELETE FROM FAV_TEAM
+       WHERE team_id = $1`,
+      [teamId]
+    );
+
+    await client.query(
+      `DELETE FROM PLAYS_FOR
+       WHERE team_id = $1`,
+      [teamId]
+    );
+
+    const result = await client.query(
       `DELETE FROM TEAM
        WHERE team_id = $1
        RETURNING *`,
@@ -297,8 +354,11 @@ router.delete("/:id", requireAuth, requireAdmin, async (req, res) => {
     );
 
     if (result.rowCount === 0) {
+      await client.query("ROLLBACK");
       return res.status(404).json({ error: "Team not found" });
     }
+
+    await client.query("COMMIT");
 
     res.json({
       message: "Team deleted successfully",
@@ -306,8 +366,11 @@ router.delete("/:id", requireAuth, requireAdmin, async (req, res) => {
     });
 
   } catch (err) {
+    await client.query("ROLLBACK");
     console.error("Delete team error:", err);
     res.status(500).json({ error: "Failed to delete team" });
+  } finally {
+    client.release();
   }
 });
 

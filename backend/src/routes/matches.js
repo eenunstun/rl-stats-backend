@@ -6,38 +6,72 @@ const { requireAuth, requireAdmin } = require("../middleware/auth");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const { tournament_id, arena_id, stage } = req.query;
-  const filters = [];
-  const params = [];
+  try {
+    const { tournament_id, arena_id, stage } = req.query;
+    const filters = [];
+    const params = [];
 
-  if (tournament_id) {
-    params.push(Number(tournament_id));
-    filters.push(`M.tournament_id = $${params.length}`);
+    if (tournament_id) {
+      params.push(Number(tournament_id));
+      filters.push(`M.tournament_id = $${params.length}`);
+    }
+
+    if (arena_id) {
+      params.push(Number(arena_id));
+      filters.push(`M.arena_id = $${params.length}`);
+    }
+
+    if (stage) {
+      params.push(stage);
+      filters.push(`M.tournament_stage = $${params.length}`);
+    }
+
+    const where = filters.length ? `WHERE ${filters.join(" AND ")}` : "";
+
+    const sql = `
+  SELECT
+    M.match_id,
+    M.match_date,
+    M.tournament_stage,
+    M.weather,
+    M.tournament_id,
+    M.arena_id,
+
+    T.tournament_name,
+    T.country,
+    T.start_date,
+    T.end_date,
+
+    AR.arena_name,
+
+    S.blue_team AS team1_name,
+    S.orange_team AS team2_name,
+    S.blue_score AS team1_goals,
+    S.orange_score AS team2_goals,
+
+    CASE
+      WHEN S.blue_score > S.orange_score THEN S.blue_team
+      WHEN S.orange_score > S.blue_score THEN S.orange_team
+      ELSE 'Draw'
+    END AS winner_team_name
+
+  FROM MATCH_DATA M
+  JOIN TOURNAMENT T ON T.tournament_id = M.tournament_id
+  JOIN ARENA AR ON AR.arena_id = M.arena_id
+  LEFT JOIN (
+    ${queries.get("match-scores").replace(/ORDER BY A\.match_id;?/i, "")}
+  ) S ON S.match_id = M.match_id
+
+  ${where}
+
+  ORDER BY M.match_date DESC, M.match_id DESC
+`;
+    const { rows } = await db.query(sql, params);
+    res.json(rows);
+  } catch (err) {
+    console.error("GET /api/matches error:", err);
+    res.status(500).json({ error: "Failed to fetch matches" });
   }
-
-  if (arena_id) {
-    params.push(Number(arena_id));
-    filters.push(`M.arena_id = $${params.length}`);
-  }
-
-  if (stage) {
-    params.push(stage);
-    filters.push(`M.tournament_stage = $${params.length}`);
-  }
-
-  const where = filters.length ? `WHERE ${filters.join(" AND ")}` : "";
-
-  const sql = `
-    SELECT M.*, T.tournament_name, A.arena_name
-    FROM MATCH_DATA M
-    JOIN TOURNAMENT T ON T.tournament_id = M.tournament_id
-    JOIN ARENA A ON A.arena_id = M.arena_id
-    ${where}
-    ORDER BY M.match_date DESC, M.match_id DESC
-  `;
-
-  const { rows } = await db.query(sql, params);
-  res.json(rows);
 });
 
 // Must come before /:id
@@ -82,6 +116,69 @@ router.post("/tournament", requireAuth, requireAdmin, async (req, res) => {
       return res.status(400).json({
         error: "Teams must be different",
       });
+    }
+
+    const blueTeamId = Number(team1_id);
+    const orangeTeamId = Number(team2_id);
+    const playerIds = players.map((p) => Number(p.player_id));
+
+    if (playerIds.some((id) => !Number.isInteger(id))) {
+      return res.status(400).json({
+        error: "Each player must have a valid player_id",
+      });
+    }
+
+    if (new Set(playerIds).size !== players.length) {
+      return res.status(400).json({
+        error: "Duplicate players are not allowed",
+      });
+    }
+
+    const bluePlayers = players.filter((p) => Number(p.team_id) === blueTeamId);
+    const orangePlayers = players.filter((p) => Number(p.team_id) === orangeTeamId);
+
+    if (bluePlayers.length !== 3 || orangePlayers.length !== 3) {
+      return res.status(400).json({
+        error: "Tournament matches require exactly 3 blue players and 3 orange players",
+      });
+    }
+
+    const mvpCount = players.filter((p) => p.mvp === true).length;
+
+    if (mvpCount !== 1) {
+      return res.status(400).json({
+        error: "Exactly one MVP player is required",
+      });
+    }
+
+    for (const p of players) {
+      const goals = Number(p.goals);
+      const assists = Number(p.assists);
+      const saves = Number(p.saves);
+      const shotAccuracy = Number(p.shot_accuracy);
+
+      if (
+        !Number.isInteger(goals) ||
+        !Number.isInteger(assists) ||
+        !Number.isInteger(saves) ||
+        !Number.isFinite(shotAccuracy)
+      ) {
+        return res.status(400).json({
+          error: "Player goals, assists, saves, and shot accuracy must be numeric",
+        });
+      }
+
+      if (goals < 0 || assists < 0 || saves < 0) {
+        return res.status(400).json({
+          error: "Player goals, assists, and saves cannot be negative",
+        });
+      }
+
+      if (shotAccuracy < 0 || shotAccuracy > 100) {
+        return res.status(400).json({
+          error: "Player shot accuracy must be between 0 and 100",
+        });
+      }
     }
 
     await client.query("BEGIN");
@@ -193,6 +290,53 @@ router.get("/:id", async (req, res) => {
     teams: teams.rows,
     player_stats: playerStats.rows,
   });
+});
+
+router.delete("/:id", requireAuth, requireAdmin, async (req, res) => {
+  const client = await db.connect();
+
+  try {
+    const match_id = Number(req.params.id);
+
+    await client.query("BEGIN");
+
+    await client.query(
+      `DELETE FROM PLAYER_MATCH_STATS
+       WHERE match_id = $1`,
+      [match_id]
+    );
+
+    await client.query(
+      `DELETE FROM PLAYS_AS
+       WHERE match_id = $1`,
+      [match_id]
+    );
+
+    const result = await client.query(
+      `DELETE FROM MATCH_DATA
+       WHERE match_id = $1
+       RETURNING *`,
+      [match_id]
+    );
+
+    if (result.rowCount === 0) {
+      await client.query("ROLLBACK");
+      return res.status(404).json({ error: "Match not found" });
+    }
+
+    await client.query("COMMIT");
+
+    res.json({
+      message: "Match deleted successfully",
+      match: result.rows[0],
+    });
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.error("Delete match error:", err);
+    res.status(500).json({ error: "Failed to delete match" });
+  } finally {
+    client.release();
+  }
 });
 
 router.post("/", requireAuth, requireAdmin, async (req, res) => {
