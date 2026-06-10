@@ -26,7 +26,7 @@ ORDER BY played_total DESC
 LIMIT 5;
 
 -- name: fav-teams-leaderboard
--- Top 3 Favorite Teams Ranked by Number of Total Goals Scored
+-- Top 3 Favorite Teams Ranked by Number of Users Who Favorited Them
 
 WITH team_stats AS (
     SELECT  T.team_id,
@@ -55,7 +55,7 @@ SELECT  TS.team_name,
 FROM    team_stats TS,
         favorite_counts FC
 WHERE   TS.team_id = FC.team_id
-ORDER BY TS.team_total_goal DESC
+ORDER BY FC.favorite_count DESC, TS.team_total_goal DESC
 LIMIT 3;
 
 

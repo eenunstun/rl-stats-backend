@@ -910,7 +910,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
 
    <section class="px-12 py-12">
     <div class="flex items-center gap-4 mb-10">
-        <h2 class="text-sm font-black uppercase tracking-[0.2em] text-gray-500 whitespace-nowrap">Arena Stats Leaderboard</h2>
+        <h2 class="text-sm font-black uppercase tracking-[0.2em] text-gray-500 whitespace-nowrap">Match Stats Leaderboard</h2>
         <div class="h-[1px] bg-gray-800 w-full"></div>
     </div>
     
@@ -2651,7 +2651,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
                 <i data-lucide="arrow-left" class="w-4 h-4 text-gray-400 group-hover:text-emerald-500"></i>
                 <span class="text-[10px] font-black uppercase tracking-widest text-gray-400 group-hover:text-emerald-500">Back to Home</span>
             </button>
-            <h1 class="text-3xl font-black uppercase tracking-tighter text-white">Matches <span class="text-emerald-500">Leaderboard</span></h1>
+            <h1 class="text-3xl font-black uppercase tracking-tighter text-white">Match Stats <span class="text-emerald-500">Leaderboard</span></h1>
         </div>
         
         <div class="flex items-center gap-3">
@@ -9258,7 +9258,7 @@ async function refreshAllUserLeaderboards() {
     }
 }
 
-// ADMIN DASHBOARD'DAKI TÃœM KARTLARI VE LISTELERI ANLIK GÃœNCELLEYEN MERKEZ MOTOR FONKSIYONU
+// ADMIN DASHBOARD'DAKI TAKIM KARTLARI VE LISTELERI ANLIK GÜNCELLEYEN MERKEZ MOTOR FONKSIYONU
 async function refreshAdminDashboard() {
     if (typeof renderAdminTournamentMatches === "function") await renderAdminTournamentMatches();
 
@@ -9297,7 +9297,7 @@ async function refreshAdminDashboard() {
 
     if (typeof refreshOverview === "function") refreshOverview();
 }
-// Favori takim overview sayfasini akilli filtreyle aÃ§an fonksiyon
+// Favori takım overview sayfasını akıllı filtreyle alan fonksiyon
 function openFavTeamPage() {
     const sel = document.getElementById('user-fav-team-sel');
     const tId = parseInt(sel.value);
@@ -9306,7 +9306,7 @@ function openFavTeamPage() {
     
     localStorage.setItem('myFavTeamId', tId); 
     
-    // SeÃ§ilen takimin bÃ¶lgesini bulup global filtre dropdown'ini otomatik ayarla
+    // Seçilen takimin bölgesini bulup global filtre dropdown'ini otomatik ayarla
     const team = teamDB.find(t => t.id === tId);
     if (team) {
         const regionSelect = document.getElementById('team-region-select');

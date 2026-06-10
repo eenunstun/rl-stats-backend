@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "db:reset": "node scripts/reset-db.js",
     "dev": "nodemon src/app.js",
     "start": "node src/app.js"
   },
