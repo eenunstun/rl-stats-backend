@@ -26,7 +26,7 @@ ORDER BY played_total DESC
 LIMIT 5;
 
 -- name: fav-teams-leaderboard
--- Top 3 Favorite Teams Ranked by Number of Users Who Favorited Them
+-- Top 3 Most Favourited Teams and Their Respective Goals
 
 WITH team_stats AS (
     SELECT  T.team_id,
@@ -48,19 +48,16 @@ favorite_counts AS (
 )
 SELECT  TS.team_name,
         TS.team_total_goal,
-        TS.team_total_assists,
-        TS.team_total_saves,
-        TS.team_average_shot_accuracy,
         FC.favorite_count
 FROM    team_stats TS,
         favorite_counts FC
 WHERE   TS.team_id = FC.team_id
-ORDER BY FC.favorite_count DESC, TS.team_total_goal DESC
+ORDER BY FC.favorite_count DESC
 LIMIT 3;
 
 
 -- name: rank-tournaments-by-goals
--- Top 5 Tournaments Ranked by Goals
+-- Top 5 Tournaments with Most Goals
 
 SELECT
     T.tournament_id,
