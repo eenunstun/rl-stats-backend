@@ -84,6 +84,69 @@ router.post("/tournament", requireAuth, requireAdmin, async (req, res) => {
       });
     }
 
+    const blueTeamId = Number(team1_id);
+    const orangeTeamId = Number(team2_id);
+    const playerIds = players.map((p) => Number(p.player_id));
+
+    if (playerIds.some((id) => !Number.isInteger(id))) {
+      return res.status(400).json({
+        error: "Each player must have a valid player_id",
+      });
+    }
+
+    if (new Set(playerIds).size !== players.length) {
+      return res.status(400).json({
+        error: "Duplicate players are not allowed",
+      });
+    }
+
+    const bluePlayers = players.filter((p) => Number(p.team_id) === blueTeamId);
+    const orangePlayers = players.filter((p) => Number(p.team_id) === orangeTeamId);
+
+    if (bluePlayers.length !== 3 || orangePlayers.length !== 3) {
+      return res.status(400).json({
+        error: "Tournament matches require exactly 3 blue players and 3 orange players",
+      });
+    }
+
+    const mvpCount = players.filter((p) => p.mvp === true).length;
+
+    if (mvpCount !== 1) {
+      return res.status(400).json({
+        error: "Exactly one MVP player is required",
+      });
+    }
+
+    for (const p of players) {
+      const goals = Number(p.goals);
+      const assists = Number(p.assists);
+      const saves = Number(p.saves);
+      const shotAccuracy = Number(p.shot_accuracy);
+
+      if (
+        !Number.isInteger(goals) ||
+        !Number.isInteger(assists) ||
+        !Number.isInteger(saves) ||
+        !Number.isFinite(shotAccuracy)
+      ) {
+        return res.status(400).json({
+          error: "Player goals, assists, saves, and shot accuracy must be numeric",
+        });
+      }
+
+      if (goals < 0 || assists < 0 || saves < 0) {
+        return res.status(400).json({
+          error: "Player goals, assists, and saves cannot be negative",
+        });
+      }
+
+      if (shotAccuracy < 0 || shotAccuracy > 100) {
+        return res.status(400).json({
+          error: "Player shot accuracy must be between 0 and 100",
+        });
+      }
+    }
+
     await client.query("BEGIN");
 
     const matchResult = await client.query(
