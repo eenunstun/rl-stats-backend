@@ -6555,14 +6555,16 @@ if (recM) {
 // 5. RECENT TOURNEY MATCHES
 const recTMatches = document.getElementById('ov-recent-tourney-matches');
 if (recTMatches) {
-    if (overviewMatches.length > 0) {
+    const overviewTournamentMatches = overviewMatches.filter(match => match.tournament_id);
+
+    if (overviewTournamentMatches.length > 0) {
         // Synchronizes tournament date fields from selected data.
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const twoWeeksInMs = 14 * 24 * 60 * 60 * 1000;
 
         // Internal UI workflow note.
-        const sortedTourneys = [...overviewMatches].sort((a, b) => new Date(a.match_date) - new Date(b.match_date));
+        const sortedTourneys = [...overviewTournamentMatches].sort((a, b) => new Date(a.match_date) - new Date(b.match_date));
         const recentTourneys = sortedTourneys.slice(-5);
 
         recTMatches.innerHTML = recentTourneys.map((m) => {
