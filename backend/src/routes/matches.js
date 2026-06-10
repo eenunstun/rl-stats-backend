@@ -37,27 +37,38 @@ router.get("/", async (req, res) => {
     M.tournament_id,
     M.arena_id,
 
-    T.tournament_name,
+    COALESCE(T.tournament_name, 'Non-Tournament Match') AS tournament_name,
     T.country,
     T.start_date,
     T.end_date,
 
     AR.arena_name,
 
-    S.blue_team AS team1_name,
-    S.orange_team AS team2_name,
-    S.blue_score AS team1_goals,
-    S.orange_score AS team2_goals,
+    COALESCE(S.blue_team, BLUE.team_name) AS team1_name,
+    COALESCE(S.orange_team, ORANGE.team_name) AS team2_name,
+    COALESCE(S.blue_score, 0) AS team1_goals,
+    COALESCE(S.orange_score, 0) AS team2_goals,
 
     CASE
-      WHEN S.blue_score > S.orange_score THEN S.blue_team
-      WHEN S.orange_score > S.blue_score THEN S.orange_team
+      WHEN S.blue_score > S.orange_score THEN COALESCE(S.blue_team, BLUE.team_name)
+      WHEN S.orange_score > S.blue_score THEN COALESCE(S.orange_team, ORANGE.team_name)
+      WHEN S.blue_score IS NULL OR S.orange_score IS NULL THEN 'Not recorded'
       ELSE 'Draw'
     END AS winner_team_name
 
   FROM MATCH_DATA M
-  JOIN TOURNAMENT T ON T.tournament_id = M.tournament_id
+  LEFT JOIN TOURNAMENT T ON T.tournament_id = M.tournament_id
   JOIN ARENA AR ON AR.arena_id = M.arena_id
+  LEFT JOIN PLAYS_AS BLUE_PA
+    ON BLUE_PA.match_id = M.match_id
+   AND BLUE_PA.team_type = 'BLUE'
+  LEFT JOIN TEAM BLUE
+    ON BLUE.team_id = BLUE_PA.team_id
+  LEFT JOIN PLAYS_AS ORANGE_PA
+    ON ORANGE_PA.match_id = M.match_id
+   AND ORANGE_PA.team_type = 'ORANGE'
+  LEFT JOIN TEAM ORANGE
+    ON ORANGE.team_id = ORANGE_PA.team_id
   LEFT JOIN (
     ${queries.get("match-scores").replace(/ORDER BY A\.match_id;?/i, "")}
   ) S ON S.match_id = M.match_id
@@ -251,9 +262,9 @@ router.get("/:id", async (req, res) => {
 
   const matchQ = await db.query(
     `
-    SELECT M.*, T.tournament_name, A.arena_name
+    SELECT M.*, COALESCE(T.tournament_name, 'Non-Tournament Match') AS tournament_name, A.arena_name
     FROM MATCH_DATA M
-    JOIN TOURNAMENT T ON T.tournament_id = M.tournament_id
+    LEFT JOIN TOURNAMENT T ON T.tournament_id = M.tournament_id
     JOIN ARENA A ON A.arena_id = M.arena_id
     WHERE M.match_id = $1
     `,
@@ -340,28 +351,157 @@ router.delete("/:id", requireAuth, requireAdmin, async (req, res) => {
 });
 
 router.post("/", requireAuth, requireAdmin, async (req, res) => {
-  const { match_date, tournament_stage, weather, tournament_id, arena_id } =
-    req.body || {};
+  const client = await db.connect();
 
-  if (!match_date || !tournament_stage || !weather || !tournament_id || !arena_id) {
-    return res.status(400).json({
-      error:
-        "match_date, tournament_stage, weather, tournament_id, arena_id are required",
-    });
+  try {
+    const {
+      match_date,
+      tournament_stage = "Regular Match",
+      weather,
+      tournament_id = null,
+      arena_id,
+      team1_id,
+      team2_id,
+      players,
+    } = req.body || {};
+
+    if (
+      !match_date ||
+      !weather ||
+      !arena_id ||
+      !team1_id ||
+      !team2_id ||
+      !Array.isArray(players) ||
+      players.length !== 6
+    ) {
+      return res.status(400).json({
+        error: "match_date, weather, arena_id, team1_id, team2_id, and six player stats are required",
+      });
+    }
+
+    if (Number(team1_id) === Number(team2_id)) {
+      return res.status(400).json({ error: "Teams must be different" });
+    }
+
+    const blueTeamId = Number(team1_id);
+    const orangeTeamId = Number(team2_id);
+    const playerIds = players.map((p) => Number(p.player_id));
+
+    if (playerIds.some((id) => !Number.isInteger(id))) {
+      return res.status(400).json({
+        error: "Each player must have a valid player_id",
+      });
+    }
+
+    if (new Set(playerIds).size !== players.length) {
+      return res.status(400).json({
+        error: "Duplicate players are not allowed",
+      });
+    }
+
+    const bluePlayers = players.filter((p) => Number(p.team_id) === blueTeamId);
+    const orangePlayers = players.filter((p) => Number(p.team_id) === orangeTeamId);
+
+    if (bluePlayers.length !== 3 || orangePlayers.length !== 3) {
+      return res.status(400).json({
+        error: "Regular matches require exactly 3 blue players and 3 orange players",
+      });
+    }
+
+    const mvpCount = players.filter((p) => p.mvp === true).length;
+
+    if (mvpCount !== 1) {
+      return res.status(400).json({
+        error: "Exactly one MVP player is required",
+      });
+    }
+
+    for (const p of players) {
+      const goals = Number(p.goals);
+      const assists = Number(p.assists);
+      const saves = Number(p.saves);
+      const shotAccuracy = Number(p.shot_accuracy);
+
+      if (
+        !Number.isInteger(goals) ||
+        !Number.isInteger(assists) ||
+        !Number.isInteger(saves) ||
+        !Number.isFinite(shotAccuracy)
+      ) {
+        return res.status(400).json({
+          error: "Player goals, assists, saves, and shot accuracy must be numeric",
+        });
+      }
+
+      if (goals < 0 || assists < 0 || saves < 0) {
+        return res.status(400).json({
+          error: "Player goals, assists, and saves cannot be negative",
+        });
+      }
+
+      if (shotAccuracy < 0 || shotAccuracy > 100) {
+        return res.status(400).json({
+          error: "Player shot accuracy must be between 0 and 100",
+        });
+      }
+    }
+
+    await client.query("BEGIN");
+
+    const result = await client.query(
+      `
+      INSERT INTO MATCH_DATA
+        (match_date, tournament_stage, weather, tournament_id, arena_id)
+      VALUES
+        ($1, $2, $3, $4, $5)
+      RETURNING *
+      `,
+      [match_date, tournament_stage, weather, tournament_id || null, arena_id]
+    );
+
+    const match = result.rows[0];
+
+    await client.query(
+      `
+      INSERT INTO PLAYS_AS
+        (team_id, match_id, team_type)
+      VALUES
+        ($1, $2, 'BLUE'),
+        ($3, $2, 'ORANGE')
+      `,
+      [team1_id, match.match_id, team2_id]
+    );
+
+    for (const p of players) {
+      await client.query(
+        `
+        INSERT INTO PLAYER_MATCH_STATS
+          (player_id, match_id, goals, assists, saves, shot_accuracy, mvp)
+        VALUES
+          ($1, $2, $3, $4, $5, $6, COALESCE($7, FALSE))
+        `,
+        [
+          p.player_id,
+          match.match_id,
+          p.goals,
+          p.assists,
+          p.saves,
+          p.shot_accuracy,
+          p.mvp,
+        ]
+      );
+    }
+
+    await client.query("COMMIT");
+
+    res.status(201).json(match);
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.error("Create match error:", err);
+    res.status(500).json({ error: "Failed to create match" });
+  } finally {
+    client.release();
   }
-
-  const result = await db.query(
-    `
-    INSERT INTO MATCH_DATA
-      (match_date, tournament_stage, weather, tournament_id, arena_id)
-    VALUES
-      ($1, $2, $3, $4, $5)
-    RETURNING *
-    `,
-    [match_date, tournament_stage, weather, tournament_id, arena_id]
-  );
-
-  res.status(201).json(result.rows[0]);
 });
 
 router.post("/:id/plays-as", requireAuth, requireAdmin, async (req, res) => {

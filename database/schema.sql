@@ -53,7 +53,7 @@ match_id SERIAL PRIMARY KEY,
 match_date DATE NOT NULL,
 tournament_stage VARCHAR(30) NOT NULL,
 weather VARCHAR(20) NOT NULL,
-tournament_id INT NOT NULL,
+tournament_id INT,
 arena_id INT NOT NULL
 );
 

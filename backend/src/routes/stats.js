@@ -45,7 +45,7 @@ router.get("/player-match-stats", requireAuth, requireAdmin, async (req, res) =>
         PMS.match_id,
         TO_CHAR(M.match_date, 'YYYY-MM-DD') AS match_date,
         M.tournament_stage,
-        T.tournament_name,
+        COALESCE(T.tournament_name, 'Non-Tournament Match') AS tournament_name,
         A.arena_name,
         PMS.goals,
         PMS.assists,
@@ -57,7 +57,7 @@ router.get("/player-match-stats", requireAuth, requireAdmin, async (req, res) =>
         ON P.player_id = PMS.player_id
       JOIN MATCH_DATA M
         ON M.match_id = PMS.match_id
-      JOIN TOURNAMENT T
+      LEFT JOIN TOURNAMENT T
         ON T.tournament_id = M.tournament_id
       JOIN ARENA A
         ON A.arena_id = M.arena_id
