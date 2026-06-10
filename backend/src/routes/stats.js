@@ -24,8 +24,18 @@ router.get("/fav-teams-leaderboard", async (req, res) => {
   res.json(rows);
 });
 
+router.get("/top-popular-teams-by-goals", async (req, res) => {
+  const { rows } = await db.query(queries.get("fav-teams-leaderboard"));
+  res.json(rows);
+});
+
+router.get("/rank-tournaments-by-goals", async (req, res) => {
+  const { rows } = await db.query(queries.get("rank-tournaments-by-goals"));
+  res.json(rows);
+});
+
 router.get("/top-tournament", async (req, res) => {
-  const { rows } = await db.query(queries.get("top-tournament"));
+  const { rows } = await db.query(queries.get("rank-tournaments-by-goals"));
   res.json(rows);
 });
 

@@ -856,12 +856,15 @@ body:has(#page-loader:not(.loader-hidden)) main {
                 </div>
                 
                 <div class="flex items-center gap-4 w-full xl:w-auto relative z-10 justify-end mt-4 xl:mt-0">
-                    <select id="user-fav-player-sel" onchange="saveDropdownState('user-fav-player-sel', 'myFavPlayerId')" class="admin-input text-sm text-gray-300 cursor-pointer min-w-[250px] bg-[#1a1b1e]/80 backdrop-blur-md border-gray-700 hover:border-purple-500 transition-colors">
+                    <select id="user-fav-player-sel" onchange="saveDropdownState('user-fav-player-sel', 'myFavPlayerId'); renderFavoriteDashboardHighlights()" class="admin-input text-sm text-gray-300 cursor-pointer min-w-[250px] bg-[#1a1b1e]/80 backdrop-blur-md border-gray-700 hover:border-purple-500 transition-colors">
                         <option value="">- Select Player -</option>
                     </select>
                     <button onclick="openFavPlayerPage()" class="bg-purple-600 hover:bg-purple-500 px-6 py-4 rounded-xl font-black uppercase tracking-widest transition-all text-white shadow-[0_0_15px_rgba(157,78,237,0.4)] active:scale-95 flex items-center gap-2 text-xs shrink-0">
                         <i data-lucide="search" class="w-4 h-4"></i> View Stats
                     </button>
+                </div>
+                <div id="fav-player-last-match" class="relative z-10 w-full xl:w-[360px] rounded-xl bg-black/35 border border-purple-500/20 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-400">
+                    Select a favorite player to see their last match
                 </div>
             </div>
         </section>
@@ -892,12 +895,15 @@ body:has(#page-loader:not(.loader-hidden)) main {
                 </div>
                 
                 <div class="flex items-center gap-4 w-full xl:w-auto relative z-10 justify-end mt-4 xl:mt-0">
-                    <select id="user-fav-team-sel" onchange="saveDropdownState('user-fav-team-sel', 'myFavTeamId')" class="admin-input text-sm text-gray-300 cursor-pointer min-w-[250px] bg-[#1a1b1e]/80 backdrop-blur-md border-gray-700 hover:border-sky-500 transition-colors">
+                    <select id="user-fav-team-sel" onchange="saveDropdownState('user-fav-team-sel', 'myFavTeamId'); renderFavoriteDashboardHighlights()" class="admin-input text-sm text-gray-300 cursor-pointer min-w-[250px] bg-[#1a1b1e]/80 backdrop-blur-md border-gray-700 hover:border-sky-500 transition-colors">
                         <option value="">- Select Team -</option>
                     </select>
                     <button onclick="openFavTeamPage()" class="bg-sky-600 hover:bg-sky-500 px-6 py-4 rounded-xl font-black uppercase tracking-widest transition-all text-white shadow-[0_0_15px_rgba(14,165,233,0.4)] active:scale-95 flex items-center gap-2 text-xs shrink-0">
                         <i data-lucide="search" class="w-4 h-4"></i> View Stats
                     </button>
+                </div>
+                <div id="fav-team-last-match" class="relative z-10 w-full xl:w-[360px] rounded-xl bg-black/35 border border-sky-500/20 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-gray-400">
+                    Select a favorite team to see their last match
                 </div>
             </div>
         </section>
@@ -977,7 +983,6 @@ body:has(#page-loader:not(.loader-hidden)) main {
                         <div>
                             <h3 class="text-xl font-black mb-1 group-hover:text-red-400 transition-colors">Team Wins</h3>
                             <div id="team-display-wins">
-                                <div class="text-gray-500 font-mono text-xs mt-1.5 select-none">-</div>
                             </div>
                         </div>
                         <i data-lucide="trophy" class="w-12 h-12 text-red-500 opacity-40 group-hover:opacity-100 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300"></i>
@@ -990,7 +995,6 @@ body:has(#page-loader:not(.loader-hidden)) main {
                         <div>
                             <h3 class="text-xl font-black mb-1 group-hover:text-orange-400 transition-colors">Team Goals</h3>
                             <div id="team-display-goals">
-                                <div class="text-gray-500 font-mono text-xs mt-1.5 select-none">-</div>
                             </div>
                         </div>
                         <i data-lucide="loader-pinwheel" class="w-12 h-12 text-orange-500 opacity-40 group-hover:opacity-100 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300"></i>
@@ -1003,7 +1007,6 @@ body:has(#page-loader:not(.loader-hidden)) main {
                         <div>
                             <h3 class="text-xl font-black mb-1 group-hover:text-yellow-400 transition-colors">Team Shot Accuracy</h3>
                             <div id="team-display-accuracy">
-                                <div class="text-gray-500 font-mono text-xs mt-1.5 select-none">-</div>
                             </div>
                         </div>
                         <i data-lucide="target" class="w-12 h-12 text-yellow-500 opacity-40 group-hover:opacity-100 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300"></i>
@@ -1016,7 +1019,6 @@ body:has(#page-loader:not(.loader-hidden)) main {
                         <div>
                             <h3 class="text-xl font-black mb-1 group-hover:text-cyan-400 transition-colors">Team Assists</h3>
                             <div id="team-display-assists">
-                                <div class="text-gray-500 font-mono text-xs mt-1.5 select-none">-</div>
                             </div>
                         </div>
                         <i data-lucide="users" class="w-12 h-12 text-cyan-500 opacity-40 group-hover:opacity-100 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300"></i>
@@ -1029,11 +1031,51 @@ body:has(#page-loader:not(.loader-hidden)) main {
                         <div>
                             <h3 class="text-xl font-black mb-1 group-hover:text-green-400 transition-colors">Team Saves</h3>
                             <div id="team-display-saves">
-                                <div class="text-gray-500 font-mono text-xs mt-1.5 select-none">-</div>
                             </div>
                         </div>
                         <i data-lucide="shield" class="w-12 h-12 text-green-500 opacity-40 group-hover:opacity-100 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300"></i>
                     </div>
+                </div>
+            </div>
+        </section>
+
+     <section class="px-12 py-12">
+            <div class="flex items-center gap-4 mb-10">
+                <h2 class="text-sm font-black uppercase tracking-[0.2em] text-gray-500 whitespace-nowrap">Advanced Query Showcase</h2>
+                <div class="h-[1px] bg-fuchsia-500/20 w-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 xl:grid-cols-4 md:grid-cols-2 gap-5">
+                <div class="bg-[#1a1b1e] border border-gray-800 rounded-xl overflow-hidden">
+                    <div class="px-5 py-4 border-b border-gray-800 flex items-center gap-2">
+                        <i data-lucide="target" class="w-4 h-4 text-yellow-400"></i>
+                        <h3 class="text-[11px] font-black uppercase tracking-widest text-white">Top 5 Scorers</h3>
+                    </div>
+                    <div id="advanced-top-scorers" class="divide-y divide-gray-800/50 min-h-[180px]"></div>
+                </div>
+
+                <div class="bg-[#1a1b1e] border border-gray-800 rounded-xl overflow-hidden">
+                    <div class="px-5 py-4 border-b border-gray-800 flex items-center gap-2">
+                        <i data-lucide="shield" class="w-4 h-4 text-orange-400"></i>
+                        <h3 class="text-[11px] font-black uppercase tracking-widest text-white">Popular Team Goals</h3>
+                    </div>
+                    <div id="advanced-popular-teams" class="divide-y divide-gray-800/50 min-h-[180px]"></div>
+                </div>
+
+                <div class="bg-[#1a1b1e] border border-gray-800 rounded-xl overflow-hidden">
+                    <div class="px-5 py-4 border-b border-gray-800 flex items-center gap-2">
+                        <i data-lucide="award" class="w-4 h-4 text-blue-400"></i>
+                        <h3 class="text-[11px] font-black uppercase tracking-widest text-white">Tournament Goals</h3>
+                    </div>
+                    <div id="advanced-tournaments" class="divide-y divide-gray-800/50 min-h-[180px]"></div>
+                </div>
+
+                <div class="bg-[#1a1b1e] border border-gray-800 rounded-xl overflow-hidden">
+                    <div class="px-5 py-4 border-b border-gray-800 flex items-center gap-2">
+                        <i data-lucide="swords" class="w-4 h-4 text-emerald-400"></i>
+                        <h3 class="text-[11px] font-black uppercase tracking-widest text-white">Team Matches</h3>
+                    </div>
+                    <div id="advanced-team-matches" class="divide-y divide-gray-800/50 min-h-[180px]"></div>
                 </div>
             </div>
         </section>
@@ -1986,12 +2028,12 @@ body:has(#page-loader:not(.loader-hidden)) main {
             
             <div class="grid grid-cols-2 gap-4">
                 <div class="flex flex-col gap-1.5">
-                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">First Team *</label>
-                    <select id="t-team1-sel" onchange="saveDropdownState('t-team1-sel', 'lastAdminTourneyTeam1'); refreshTournamentWinnerDropdown(); refreshTournamentPlayerDropdowns();" class="admin-input text-sm text-gray-300 cursor-pointer w-full"><option value="">- Team 1 -</option></select>
+                    <label class="text-[10px] font-black text-blue-400 uppercase tracking-widest">Blue Team *</label>
+                    <select id="t-team1-sel" onchange="saveDropdownState('t-team1-sel', 'lastAdminTourneyTeam1'); refreshTournamentWinnerDropdown(); refreshTournamentPlayerDropdowns();" class="admin-input text-sm text-gray-300 cursor-pointer w-full"><option value="">- Blue Team -</option></select>
                 </div>
                 <div class="flex flex-col gap-1.5">
-                    <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Second Team *</label>
-                    <select id="t-team2-sel" onchange="saveDropdownState('t-team2-sel', 'lastAdminTourneyTeam2'); refreshTournamentWinnerDropdown(); refreshTournamentPlayerDropdowns();" class="admin-input text-sm text-gray-300 cursor-pointer w-full"><option value="">- Team 2 -</option></select>
+                    <label class="text-[10px] font-black text-orange-400 uppercase tracking-widest">Orange Team *</label>
+                    <select id="t-team2-sel" onchange="saveDropdownState('t-team2-sel', 'lastAdminTourneyTeam2'); refreshTournamentWinnerDropdown(); refreshTournamentPlayerDropdowns();" class="admin-input text-sm text-gray-300 cursor-pointer w-full"><option value="">- Orange Team -</option></select>
                 </div>
             </div>
             
@@ -2007,7 +2049,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
     <!-- TEAM 1 PLAYERS -->
     <div class="flex flex-col gap-2">
         <label class="text-[9px] font-black text-blue-400 uppercase tracking-widest">
-            Team 1 Players
+            Blue Team Players
         </label>
 
         <select id="t-team1-player1"
@@ -2031,8 +2073,8 @@ body:has(#page-loader:not(.loader-hidden)) main {
 
     <!-- TEAM 2 PLAYERS -->
     <div class="flex flex-col gap-2">
-        <label class="text-[9px] font-black text-red-400 uppercase tracking-widest">
-            Team 2 Players
+        <label class="text-[9px] font-black text-orange-400 uppercase tracking-widest">
+            Orange Team Players
         </label>
 
         <select id="t-team2-player1"
@@ -2223,12 +2265,12 @@ body:has(#page-loader:not(.loader-hidden)) main {
                     
                     <div class="grid grid-cols-2 gap-4">
                         <div class="flex flex-col gap-1.5">
-                            <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">First Team *</label>
-                            <select id="m-team1-sel" onchange="saveDropdownState('m-team1-sel', 'lastAdminMatchTeam1'); refreshMatchWinnerDropdown(); refreshMatchPlayerDropdowns();" class="admin-input text-sm text-gray-300 cursor-pointer w-full"><option value="">- Team 1 -</option></select>
+                            <label class="text-[10px] font-black text-blue-400 uppercase tracking-widest">Blue Team *</label>
+                            <select id="m-team1-sel" onchange="saveDropdownState('m-team1-sel', 'lastAdminMatchTeam1'); refreshMatchWinnerDropdown(); refreshMatchPlayerDropdowns();" class="admin-input text-sm text-gray-300 cursor-pointer w-full"><option value="">- Blue Team -</option></select>
                         </div>
                         <div class="flex flex-col gap-1.5">
-                            <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Second Team *</label>
-                            <select id="m-team2-sel" onchange="saveDropdownState('m-team2-sel', 'lastAdminMatchTeam2'); refreshMatchWinnerDropdown(); refreshMatchPlayerDropdowns();" class="admin-input text-sm text-gray-300 cursor-pointer w-full"><option value="">- Team 2 -</option></select>
+                            <label class="text-[10px] font-black text-orange-400 uppercase tracking-widest">Orange Team *</label>
+                            <select id="m-team2-sel" onchange="saveDropdownState('m-team2-sel', 'lastAdminMatchTeam2'); refreshMatchWinnerDropdown(); refreshMatchPlayerDropdowns();" class="admin-input text-sm text-gray-300 cursor-pointer w-full"><option value="">- Orange Team -</option></select>
                         </div>
                     </div>
                     
@@ -2241,14 +2283,14 @@ body:has(#page-loader:not(.loader-hidden)) main {
                     
                     <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-800/60">
                         <div class="flex flex-col gap-2">
-                            <label class="text-[9px] font-black text-blue-400 uppercase tracking-widest">Team 1 Players</label>
+                            <label class="text-[9px] font-black text-blue-400 uppercase tracking-widest">Blue Team Players</label>
                             <select id="m-team1-player1" onchange="preventDuplicateMatchPlayers();refreshMatchMvpDropdown();" class="admin-input text-xs"><option value="">- Player 1 -</option></select>
                             <select id="m-team1-player2" onchange="preventDuplicateMatchPlayers();refreshMatchMvpDropdown();" class="admin-input text-xs"><option value="">- Player 2 -</option></select>
                             <select id="m-team1-player3" onchange="preventDuplicateMatchPlayers();refreshMatchMvpDropdown();" class="admin-input text-xs"><option value="">- Player 3 -</option></select>
                         </div>
 
                         <div class="flex flex-col gap-2">
-                            <label class="text-[9px] font-black text-red-400 uppercase tracking-widest">Team 2 Players</label>
+                            <label class="text-[9px] font-black text-orange-400 uppercase tracking-widest">Orange Team Players</label>
                             <select id="m-team2-player1" onchange="preventDuplicateMatchPlayers();refreshMatchMvpDropdown();" class="admin-input text-xs"><option value="">- Player 1 -</option></select>
                             <select id="m-team2-player2" onchange="preventDuplicateMatchPlayers();refreshMatchMvpDropdown();" class="admin-input text-xs"><option value="">- Player 2 -</option></select>
                             <select id="m-team2-player3" onchange="preventDuplicateMatchPlayers();refreshMatchMvpDropdown();" class="admin-input text-xs"><option value="">- Player 3 -</option></select>
@@ -2553,35 +2595,35 @@ body:has(#page-loader:not(.loader-hidden)) main {
         </th>
 
         <th class="px-6 py-5 text-center text-orange-500">
-            <div class="flex items-center justify-center gap-2"><i data-lucide="loader-pinwheel" class="w-3 h-3"></i>W. Goals</div>
+            <div class="flex items-center justify-center gap-2"><i data-lucide="loader-pinwheel" class="w-3 h-3"></i>Blue Goals</div>
         </th>
 
         <th class="px-6 py-5 text-center text-orange-500">
-            <div class="flex items-center justify-center gap-2"><i data-lucide="loader-pinwheel" class="w-3 h-3"></i>L. Goals</div>
+            <div class="flex items-center justify-center gap-2"><i data-lucide="loader-pinwheel" class="w-3 h-3"></i>Orange Goals</div>
         </th>
 
         <th class="px-6 py-5 text-center text-yellow-500">
-            <div class="flex items-center justify-center gap-2"><i data-lucide="target" class="w-3 h-3"></i>W. Accuracy</div>
+            <div class="flex items-center justify-center gap-2"><i data-lucide="target" class="w-3 h-3"></i>Blue Accuracy</div>
         </th>
 
         <th class="px-6 py-5 text-center text-yellow-500">
-            <div class="flex items-center justify-center gap-2"><i data-lucide="target" class="w-3 h-3"></i>L. Accuracy</div>
+            <div class="flex items-center justify-center gap-2"><i data-lucide="target" class="w-3 h-3"></i>Orange Accuracy</div>
         </th>
 
         <th class="px-6 py-5 text-center text-cyan-400">
-            <div class="flex items-center justify-center gap-2"><i data-lucide="users" class="w-3 h-3"></i>W. Assists</div>
+            <div class="flex items-center justify-center gap-2"><i data-lucide="users" class="w-3 h-3"></i>Blue Assists</div>
         </th>
 
         <th class="px-6 py-5 text-center text-cyan-400">
-            <div class="flex items-center justify-center gap-2"><i data-lucide="users" class="w-3 h-3"></i>L. Assists</div>
+            <div class="flex items-center justify-center gap-2"><i data-lucide="users" class="w-3 h-3"></i>Orange Assists</div>
         </th>
 
         <th class="px-6 py-5 text-center text-green-500">
-            <div class="flex items-center justify-center gap-2"><i data-lucide="shield" class="w-3 h-3"></i>W. Saves</div>
+            <div class="flex items-center justify-center gap-2"><i data-lucide="shield" class="w-3 h-3"></i>Blue Saves</div>
         </th>
 
         <th class="px-6 py-5 text-center text-green-500">
-            <div class="flex items-center justify-center gap-2"><i data-lucide="shield" class="w-3 h-3"></i>L. Saves</div>
+            <div class="flex items-center justify-center gap-2"><i data-lucide="shield" class="w-3 h-3"></i>Orange Saves</div>
         </th>
 
         <th class="px-6 py-5 text-right text-purple-500">
@@ -2609,11 +2651,11 @@ body:has(#page-loader:not(.loader-hidden)) main {
                 <i data-lucide="arrow-left" class="w-4 h-4 text-gray-400 group-hover:text-emerald-500"></i>
                 <span class="text-[10px] font-black uppercase tracking-widest text-gray-400 group-hover:text-emerald-500">Back to Home</span>
             </button>
-            <h1 class="text-3xl font-black uppercase tracking-tighter text-white">Arena <span class="text-emerald-500">Matches Stats</span></h1>
+            <h1 class="text-3xl font-black uppercase tracking-tighter text-white">Matches <span class="text-emerald-500">Leaderboard</span></h1>
         </div>
         
         <div class="flex items-center gap-3">
-            <span class="text-xs font-black text-gray-500 uppercase tracking-widest">Arena</span>
+            <span class="text-xs font-black text-gray-500 uppercase tracking-widest">Arena Filter</span>
             <select id="arena-name-select" onchange="saveDropdownState('arena-name-select', 'lastSelectedArena'); renderArenaMatchStats()" class="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-[11px] font-black text-white outline-none focus:border-emerald-500 cursor-pointer transition-all hover:bg-white/10 min-w-[240px]">
                 <option value="all" class="bg-[#1a1b1e]">All Arenas</option>
                 <option value="dfh" class="bg-[#1a1b1e]">DFH Stadium</option>
@@ -2645,7 +2687,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
     <div class="px-12 py-10 relative"> 
         <div class="mb-6 ml-2 relative z-10">
             <span id="arena-dynamic-sub-title" class="text-sm font-black uppercase tracking-[0.2em] text-gray-500">
-                DFH Stadium Matches Stats
+                All Matches
             </span>
         </div>
 
@@ -2678,31 +2720,31 @@ body:has(#page-loader:not(.loader-hidden)) main {
         </th>
 
         <th class="px-6 py-5 text-center text-orange-500">
-            <div class="flex items-center justify-center gap-2"><i data-lucide="loader-pinwheel" class="w-3 h-3"></i>W. Goals</div>
+            <div class="flex items-center justify-center gap-2"><i data-lucide="loader-pinwheel" class="w-3 h-3"></i>Blue Goals</div>
         </th>
         <th class="px-6 py-5 text-center text-orange-500">
-            <div class="flex items-center justify-center gap-2"><i data-lucide="loader-pinwheel" class="w-3 h-3"></i>L. Goals</div>
+            <div class="flex items-center justify-center gap-2"><i data-lucide="loader-pinwheel" class="w-3 h-3"></i>Orange Goals</div>
         </th>
 
         <th class="px-6 py-5 text-center text-yellow-500">
-            <div class="flex items-center justify-center gap-2"><i data-lucide="target" class="w-3 h-3"></i>W. Accuracy</div>
+            <div class="flex items-center justify-center gap-2"><i data-lucide="target" class="w-3 h-3"></i>Blue Accuracy</div>
         </th>
         <th class="px-6 py-5 text-center text-yellow-500">
-            <div class="flex items-center justify-center gap-2"><i data-lucide="target" class="w-3 h-3"></i>L. Accuracy</div>
+            <div class="flex items-center justify-center gap-2"><i data-lucide="target" class="w-3 h-3"></i>Orange Accuracy</div>
         </th>
 
         <th class="px-6 py-5 text-center text-cyan-400">
-            <div class="flex items-center justify-center gap-2"><i data-lucide="users" class="w-3 h-3"></i>W. Assists</div>
+            <div class="flex items-center justify-center gap-2"><i data-lucide="users" class="w-3 h-3"></i>Blue Assists</div>
         </th>
         <th class="px-6 py-5 text-center text-cyan-400">
-            <div class="flex items-center justify-center gap-2"><i data-lucide="users" class="w-3 h-3"></i>L. Assists</div>
+            <div class="flex items-center justify-center gap-2"><i data-lucide="users" class="w-3 h-3"></i>Orange Assists</div>
         </th>
 
         <th class="px-6 py-5 text-center text-green-500">
-            <div class="flex items-center justify-center gap-2"><i data-lucide="shield" class="w-3 h-3"></i>W. Saves</div>
+            <div class="flex items-center justify-center gap-2"><i data-lucide="shield" class="w-3 h-3"></i>Blue Saves</div>
         </th>
         <th class="px-6 py-5 text-center text-green-500">
-            <div class="flex items-center justify-center gap-2"><i data-lucide="shield" class="w-3 h-3"></i>L. Saves</div>
+            <div class="flex items-center justify-center gap-2"><i data-lucide="shield" class="w-3 h-3"></i>Orange Saves</div>
         </th>
 
         <th class="px-6 py-5 text-right text-purple-500">
@@ -2885,6 +2927,22 @@ body:has(#page-loader:not(.loader-hidden)) main {
     return await res.json();
 }
 
+    async function fetchFavoritePlayerLastMatch(playerId) {
+    const res = await fetch(`${API_BASE}/players/${playerId}/last-match`);
+    if (!res.ok) {
+        throw new Error("Failed to fetch favorite player last match");
+    }
+    return await res.json();
+}
+
+    async function fetchFavoriteTeamLastMatch(teamId) {
+    const res = await fetch(`${API_BASE}/teams/${teamId}/last-match`);
+    if (!res.ok) {
+        throw new Error("Failed to fetch favorite team last match");
+    }
+    return await res.json();
+}
+
     async function fetchTournaments() {
     const response = await fetch(`${API_BASE}/tournaments`);
 
@@ -2955,6 +3013,101 @@ body:has(#page-loader:not(.loader-hidden)) main {
     const res = await fetch(`${API_BASE}/stats/top-scorers`);
     // JSON'dan JavaScript arrayine Ã§eviri 
     return await res.json(); 
+    }
+
+    async function fetchAdvancedQueryData(endpoint) {
+    const res = await fetch(`${API_BASE}/stats/${endpoint}`);
+    if (!res.ok) {
+        throw new Error(`Failed to fetch ${endpoint}`);
+    }
+    return await res.json();
+    }
+
+    function renderAdvancedRows(containerId, rows, config) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    if (!rows || rows.length === 0) {
+        container.innerHTML = `
+            <div class="px-5 py-8 text-center text-[10px] font-black uppercase tracking-widest text-gray-600">
+                No data yet
+            </div>`;
+        return;
+    }
+
+    container.innerHTML = rows.map((row, index) => {
+        const name = row[config.nameKey] || "N/A";
+        const mainValue = row[config.valueKey] ?? 0;
+        const subValue = config.subKey ? row[config.subKey] : null;
+        const subText = config.subLabel && subValue !== null
+            ? `${config.subLabel}: ${subValue}${config.subSuffix || ""}`
+            : config.staticSub || "";
+
+        return `
+            <div class="px-5 py-3 flex items-center justify-between gap-3">
+                <div class="min-w-0">
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] font-black text-gray-500 font-mono">#${index + 1}</span>
+                        <span class="text-xs font-black text-white truncate">${name}</span>
+                    </div>
+                    <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mt-1">${subText}</p>
+                </div>
+                <span class="text-sm font-black ${config.color} font-mono shrink-0">${mainValue}${config.suffix || ""}</span>
+            </div>
+        `;
+    }).join("");
+    }
+
+    async function renderAdvancedQueryShowcase() {
+    try {
+        const [topScorers, popularTeams, tournamentsByGoals, teamMatches] = await Promise.all([
+            fetchAdvancedQueryData("top-scorers"),
+            fetchAdvancedQueryData("top-popular-teams-by-goals"),
+            fetchAdvancedQueryData("rank-tournaments-by-goals"),
+            fetchAdvancedQueryData("top-teams-by-matches")
+        ]);
+
+        renderAdvancedRows("advanced-top-scorers", topScorers, {
+            nameKey: "player_name",
+            valueKey: "goal_total",
+            subKey: "average_shot_accuracy",
+            subLabel: "ACC",
+            subSuffix: "%",
+            color: "text-yellow-400"
+        });
+
+        renderAdvancedRows("advanced-popular-teams", popularTeams, {
+            nameKey: "team_name",
+            valueKey: "team_total_goal",
+            subKey: "favorite_count",
+            subLabel: "Favorited by",
+            subSuffix: " users",
+            color: "text-orange-400"
+        });
+
+        renderAdvancedRows("advanced-tournaments", tournamentsByGoals, {
+            nameKey: "tournament_name",
+            valueKey: "tournament_total_goals",
+            subKey: "goal_rank",
+            subLabel: "Rank",
+            color: "text-blue-400"
+        });
+
+        renderAdvancedRows("advanced-team-matches", teamMatches, {
+            nameKey: "team_name",
+            valueKey: "played_total",
+            staticSub: "matches played",
+            color: "text-emerald-400"
+        });
+
+        lucide.createIcons();
+    } catch (err) {
+        console.error("Advanced query showcase error:", err);
+        ["advanced-top-scorers", "advanced-popular-teams", "advanced-tournaments", "advanced-team-matches"].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.innerHTML = `<div class="px-5 py-8 text-center text-[10px] font-black uppercase tracking-widest text-red-400">Failed to load</div>`;
+        });
+    }
     }
 
     //Leaderboard tablosunda API verisini alip gÃ¶steren fonksiyon
@@ -3340,15 +3493,17 @@ function handleCountryChange() {
 async function refreshTournamentDropdowns() {
     const tournamentSelect = document.getElementById("t-type-sel");
     const arenaSelect = document.getElementById("t-arena");
+    const userTournamentSelect = document.getElementById("tournament-name-select");
 
-    if (!tournamentSelect || !arenaSelect) return;
+    if (!tournamentSelect && !arenaSelect && !userTournamentSelect) return;
 
     try {
         const tournaments = await fetchTournaments();
         const arenas = await fetchArenas();
 
-        tournamentSelect.innerHTML = `<option value="">- Tournament -</option>`;
-        arenaSelect.innerHTML = `<option value="">- Arena -</option>`;
+        if (tournamentSelect) tournamentSelect.innerHTML = `<option value="">- Tournament -</option>`;
+        if (arenaSelect) arenaSelect.innerHTML = `<option value="">- Arena -</option>`;
+        if (userTournamentSelect) userTournamentSelect.innerHTML = `<option value="all" class="bg-[#1a1b1e]">All Tournaments</option>`;
 
         tournaments.forEach(t => {
     const startDate = t.start_date
@@ -3359,7 +3514,7 @@ async function refreshTournamentDropdowns() {
         ? t.end_date.split("T")[0]
         : "";
 
-    tournamentSelect.innerHTML += `
+    if (tournamentSelect) tournamentSelect.innerHTML += `
         <option
             value="${t.tournament_id}"
             data-start="${startDate}"
@@ -3370,11 +3525,16 @@ async function refreshTournamentDropdowns() {
             ${t.tournament_name}
         </option>
     `;
+    if (userTournamentSelect) userTournamentSelect.innerHTML += `
+        <option value="${t.tournament_id}" class="bg-[#1a1b1e]">
+            ${t.tournament_name}
+        </option>
+    `;
 });
 
-handleTournamentChange();
+if (tournamentSelect) handleTournamentChange();
 
-        arenas.forEach(a => {
+        if (arenaSelect) arenas.forEach(a => {
             arenaSelect.innerHTML += `
                 <option value="${a.arena_id}">
                     ${a.arena_name}
@@ -3394,8 +3554,8 @@ async function refreshTournamentTeamDropdowns() {
 
     if (!team1Sel || !team2Sel) return;
 
-    team1Sel.innerHTML = '<option value="">- Team 1 -</option>';
-    team2Sel.innerHTML = '<option value="">- Team 2 -</option>';
+    team1Sel.innerHTML = '<option value="">- Blue Team -</option>';
+    team2Sel.innerHTML = '<option value="">- Orange Team -</option>';
 
     try {
         const teams = await fetchTeams();
@@ -3714,8 +3874,8 @@ async function addTournamentMatch() {
     if (!weatherVal) { resetOne('t-weather'); return showAdminMsg('t-msg', 'Weather selection is required.', 'error'); }
     if (!matchDateVal) { return showAdminMsg('t-msg', 'Match date is required.', 'error'); }
     if (!stageVal) { resetOne('t-stage'); return showAdminMsg('t-msg', 'Tournament stage selection is required.', 'error'); }
-    if (!t1) { resetOne('t-team1-sel'); return showAdminMsg('t-msg', 'First team selection is required.', 'error'); }
-    if (!t2) { resetOne('t-team2-sel'); return showAdminMsg('t-msg', 'Second team selection is required.', 'error'); }
+    if (!t1) { resetOne('t-team1-sel'); return showAdminMsg('t-msg', 'Blue team selection is required.', 'error'); }
+    if (!t2) { resetOne('t-team2-sel'); return showAdminMsg('t-msg', 'Orange team selection is required.', 'error'); }
     if (t1 === t2) { resetOne('t-team2-sel'); return showAdminMsg('t-msg', 'A team cannot play a match against itself.', 'error'); }
     if (!mvpVal) { resetOne('t-mvp-sel'); return showAdminMsg('t-msg', 'MVP player selection is required.', 'error'); }
 
@@ -3867,6 +4027,8 @@ async function renderAdminTournamentMatches() {
             const matchDate = (m.match_date || "").substring(0, 10);
             const startDate = (m.start_date || "").substring(0, 10);
             const endDate = (m.end_date || "").substring(0, 10);
+            const blueGoals = Number(m.team1_goals || 0);
+            const orangeGoals = Number(m.team2_goals || 0);
 
             return `
             <div class="border-b border-gray-800/40 px-6 py-4 flex flex-col gap-3 hover:bg-white/[0.02] admin-login-animate group transition-all">
@@ -3876,17 +4038,25 @@ async function renderAdminTournamentMatches() {
                             <i data-lucide="swords" class="w-5 h-5 opacity-80 group-hover:opacity-100 transition-opacity"></i>
                         </div>
 
-                        <div class="flex items-center gap-3">
-                            <p class="text-sm font-black text-white group-hover:text-blue-400 transition-colors truncate">
-                                ${m.team1_name || "Team 1"} 
-                                <span class="text-gray-600 font-bold mx-1 text-xs">VS</span> 
-                                ${m.team2_name || "Team 2"}
-                            </p>
+                        <div class="flex flex-col gap-2 min-w-0">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-300 text-[11px] font-black tracking-wide">
+                                    BLUE: ${m.team1_name || "Blue Team"}
+                                </span>
+                                <span class="px-3 py-1.5 rounded-lg bg-white/10 border border-white/20 text-white text-[12px] font-black font-mono">
+                                    ${blueGoals} - ${orangeGoals}
+                                </span>
+                                <span class="px-3 py-1.5 rounded-lg bg-orange-500/10 border border-orange-500/30 text-orange-300 text-[11px] font-black tracking-wide">
+                                    ORANGE: ${m.team2_name || "Orange Team"}
+                                </span>
+                            </div>
 
-                            <span class="px-2.5 py-1 rounded bg-white/10 border border-white/20 text-white text-[9px] font-black tracking-widest flex items-center gap-1.5 shadow-sm">
-                                <i data-lucide="medal" class="w-3 h-3"></i> 
-                                WINNER TEAM: ${m.winner_team_name || "N/A"}
-                            </span>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="px-2.5 py-1 rounded bg-white/10 border border-white/20 text-white text-[9px] font-black tracking-widest flex items-center gap-1.5 shadow-sm">
+                                    <i data-lucide="medal" class="w-3 h-3"></i> 
+                                    WINNER TEAM: ${m.winner_team_name || "N/A"}
+                                </span>
+                            </div>
                         </div>
                     </div>
 
@@ -3957,8 +4127,8 @@ async function refreshMatchDropdowns() {
             arenaSelect.innerHTML += `<option value="${arena.arena_id}">${arena.arena_name}</option>`;
         });
 
-        team1Sel.innerHTML = '<option value="">- Team 1 -</option>';
-        team2Sel.innerHTML = '<option value="">- Team 2 -</option>';
+        team1Sel.innerHTML = '<option value="">- Blue Team -</option>';
+        team2Sel.innerHTML = '<option value="">- Orange Team -</option>';
         teams.forEach(team => {
             const option = `<option value="${team.team_id}">${team.team_name}</option>`;
             team1Sel.innerHTML += option;
@@ -4106,8 +4276,8 @@ async function addArenaMatch() {
     if (!arenaVal) { resetOne('m-stadium'); return showAdminMsg('m-msg', 'Arena selection is required.', 'error'); }
     if (!weatherVal) { resetOne('m-weather'); return showAdminMsg('m-msg', 'Weather selection is required.', 'error'); }
     if (!matchDateVal) { return showAdminMsg('m-msg', 'Match date is required.', 'error'); }
-    if (!t1) { resetOne('m-team1-sel'); return showAdminMsg('m-msg', 'First team selection is required.', 'error'); }
-    if (!t2) { resetOne('m-team2-sel'); return showAdminMsg('m-msg', 'Second team selection is required.', 'error'); }
+    if (!t1) { resetOne('m-team1-sel'); return showAdminMsg('m-msg', 'Blue team selection is required.', 'error'); }
+    if (!t2) { resetOne('m-team2-sel'); return showAdminMsg('m-msg', 'Orange team selection is required.', 'error'); }
     if (t1 === t2) { resetOne('m-team2-sel'); return showAdminMsg('m-msg', 'A team cannot play a match against itself.', 'error'); }
     if (!mvpVal) { resetOne('m-mvp-sel'); return showAdminMsg('m-msg', 'MVP player selection is required.', 'error'); }
 
@@ -4267,14 +4437,24 @@ async function renderAdminArenaMatches() {
                         <i data-lucide="swords" class="w-5 h-5 opacity-80 group-hover:opacity-100 transition-opacity"></i>
                     </div>
                     
-                    <div class="flex items-center gap-3">
-                        <p class="text-sm font-black text-white group-hover:text-emerald-400 transition-colors truncate">
-                            ${m.team1_name || 'Blue Team'} <span class="text-gray-600 font-bold mx-1 text-xs">VS</span> ${m.team2_name || 'Orange Team'}
-                        </p>
-                        <span class="px-2.5 py-1 rounded bg-white/10 border border-white/20 text-white text-[9px] font-black tracking-widest flex items-center gap-1.5 shadow-sm">
-                            <i data-lucide="medal" class="w-3 h-3"></i> WINNER TEAM: ${m.winner_team_name || 'Not recorded'}
-                        </span>
-                        ${sourceBadge}
+                    <div class="flex flex-col gap-2 min-w-0">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-300 text-[11px] font-black tracking-wide">
+                                BLUE: ${m.team1_name || 'Blue Team'}
+                            </span>
+                            <span class="px-3 py-1.5 rounded-lg bg-white/10 border border-white/20 text-white text-[12px] font-black font-mono">
+                                ${blueGoals} - ${orangeGoals}
+                            </span>
+                            <span class="px-3 py-1.5 rounded-lg bg-orange-500/10 border border-orange-500/30 text-orange-300 text-[11px] font-black tracking-wide">
+                                ORANGE: ${m.team2_name || 'Orange Team'}
+                            </span>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="px-2.5 py-1 rounded bg-white/10 border border-white/20 text-white text-[9px] font-black tracking-widest flex items-center gap-1.5 shadow-sm">
+                                <i data-lucide="medal" class="w-3 h-3"></i> WINNER TEAM: ${m.winner_team_name || 'Not recorded'}
+                            </span>
+                            ${sourceBadge}
+                        </div>
                     </div>
                 </div>
                  
@@ -4315,11 +4495,11 @@ async function renderAdminArenaMatches() {
 }
 
 // MERKEZI LIDER HESAPLAMA VE KART GÃœNCELLEME MOTOR FONKSIYONU
-function formatTop3(data, field, isPercentage = false) {
+function formatTop3(data, field, isPercentage = false, emptyHtml = `<div class="text-gray-500 font-mono text-xs mt-1.5 select-none">-</div>`) {
     const validData = data ? data.filter(item => (item[field] || 0) > 0) : [];
     
     if (validData.length === 0) {
-        return `<div class="text-gray-500 font-mono text-xs mt-1.5 select-none">-</div>`;
+        return emptyHtml;
     }
 
     const colorMap = {
@@ -4418,11 +4598,11 @@ async function updateGlobalTopCards() {
     }
 
     // â•â• TAKIM STATS KARTLARINA TOP 3 SIRALAMASINI YAZDIR â•â•
-    if (document.getElementById('team-display-wins')) document.getElementById('team-display-wins').innerHTML = formatTop3(teamDB, 'wins');
-    if (document.getElementById('team-display-goals')) document.getElementById('team-display-goals').innerHTML = formatTop3(teamDB, 'goals');
-    if (document.getElementById('team-display-accuracy')) document.getElementById('team-display-accuracy').innerHTML = formatTop3(teamDB, 'accuracy', true);
-    if (document.getElementById('team-display-assists')) document.getElementById('team-display-assists').innerHTML = formatTop3(teamDB, 'assists');
-    if (document.getElementById('team-display-saves')) document.getElementById('team-display-saves').innerHTML = formatTop3(teamDB, 'saves');
+    if (document.getElementById('team-display-wins')) document.getElementById('team-display-wins').innerHTML = formatTop3(teamDB, 'wins', false, '');
+    if (document.getElementById('team-display-goals')) document.getElementById('team-display-goals').innerHTML = formatTop3(teamDB, 'goals', false, '');
+    if (document.getElementById('team-display-accuracy')) document.getElementById('team-display-accuracy').innerHTML = formatTop3(teamDB, 'accuracy', true, '');
+    if (document.getElementById('team-display-assists')) document.getElementById('team-display-assists').innerHTML = formatTop3(teamDB, 'assists', false, '');
+    if (document.getElementById('team-display-saves')) document.getElementById('team-display-saves').innerHTML = formatTop3(teamDB, 'saves', false, '');
 
     let playerStatsForCards = [];
 
@@ -5111,6 +5291,13 @@ function preventDuplicateTournamentPlayers() {
         content1.innerHTML = finalHtml;
         content2.innerHTML = finalHtml;
     }
+
+    if (typeof renderAdvancedQueryShowcase === "function") {
+        renderAdvancedQueryShowcase();
+    }
+    if (typeof renderFavoriteDashboardHighlights === "function") {
+        renderFavoriteDashboardHighlights();
+    }
 }
 
     // ADMIN DASHBOARD SEKME GEÃ‡IÅI
@@ -5576,7 +5763,7 @@ async function createTeam() {
 }
 
 async function fetchTeamsWithRosters() {
-    const res = await fetch("http://localhost:5000/api/teams/with-rosters");
+    const res = await fetch(`${API_BASE}/teams/with-rosters`);
 
     if (!res.ok) {
         throw new Error("Failed to fetch teams with rosters");
@@ -6080,75 +6267,34 @@ if (recTour) {
     }
 }
 
-// 4. RECENT ARENA MATCHES
+// 4. RECENT MATCHES
 const recM = document.getElementById('ov-recent-matches');
 if (recM) {
-    // 14 GÃ¼nlÃ¼k dinamik sÃ¼re hesabi iÃ§in tarih hesaplamalari
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const twoWeeksInMs = 14 * 24 * 60 * 60 * 1000;
 
-    const tMatchesMappedForOverview = (tournamentMatchDB || []).map(m => {
-        let computedTag = 'dfh';
-        if (m.arena) {
-            const cleanString = m.arena.toLowerCase().replace(/[^a-z0-9]/g, '');
-            if (cleanString.startsWith('dfh')) computedTag = 'dfh';
-            else if (cleanString.startsWith('mannfield')) computedTag = 'mannfield';
-            else if (cleanString.startsWith('champions')) computedTag = 'champions';
-            else if (cleanString.startsWith('urban')) computedTag = 'urban';
-            else if (cleanString.startsWith('beckwith')) computedTag = 'beckwith';
-            else if (cleanString.startsWith('utopia')) computedTag = 'utopia';
-            else if (cleanString.startsWith('wasteland')) computedTag = 'wasteland';
-            else if (cleanString.startsWith('neotokyo')) computedTag = 'neotokyo';
-            else if (cleanString.startsWith('aquadome')) computedTag = 'aquadome';
-            else if (cleanString.startsWith('farmstead')) computedTag = 'farmstead';
-            else if (cleanString.startsWith('forbidden')) computedTag = 'forbidden';
-            else if (cleanString.startsWith('deadeye')) computedTag = 'deadeye';
-            else if (cleanString.startsWith('neon')) computedTag = 'neon';
-            else if (cleanString.startsWith('salty')) computedTag = 'salty';
-            else if (cleanString.startsWith('sovereign')) computedTag = 'sovereign';
-            else if (cleanString.startsWith('starbase')) computedTag = 'starbase';
-            else if (cleanString.startsWith('rivals')) computedTag = 'rivals';
-            else if (cleanString.startsWith('estadio')) computedTag = 'estadio';
-            else if (cleanString.startsWith('drift')) computedTag = 'drift';
-            else if (cleanString.startsWith('futura')) computedTag = 'futura';
-            else if (cleanString.startsWith('boostfield')) computedTag = 'boostfield';
-            else if (cleanString.startsWith('parc')) computedTag = 'parc';
-        }
-        return {
-            ...m,
-            type: m.arena,
-            arenaTag: computedTag,
-            isTournamentSource: true
-        };
-    });
+    if (overviewMatches.length > 0) {
+        const sortedMatches = [...overviewMatches].sort((a, b) => new Date(a.match_date) - new Date(b.match_date));
+        const recentMatches = sortedMatches.slice(-5);
 
-    const combinedRecentMatches = [...(arenaMatchDB || []), ...tMatchesMappedForOverview];
-
-    if (combinedRecentMatches.length > 0) {
-        // Ã–nce tarih bazli sirala (eskiden yeniye doÄŸru), sonra son 5'i al
-        const sortedArenas = combinedRecentMatches.sort((a, b) => new Date(a.matchDate) - new Date(b.matchDate));
-        const recentArenas = sortedArenas.slice(-5);
-
-        recM.innerHTML = recentArenas.map((m, idx) => {
-            // OluÅŸturulma tarihine gÃ¶re 2 hafta kontrolÃ¼ saÄŸlaniyor
-            const createdAt = new Date(m.createdAt || m.matchDate || Date.now());
+        recM.innerHTML = recentMatches.map((m) => {
+            const matchDate = (m.match_date || "").substring(0, 10);
+            const createdAt = new Date(matchDate || Date.now());
             const isNew = (today.getTime() < (createdAt.getTime() + twoWeeksInMs));
             
             const badgeHtml = isNew 
                 ? `<span class="mt-0.5 text-[9px] font-black text-sky-400 border border-sky-500/20 bg-sky-500/10 px-2 py-0.5 rounded-full shrink-0 animate-pulse">NEW</span>` 
                 : '';
 
-            const isFinished = new Date(m.matchDate) <= new Date();
+            const isFinished = new Date(matchDate) <= new Date();
             const statusBadge = isFinished 
                 ? `<span class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-gray-500/10 border border-gray-500/20 text-[9px] font-black text-gray-400 uppercase tracking-widest shrink-0"><span class="relative flex h-2 w-2"><span class="relative inline-flex rounded-full h-2 w-2 bg-gray-500"></span></span>FINISHED</span>`
                 : `<span class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-[9px] font-black text-amber-400 uppercase tracking-widest shrink-0"><span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span></span>UPCOMING</span>`;
 
-            const tourneyInfo = m.isTournamentSource ? tournamentNamesDB.find(t => t.id === m.tournamentType) : null;
-            const tourneyName = tourneyInfo ? tourneyInfo.name : "N/A";
-            const tourneyBadge = m.isTournamentSource 
-                ? `<span class="flex items-center gap-1 px-2 py-0 rounded-md bg-blue-500/10 border border-blue-500/20 text-[10px] font-black text-blue-400"><i data-lucide="award" class="w-2.5 h-2.5 text-blue-400"></i> Tourney: ${tourneyName}</span>`
-                : '';
+            const matchTypeBadge = m.tournament_id
+                ? `<span class="flex items-center gap-1 px-2 py-0 rounded-md bg-blue-500/10 border border-blue-500/20 text-[10px] font-black text-blue-400"><i data-lucide="award" class="w-2.5 h-2.5 text-blue-400"></i> Tourney: ${m.tournament_name || 'Tournament'}</span>`
+                : `<span class="flex items-center gap-1 px-2 py-0 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-black text-emerald-400"><i data-lucide="swords" class="w-2.5 h-2.5 text-emerald-400"></i> Regular Match</span>`;
 
             return `
             <div class="border-b border-gray-800/40 px-6 py-3 flex flex-col gap-0 admin-login-animate">
@@ -6159,7 +6305,9 @@ if (recM) {
                         </div>
                         <div class="flex items-center gap-2">
                             <p class="text-[13px] font-black text-white break-words">
-                                ${m.team1Tag} <span class="text-gray-600 font-bold mx-1 text-[11px]">VS</span> ${m.team2Tag}
+                                <span class="text-blue-300">BLUE: ${m.team1_name || 'Blue Team'}</span>
+                                <span class="mx-1 px-2 py-0.5 rounded bg-white/10 border border-white/10 text-white font-mono text-[10px]">${m.team1_goals || 0} - ${m.team2_goals || 0}</span>
+                                <span class="text-orange-300">ORANGE: ${m.team2_name || 'Orange Team'}</span>
                             </p>
                         </div>
                     </div>
@@ -6170,15 +6318,15 @@ if (recM) {
                 </div>
                 
                 <div class="flex flex-wrap items-center gap-1.5 pl-[48px] mt-1">
-                    ${tourneyBadge}
+                    ${matchTypeBadge}
                     <span class="flex items-center gap-1 px-2 py-0 rounded-md bg-white/10 border border-white/20 text-[10px] font-black tracking-widest text-white shadow-sm">
-                        <i data-lucide="medal" class="w-2.5 h-2.5"></i> WINNER: ${m.winnerName}
+                        <i data-lucide="medal" class="w-2.5 h-2.5"></i> WINNER: ${m.winner_team_name || 'N/A'}
                     </span>
                     <span class="flex items-center gap-1 px-2 py-0 rounded-md bg-white/5 border border-white/10 text-[10px] font-bold text-gray-400">
-                        <i data-lucide="land-plot" class="w-2.5 h-2.5 text-gray-500"></i> ${m.type || 'Arena'}
+                        <i data-lucide="land-plot" class="w-2.5 h-2.5 text-gray-500"></i> ${m.arena_name || 'Arena'}
                     </span>
                     <span class="flex items-center gap-1 px-2 py-0 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-400">
-                        <i data-lucide="calendar" class="w-2.5 h-2.5"></i> ${m.matchDate}
+                        <i data-lucide="calendar" class="w-2.5 h-2.5"></i> ${matchDate || 'N/A'}
                     </span>
                     <span class="flex items-center gap-1 px-2 py-0 rounded-md bg-white/5 border border-white/10 text-[10px] font-bold text-gray-400">
                         <i data-lucide="cloud-sun" class="w-2.5 h-2.5 text-gray-500"></i> ${m.weather || 'Clear'}
@@ -6190,7 +6338,7 @@ if (recM) {
         
         setTimeout(() => lucide.createIcons(), 10);
     } else {
-        recM.innerHTML = `<div class="px-6 py-4 text-center"><i data-lucide="land-plot" class="w-6 h-6 text-gray-700 mx-auto mb-1"></i><p class="text-[10px] font-black text-gray-600 uppercase tracking-widest">No Arena matches added yet</p></div>`;
+        recM.innerHTML = `<div class="px-6 py-4 text-center"><i data-lucide="land-plot" class="w-6 h-6 text-gray-700 mx-auto mb-1"></i><p class="text-[10px] font-black text-gray-600 uppercase tracking-widest">No matches added yet</p></div>`;
     }
 }
 
@@ -6212,6 +6360,8 @@ if (recTMatches) {
             const matchDate = (m.match_date || "").substring(0, 10);
             const startDate = (m.start_date || "").substring(0, 10);
             const endDate = (m.end_date || "").substring(0, 10);
+            const blueGoals = Number(m.team1_goals || 0);
+            const orangeGoals = Number(m.team2_goals || 0);
             
             const isFinished = new Date(matchDate) <= new Date();
 
@@ -6235,9 +6385,17 @@ if (recTMatches) {
                     </div>
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center justify-between w-full gap-4">
-                            <p class="text-[13px] font-black text-white break-words">
-                                ${m.team1_name || 'Team 1'} <span class="text-gray-600 font-bold mx-1 text-[11px]">VS</span> ${m.team2_name || 'Team 2'}
-                            </p>
+                            <div class="flex flex-wrap items-center gap-1.5 min-w-0">
+                                <span class="px-2 py-1 rounded-md bg-blue-500/10 border border-blue-500/30 text-blue-300 text-[10px] font-black tracking-wide">
+                                    BLUE: ${m.team1_name || 'Blue Team'}
+                                </span>
+                                <span class="px-2 py-1 rounded-md bg-white/10 border border-white/20 text-white text-[10px] font-black font-mono">
+                                    ${blueGoals} - ${orangeGoals}
+                                </span>
+                                <span class="px-2 py-1 rounded-md bg-orange-500/10 border border-orange-500/30 text-orange-300 text-[10px] font-black tracking-wide">
+                                    ORANGE: ${m.team2_name || 'Orange Team'}
+                                </span>
+                            </div>
                             <div class="flex items-center gap-1.5 shrink-0">
                                 ${badgeHtml}
                                 ${statusBadge}
@@ -7188,10 +7346,19 @@ async function updateStats() {
         return showAdminMsg("update-success", "Please select a match that this player played in.", "error");
     }
 
-    const goals = Number(document.getElementById("input-goals").value);
-    const assists = Number(document.getElementById("input-assists").value);
-    const saves = Number(document.getElementById("input-saves").value);
-    const shotAccuracy = Number(document.getElementById("input-shots").value);
+    const goalsInput = document.getElementById("input-goals");
+    const assistsInput = document.getElementById("input-assists");
+    const savesInput = document.getElementById("input-saves");
+    const shotAccuracyInput = document.getElementById("input-shots");
+
+    if ([goalsInput, assistsInput, savesInput, shotAccuracyInput].some(input => !input || input.value.trim() === "")) {
+        return showAdminMsg("update-success", "Goals, assists, saves, and shot accuracy are required.", "error");
+    }
+
+    const goals = Number(goalsInput.value);
+    const assists = Number(assistsInput.value);
+    const saves = Number(savesInput.value);
+    const shotAccuracy = Number(shotAccuracyInput.value);
     const mvp = Boolean(document.getElementById("input-mvp").checked);
 
     if (![goals, assists, saves].every(Number.isInteger)) {
@@ -7217,14 +7384,21 @@ async function updateStats() {
 
         const previousStat = currentPlayerMatchStats.find(item => Number(item.match_id) === matchId) || {};
         const playerName = previousStat.player_name || playerSelect.options[playerSelect.selectedIndex]?.textContent.trim() || "Player";
+        const updatedMatches = await fetchMatches();
+        const updatedMatch = updatedMatches.find(item => Number(item.match_id) === matchId) || {};
 
         const updateRecord = {
             player_id: playerId,
             player_name: playerName,
             match_id: matchId,
-            match_date: previousStat.match_date || "",
-            tournament_name: previousStat.tournament_name || "",
-            arena_name: previousStat.arena_name || "",
+            match_date: updatedMatch.match_date || previousStat.match_date || "",
+            tournament_name: updatedMatch.tournament_name || previousStat.tournament_name || "",
+            arena_name: updatedMatch.arena_name || previousStat.arena_name || "",
+            blue_team: updatedMatch.team1_name || "Blue Team",
+            orange_team: updatedMatch.team2_name || "Orange Team",
+            blue_score: Number(updatedMatch.team1_goals || 0),
+            orange_score: Number(updatedMatch.team2_goals || 0),
+            winner_team_name: updatedMatch.winner_team_name || "Not recorded",
             goals,
             assists,
             saves,
@@ -7241,16 +7415,23 @@ async function updateStats() {
             populatePlayerMatchStatInputs();
         }
 
-        if (typeof renderUpdatedPlayers === "function") renderUpdatedPlayers();
-        if (typeof updatePlayerLeaderboardHeader === "function") updatePlayerLeaderboardHeader();
-        if (typeof updateGlobalTopCards === "function") await updateGlobalTopCards();
-        if (typeof refreshAllUserLeaderboards === "function") await refreshAllUserLeaderboards();
+        if (typeof refreshAfterPlayerMatchStatUpdate === "function") {
+            await refreshAfterPlayerMatchStatUpdate();
+        }
 
         showAdminMsg("update-success", "Player match stats updated successfully!", "success");
     } catch (err) {
         console.error("Update player match stats error:", err);
         showAdminMsg("update-success", err.message, "error");
     }
+}
+
+async function refreshAfterPlayerMatchStatUpdate() {
+    if (typeof renderUpdatedPlayers === "function") renderUpdatedPlayers();
+    if (typeof renderAdminArenaMatches === "function") await renderAdminArenaMatches();
+    if (typeof refreshOverview === "function") await refreshOverview();
+    if (typeof refreshAllUserLeaderboards === "function") await refreshAllUserLeaderboards();
+    if (typeof updateGlobalTopCards === "function") await updateGlobalTopCards();
 }
 
 function renderUpdatedPlayers() {
@@ -7291,6 +7472,17 @@ function renderUpdatedPlayers() {
         });
         
         const shotsVal = Number(p.shot_accuracy || 0).toFixed(2) + '%';
+        const hasScore = p.blue_score !== undefined || p.orange_score !== undefined;
+        const scoreHtml = hasScore
+            ? `<span class="flex items-center gap-1.5 px-2 py-1 rounded bg-white/10 border border-white/20 text-[8px] font-black text-white tracking-widest">
+                    <span class="text-blue-300">BLUE: ${p.blue_team || 'Blue Team'}</span>
+                    <span class="font-mono text-[9px]">${Number(p.blue_score || 0)} - ${Number(p.orange_score || 0)}</span>
+                    <span class="text-orange-300">ORANGE: ${p.orange_team || 'Orange Team'}</span>
+                </span>
+                <span class="flex items-center gap-1.5 px-2 py-1 rounded bg-sky-500/10 border border-sky-500/20 text-[8px] font-black text-sky-400 tracking-widest">
+                    <i data-lucide="medal" class="w-2.5 h-2.5"></i> WINNER:<span class="font-mono text-[9px]">${p.winner_team_name || 'Not recorded'}</span>
+                </span>`
+            : '';
 
         // Yazi formati tamamen case-sensitive
         const rankLabel = includeHover
@@ -7329,6 +7521,7 @@ function renderUpdatedPlayers() {
                 <span class="flex items-center gap-1.5 px-2 py-1 rounded bg-red-500/10 border border-red-500/20 text-[8px] font-black text-red-400 tracking-widest">
                     <i data-lucide="award" class="w-2.5 h-2.5"></i> ${p.tournament_name || 'Tournament'}
                 </span>
+                ${scoreHtml}
                 <span class="flex items-center gap-1.5 px-2 py-1 rounded bg-purple-500/10 border border-purple-500/20 text-[8px] font-black text-purple-400 tracking-widest">
                     <i data-lucide="star" class="w-2.5 h-2.5"></i> MVP:<span class="font-mono text-[9px]">${p.mvp ? 'YES' : 'NO'}</span>
                 </span>
@@ -7406,7 +7599,7 @@ function updatePlayerLeaderboardHeader() {
     const activeBtn = document.querySelector('#leaderboard-tabs .stat-tab-btn.active');
     const currentStat = activeBtn ? activeBtn.getAttribute('data-stat') : 'wins';
     if (typeof switchStatTab === "function") {
-        switchStatTab(currentStat);
+        return switchStatTab(currentStat);
     }
 }
 
@@ -7436,7 +7629,7 @@ function switchStatTab(statType) {
         : statType.charAt(0).toUpperCase() + statType.slice(1);
     }
 
-    renderLeaderboardTable(statType);
+    return renderLeaderboardTable(statType);
 }
 
 async function renderLeaderboardTable(statType) {
@@ -7543,7 +7736,13 @@ async function renderTeamLeaderboardTable(statType) {
     const selectedRegion = regionSelect ? regionSelect.value : 'Global';
 
     try {
-        const teams = await fetchTeamLeaderboard();
+        const [teams, teamsWithRosters] = await Promise.all([
+            fetchTeamLeaderboard(),
+            fetchTeamsWithRosters()
+        ]);
+        const rosterByTeamId = new Map(
+            teamsWithRosters.map(team => [Number(team.team_id), team.players || []])
+        );
 
         const filteredTeams = teams.filter(team =>
             selectedRegion === 'Global' || team.region === selectedRegion
@@ -7567,12 +7766,19 @@ async function renderTeamLeaderboardTable(statType) {
         tbody.innerHTML = sortedTeams.map((team, index) => {
             const teamName = team.team_name;
             const firstLetter = teamName.charAt(0);
-
-            const playersHtml = `
-                <span class="text-[10px] font-black text-gray-600 italic">
-                    Players loaded later
-                </span>
-            `;
+            const currentPlayers = rosterByTeamId.get(Number(team.team_id)) || [];
+            const playersHtml = currentPlayers.length > 0
+                ? currentPlayers.map(player => `
+                    <span class="flex items-center gap-1.5 px-2 py-1 rounded-md bg-white/5 border border-white/10 text-[10px] font-black text-gray-300 tracking-wide">
+                        <i data-lucide="user" class="w-3 h-3 text-sky-400"></i>
+                        ${player.player_name}
+                    </span>
+                `).join('')
+                : `
+                    <span class="text-[10px] font-black text-gray-600 italic uppercase tracking-wide">
+                        No players assigned
+                    </span>
+                `;
 
             const regionBadge = `
                 <span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-blue-500/10 border border-blue-500/20 text-[10px] font-black text-blue-400 w-max tracking-wide">
@@ -7659,7 +7865,7 @@ function updateTeamLeaderboardHeader() {
     const currentStat = activeBtn ? activeBtn.getAttribute('data-team-stat') : 'wins';
     
     // Tabloyu ve baÅŸliÄŸi gÃ¼ncellemek iÃ§in mevcut switch fonksiyonunu tetikle
-    switchTeamStatTab(currentStat);
+    return switchTeamStatTab(currentStat);
 }
 
 // Takim sekmeleri arasi geÃ§iÅŸ fonksiyonu
@@ -7691,7 +7897,7 @@ function switchTeamStatTab(statType) {
         headerEl.innerText = statType === 'accuracy' ? 'Shot Accuracy' : statType.charAt(0).toUpperCase() + statType.slice(1);
     }
 
-    renderTeamLeaderboardTable(statType);
+    return renderTeamLeaderboardTable(statType);
 }
 
 function openTournamentLeaderboard(type) {
@@ -7719,7 +7925,7 @@ function openTournamentLeaderboard(type) {
 }
 
 // 15 Kolonlu Dev Turnuva Tablosunu GÃ¼ncelleyen Fonksiyon
-function renderTournamentMatchStats() {
+async function renderTournamentMatchStats() {
     const select = document.getElementById('tournament-name-select');
     if (!select) return;
 
@@ -7740,7 +7946,17 @@ function renderTournamentMatchStats() {
         `;
     }
 
-    const filteredMatches = (tournamentMatchDB || []).filter(m => m.tournamentType === type || type === 'all' || !m.tournamentType);
+    let filteredMatches = [];
+    try {
+        const matches = await fetchMatches();
+        filteredMatches = matches
+            .filter(m => m.tournament_id && (type === 'all' || String(m.tournament_id) === String(type)))
+            .sort((a, b) => new Date(b.match_date) - new Date(a.match_date));
+    } catch (err) {
+        console.error("Tournament match leaderboard fetch error:", err);
+        tbody.innerHTML = `<tr><td colspan="18" class="px-8 py-20 text-center text-red-400 text-xs font-black uppercase tracking-[0.2em]">Failed to load tournament matches from backend</td></tr>`;
+        return;
+    }
 
     if (filteredMatches.length === 0) {
         tbody.innerHTML = `<tr><td colspan="18" class="px-8 py-20 text-center text-gray-600 text-xs font-black uppercase tracking-[0.2em]">Please add tournament matches from Admin Panel to generate match stats</td></tr>`;
@@ -7748,8 +7964,11 @@ function renderTournamentMatchStats() {
     }
 
     tbody.innerHTML = filteredMatches.map((m, index) => {
-        const formattedWAcc = m.wAcc.toString().includes('%') ? m.wAcc : `${m.wAcc}%`;
-        const formattedLAcc = m.lAcc.toString().includes('%') ? m.lAcc : `${m.lAcc}%`;
+        const formattedBlueAcc = `${Number(m.team1_shot_accuracy || 0).toFixed(2)}%`;
+        const formattedOrangeAcc = `${Number(m.team2_shot_accuracy || 0).toFixed(2)}%`;
+        const matchDate = (m.match_date || "").substring(0, 10);
+        const startDate = (m.start_date || "").substring(0, 10);
+        const endDate = (m.end_date || "").substring(0, 10);
 
         return `
         <tr class="hover:bg-white/[0.02] transition-colors group border-b border-gray-800/30">
@@ -7760,23 +7979,23 @@ function renderTournamentMatchStats() {
             <td class="px-6 py-5 text-left">
                 <div class="flex items-center gap-1.5 w-max">
                     <span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-white/5 border border-white/10 text-[10px] font-bold text-gray-400 tracking-wide">
-                        <i data-lucide="calendar" class="w-3 h-3 text-gray-500"></i> Start: ${m.startDate || 'N/A'}
+                        <i data-lucide="calendar" class="w-3 h-3 text-gray-500"></i> Start: ${startDate || 'N/A'}
                     </span>
                     <span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-white/5 border border-white/10 text-[10px] font-bold text-gray-400 tracking-wide">
-                        <i data-lucide="calendar" class="w-3 h-3 text-gray-500"></i> End: ${m.endDate || 'N/A'}
+                        <i data-lucide="calendar" class="w-3 h-3 text-gray-500"></i> End: ${endDate || 'N/A'}
                     </span>
                 </div>
             </td>
             
             <td class="px-6 py-5 text-left">
                 <span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-white/5 border border-white/10 text-[10px] font-bold text-gray-400 w-max tracking-wide">
-                    <i data-lucide="globe" class="w-3 h-3 text-gray-500"></i> ${m.country}
+                    <i data-lucide="globe" class="w-3 h-3 text-gray-500"></i> ${m.country || 'N/A'}
                 </span>
             </td>
 
            <td class="px-6 py-5 text-left">
                 <span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-400 w-max tracking-wide">
-                    <i data-lucide="land-plot" class="w-3 h-3 text-emerald-500"></i> ${m.arena || 'N/A'}
+                    <i data-lucide="land-plot" class="w-3 h-3 text-emerald-500"></i> ${m.arena_name || 'N/A'}
                 </span>
             </td>
             
@@ -7788,43 +8007,45 @@ function renderTournamentMatchStats() {
             
             <td class="px-6 py-5 text-left">
                 <span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-400 w-max font-mono">
-                    <i data-lucide="calendar" class="w-3 h-3 text-emerald-500"></i> ${m.matchDate}
+                    <i data-lucide="calendar" class="w-3 h-3 text-emerald-500"></i> ${matchDate}
                 </span>
             </td>
             
             <td class="px-6 py-5 text-left">
                 <span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-gray-500/10 border border-gray-500/20 text-[10px] font-bold text-gray-400 w-max tracking-wide">
-                    <i data-lucide="layers" class="w-3 h-3 text-gray-500"></i> ${m.stage}
+                    <i data-lucide="layers" class="w-3 h-3 text-gray-500"></i> ${m.tournament_stage || 'N/A'}
                 </span>
             </td>
             
             <td class="px-6 py-5 text-left">
                 <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-xs font-bold text-white italic tracking-tighter w-max">
-                    ${m.team1Tag} <span class="text-gray-400 mx-1 font-normal not-italic text-[10px]">VS</span> ${m.team2Tag}
+                    <span class="text-blue-300">BLUE: ${m.team1_name || 'Blue Team'}</span>
+                    <span class="mx-1 px-2 py-0.5 rounded bg-white/10 border border-white/10 text-white font-mono text-[10px] not-italic">${m.team1_goals || 0} - ${m.team2_goals || 0}</span>
+                    <span class="text-orange-300">ORANGE: ${m.team2_name || 'Orange Team'}</span>
                 </span>
             </td>
             
             <td class="px-6 py-5 text-left">
                 <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-500/10 border border-blue-500/20 text-xs font-black text-blue-400 w-max">
-                    ${m.winnerName}
+                    ${m.winner_team_name || 'Not recorded'}
                 </span>
             </td>
             
-            <td class="px-6 py-5 text-center font-mono text-xs text-orange-500 font-black">${m.wGoals}</td>
-            <td class="px-6 py-5 text-center font-mono text-xs text-orange-500 font-black">${m.lGoals}</td>
+            <td class="px-6 py-5 text-center font-mono text-xs text-blue-400 font-black">${m.team1_goals || 0}</td>
+            <td class="px-6 py-5 text-center font-mono text-xs text-orange-400 font-black">${m.team2_goals || 0}</td>
             
-            <td class="px-6 py-5 text-center font-mono text-xs text-yellow-500 font-black">${formattedWAcc}</td>
-            <td class="px-6 py-5 text-center font-mono text-xs text-yellow-500 font-black">${formattedLAcc}</td>
+            <td class="px-6 py-5 text-center font-mono text-xs text-blue-300 font-black">${formattedBlueAcc}</td>
+            <td class="px-6 py-5 text-center font-mono text-xs text-orange-300 font-black">${formattedOrangeAcc}</td>
             
-            <td class="px-6 py-5 text-center font-mono text-xs text-cyan-400 font-black">${m.wAss}</td>
-            <td class="px-6 py-5 text-center font-mono text-xs text-cyan-400 font-black">${m.lAss}</td>
+            <td class="px-6 py-5 text-center font-mono text-xs text-blue-300 font-black">${m.team1_assists || 0}</td>
+            <td class="px-6 py-5 text-center font-mono text-xs text-orange-300 font-black">${m.team2_assists || 0}</td>
             
-            <td class="px-6 py-5 text-center font-mono text-xs text-green-500 font-black">${m.wSav}</td>
-            <td class="px-6 py-5 text-center font-mono text-xs text-green-500 font-black">${m.lSav}</td>
+            <td class="px-6 py-5 text-center font-mono text-xs text-blue-300 font-black">${m.team1_saves || 0}</td>
+            <td class="px-6 py-5 text-center font-mono text-xs text-orange-300 font-black">${m.team2_saves || 0}</td>
             
             <td class="px-6 py-5 text-right">
                 <span class="inline-block mr-3 bg-purple-500/20 text-purple-400 px-3 py-1.5 rounded-lg border border-purple-500/40 text-[10px] font-black tracking-widest shadow-[0_0_15px_rgba(168,85,247,0.2)]">
-                    ${m.mvp}
+                    ${m.mvp_player_name || 'N/A'}
                 </span>
             </td>
         </tr>`;
@@ -7845,8 +8066,35 @@ function openArenaLeaderboard() {
 
 }
 
+function getArenaTagFromName(arenaName = "") {
+    const cleanString = String(arenaName).toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (cleanString.startsWith('dfh')) return 'dfh';
+    if (cleanString.startsWith('mannfield')) return 'mannfield';
+    if (cleanString.startsWith('champions')) return 'champions';
+    if (cleanString.startsWith('urban')) return 'urban';
+    if (cleanString.startsWith('beckwith')) return 'beckwith';
+    if (cleanString.startsWith('utopia')) return 'utopia';
+    if (cleanString.startsWith('wasteland')) return 'wasteland';
+    if (cleanString.startsWith('neotokyo')) return 'neotokyo';
+    if (cleanString.startsWith('aquadome')) return 'aquadome';
+    if (cleanString.startsWith('farmstead')) return 'farmstead';
+    if (cleanString.startsWith('forbidden')) return 'forbidden';
+    if (cleanString.startsWith('deadeye')) return 'deadeye';
+    if (cleanString.startsWith('neon')) return 'neon';
+    if (cleanString.startsWith('salty')) return 'salty';
+    if (cleanString.startsWith('sovereign')) return 'sovereign';
+    if (cleanString.startsWith('starbase')) return 'starbase';
+    if (cleanString.startsWith('rivals')) return 'rivals';
+    if (cleanString.startsWith('estadio')) return 'estadio';
+    if (cleanString.startsWith('drift')) return 'drift';
+    if (cleanString.startsWith('futura')) return 'futura';
+    if (cleanString.startsWith('boostfield')) return 'boostfield';
+    if (cleanString.startsWith('parc')) return 'parc';
+    return cleanString || 'arena';
+}
+
 // ARENA VERILERINI VE TURNUVA MAÃ‡LARINI BIRLEÅTIREREK RENDER EDEN MOTOR FONKSIYON
-function renderArenaMatchStats() {
+async function renderArenaMatchStats() {
     const select = document.getElementById('arena-name-select');
     if (!select) return;
 
@@ -7860,71 +8108,43 @@ function renderArenaMatchStats() {
     if (subTitle) {
         if (arenaVal === 'all') {
             subTitle.innerHTML = `
-                <span style="text-transform: none !important; color: #10b981 !important;">All Arenas</span> 
-                <span style="text-transform: uppercase !important; color: #6b7280 !important; margin-left: 4px;">Matches Stats</span>
+                <span style="text-transform: none !important; color: #10b981 !important;">All Matches</span> 
+                <span style="text-transform: uppercase !important; color: #6b7280 !important; margin-left: 4px;">Leaderboard</span>
             `;
         } else {
             subTitle.innerHTML = `
                 <span style="text-transform: none !important; color: #10b981 !important;">${selectedText}</span> 
-                <span style="text-transform: uppercase !important; color: #6b7280 !important; margin-left: 4px;">Arena Matches Stats</span>
+                <span style="text-transform: uppercase !important; color: #6b7280 !important; margin-left: 4px;">Matches Leaderboard</span>
             `;
         }
     }
 
-    // TURNUVA MAÃ‡LARINI ANLIK OLARAK ARENA FORMATINA MAPLIYORUZ
-    const tMatchesMapped = (tournamentMatchDB || []).map(m => {
-        let computedTag = 'dfh';
-        if (m.arena) {
-            const cleanString = m.arena.toLowerCase().replace(/[^a-z0-9]/g, '');
-            if (cleanString.startsWith('dfh')) computedTag = 'dfh';
-            else if (cleanString.startsWith('mannfield')) computedTag = 'mannfield';
-            else if (cleanString.startsWith('champions')) computedTag = 'champions';
-            else if (cleanString.startsWith('urban')) computedTag = 'urban';
-            else if (cleanString.startsWith('beckwith')) computedTag = 'beckwith';
-            else if (cleanString.startsWith('utopia')) computedTag = 'utopia';
-            else if (cleanString.startsWith('wasteland')) computedTag = 'wasteland';
-            else if (cleanString.startsWith('neotokyo')) computedTag = 'neotokyo';
-            else if (cleanString.startsWith('aquadome')) computedTag = 'aquadome';
-            else if (cleanString.startsWith('farmstead')) computedTag = 'farmstead';
-            else if (cleanString.startsWith('forbidden')) computedTag = 'forbidden';
-            else if (cleanString.startsWith('deadeye')) computedTag = 'deadeye';
-            else if (cleanString.startsWith('neon')) computedTag = 'neon';
-            else if (cleanString.startsWith('salty')) computedTag = 'salty';
-            else if (cleanString.startsWith('sovereign')) computedTag = 'sovereign';
-            else if (cleanString.startsWith('starbase')) computedTag = 'starbase';
-            else if (cleanString.startsWith('rivals')) computedTag = 'rivals';
-            else if (cleanString.startsWith('estadio')) computedTag = 'estadio';
-            else if (cleanString.startsWith('drift')) computedTag = 'drift';
-            else if (cleanString.startsWith('futura')) computedTag = 'futura';
-            else if (cleanString.startsWith('boostfield')) computedTag = 'boostfield';
-            else if (cleanString.startsWith('parc')) computedTag = 'parc';
-        }
-        return {
-            ...m,
-            type: m.arena, 
-            arenaTag: computedTag,
-            isTournamentSource: true
-        };
-    });
+    let matches = [];
+    try {
+        matches = await fetchMatches();
+    } catch (err) {
+        console.error("Match leaderboard fetch error:", err);
+        tbody.innerHTML = `<tr><td colspan="16" class="px-6 py-20 text-center text-red-400 text-xs font-black uppercase tracking-[0.2em]">Failed to load matches from backend</td></tr>`;
+        return;
+    }
 
-    // Standart Arena MaÃ§lari ile Turnuva MaÃ§larini Ortak Tek Bir Havuzda BirleÅŸtiriyoruz
-    const combinedMatches = [...(arenaMatchDB || []).map(m => ({ ...m, isTournamentSource: false })), ...tMatchesMapped];
-
-    // SeÃ§ilen arenaya gÃ¶re birleÅŸik havuzdan filtreleme yapiyoruz
-    const filteredArenas = combinedMatches.filter(m => arenaVal === 'all' || m.arenaTag === arenaVal);
+    const filteredArenas = matches
+        .filter(m => arenaVal === 'all' || getArenaTagFromName(m.arena_name) === arenaVal)
+        .sort((a, b) => new Date(b.match_date) - new Date(a.match_date));
 
     if (filteredArenas.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="16" class="px-6 py-20 text-center text-gray-600 text-xs font-black uppercase tracking-[0.2em]">Please add arena or tournament matches from Admin Panel to generate arena stats</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="16" class="px-6 py-20 text-center text-gray-600 text-xs font-black uppercase tracking-[0.2em]">Please add matches from Admin Panel to generate the matches leaderboard</td></tr>`;
         return;
     }
 
     tbody.innerHTML = filteredArenas.map((m, index) => {
-        const formattedWAcc = m.wAcc.toString().includes('%') ? m.wAcc : `${m.wAcc}%`;
-        const formattedLAcc = m.lAcc.toString().includes('%') ? m.lAcc : `${m.lAcc}%`;
+        const blueAcc = `${Number(m.team1_shot_accuracy || 0).toFixed(2)}%`;
+        const orangeAcc = `${Number(m.team2_shot_accuracy || 0).toFixed(2)}%`;
+        const matchDate = (m.match_date || "").substring(0, 10);
 
-        const matchTypeBadge = m.isTournamentSource 
+        const matchTypeBadge = m.tournament_id 
             ? `<span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-blue-500/10 border border-blue-500/20 text-[10px] font-bold text-blue-400 w-max tracking-wide uppercase">
-                <i data-lucide="award" class="w-3 h-3 text-blue-400"></i> Tourney Match
+                <i data-lucide="award" class="w-3 h-3 text-blue-400"></i> ${m.tournament_name || 'Tournament'}
                </span>`
             : `<span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-gray-500/10 border border-gray-700 text-[10px] font-bold text-gray-400 w-max tracking-wide uppercase">
                 <i data-lucide="swords" class="w-3 h-3 text-gray-400"></i> Regular Match
@@ -7938,7 +8158,7 @@ function renderArenaMatchStats() {
 
             <td class="px-6 py-5 text-left">
                 <span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-white/5 border border-white/10 text-[10px] font-bold text-gray-400 w-max tracking-wide">
-                    <i data-lucide="land-plot" class="w-3 h-3 text-gray-500"></i> ${m.type || 'N/A'}
+                    <i data-lucide="land-plot" class="w-3 h-3 text-gray-500"></i> ${m.arena_name || 'N/A'}
                 </span>
             </td>
             
@@ -7950,7 +8170,7 @@ function renderArenaMatchStats() {
             
             <td class="px-6 py-5 text-left">
                 <span class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-400 w-max font-mono">
-                    <i data-lucide="calendar" class="w-3 h-3"></i> ${m.matchDate}
+                    <i data-lucide="calendar" class="w-3 h-3"></i> ${matchDate}
                 </span>
             </td>
             
@@ -7959,32 +8179,38 @@ function renderArenaMatchStats() {
             </td>
             
             <td class="px-6 py-5 text-left">
-                <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-xs font-bold text-white italic tracking-tighter w-max">
-                    ${m.team1Tag} <span class="text-gray-400 mx-1 font-normal not-italic text-[10px]">VS</span> ${m.team2Tag}
-                </span>
+                <div class="flex items-center gap-2 w-max">
+                    <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-500/10 border border-blue-500/30 text-xs font-black text-blue-300 tracking-tighter">
+                        BLUE: ${m.team1_name || 'Blue Team'}
+                    </span>
+                    <span class="px-2.5 py-1 rounded-md bg-white/10 border border-white/10 text-white text-[11px] font-black font-mono">${m.team1_goals || 0} - ${m.team2_goals || 0}</span>
+                    <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-orange-500/10 border border-orange-500/30 text-xs font-black text-orange-300 tracking-tighter">
+                        ORANGE: ${m.team2_name || 'Orange Team'}
+                    </span>
+                </div>
             </td>
             
             <td class="px-6 py-5 text-left">
                 <span class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-sky-500/10 border border-sky-500/20 text-xs font-black text-sky-400 w-max">
-                    ${m.winnerName}
+                    ${m.winner_team_name || 'Not recorded'}
                 </span>
             </td>
             
-            <td class="px-6 py-5 text-center font-mono text-xs text-orange-500 font-black">${m.wGoals}</td>
-            <td class="px-6 py-5 text-center font-mono text-xs text-orange-500 font-black">${m.lGoals}</td>
+            <td class="px-6 py-5 text-center font-mono text-xs text-blue-400 font-black">${m.team1_goals || 0}</td>
+            <td class="px-6 py-5 text-center font-mono text-xs text-orange-400 font-black">${m.team2_goals || 0}</td>
             
-            <td class="px-6 py-5 text-center font-mono text-xs text-yellow-500 font-black">${formattedWAcc}</td>
-            <td class="px-6 py-5 text-center font-mono text-xs text-yellow-500 font-black">${formattedLAcc}</td>
+            <td class="px-6 py-5 text-center font-mono text-xs text-blue-300 font-black">${blueAcc}</td>
+            <td class="px-6 py-5 text-center font-mono text-xs text-orange-300 font-black">${orangeAcc}</td>
             
-            <td class="px-6 py-5 text-center font-mono text-xs text-cyan-400 font-black">${m.wAss}</td>
-            <td class="px-6 py-5 text-center font-mono text-xs text-cyan-400 font-black">${m.lAss}</td>
+            <td class="px-6 py-5 text-center font-mono text-xs text-blue-300 font-black">${m.team1_assists || 0}</td>
+            <td class="px-6 py-5 text-center font-mono text-xs text-orange-300 font-black">${m.team2_assists || 0}</td>
             
-            <td class="px-6 py-5 text-center font-mono text-xs text-green-500 font-black">${m.wSav}</td>
-            <td class="px-6 py-5 text-center font-mono text-xs text-green-500 font-black">${m.lSav}</td>
+            <td class="px-6 py-5 text-center font-mono text-xs text-blue-300 font-black">${m.team1_saves || 0}</td>
+            <td class="px-6 py-5 text-center font-mono text-xs text-orange-300 font-black">${m.team2_saves || 0}</td>
             
             <td class="px-6 py-5 text-right">
                 <span class="inline-block mr-3 bg-purple-500/20 text-purple-400 px-3 py-1.5 rounded-lg border border-purple-500/40 text-[10px] font-black tracking-widest shadow-[0_0_15px_rgba(168,85,247,0.2)]">
-                    ${m.mvp}
+                    ${m.mvp_player_name || 'N/A'}
                 </span>
             </td>
         </tr>`;
@@ -8161,8 +8387,78 @@ async function refreshUserFavDropdown() {
                 localStorage.removeItem('myFavTeamId');
             }
         }
+        if (typeof renderFavoriteDashboardHighlights === "function") {
+            await renderFavoriteDashboardHighlights();
+        }
     } catch (err) {
         console.error('Failed to refresh favorite dropdowns:', err);
+    }
+}
+
+function renderFavoriteLastMatchCard(container, match, type) {
+    if (!container) return;
+
+    if (!match) {
+        container.innerHTML = `No recorded match found for this favorite ${type}`;
+        return;
+    }
+
+    const blueScore = match.blue_score ?? 0;
+    const orangeScore = match.orange_score ?? 0;
+    const extraStats = type === "player"
+        ? `G:${match.goals || 0} A:${match.assists || 0} S:${match.saves || 0}${match.mvp ? " MVP" : ""}`
+        : `${match.selected_team_type || "TEAM"} SIDE`;
+
+    container.innerHTML = `
+        <div class="flex flex-col gap-2">
+            <div class="flex items-center justify-between gap-3">
+                <span class="text-white truncate">${match.tournament_name || "Match"}</span>
+                <span class="text-gray-500 font-mono">${match.match_date || ""}</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+                <span class="px-2 py-1 rounded bg-blue-500/10 border border-blue-500/25 text-blue-300">BLUE: ${match.blue_team || "Blue Team"}</span>
+                <span class="px-2 py-1 rounded bg-white/10 border border-white/10 text-white font-mono">${blueScore} - ${orangeScore}</span>
+                <span class="px-2 py-1 rounded bg-orange-500/10 border border-orange-500/25 text-orange-300">ORANGE: ${match.orange_team || "Orange Team"}</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 text-gray-500">
+                <span>${match.arena_name || "Arena"}</span>
+                <span>${match.weather || "Weather"}</span>
+                <span class="text-purple-300">${extraStats}</span>
+            </div>
+        </div>
+    `;
+}
+
+async function renderFavoriteDashboardHighlights() {
+    const playerSelect = document.getElementById("user-fav-player-sel");
+    const teamSelect = document.getElementById("user-fav-team-sel");
+    const playerCard = document.getElementById("fav-player-last-match");
+    const teamCard = document.getElementById("fav-team-last-match");
+
+    const playerId = playerSelect?.value || localStorage.getItem("myFavPlayerId");
+    const teamId = teamSelect?.value || localStorage.getItem("myFavTeamId");
+
+    if (playerCard) playerCard.innerHTML = playerId ? "Loading favorite player last match..." : "Select a favorite player to see their last match";
+    if (teamCard) teamCard.innerHTML = teamId ? "Loading favorite team last match..." : "Select a favorite team to see their last match";
+
+    try {
+        if (playerId) {
+            const playerMatch = await fetchFavoritePlayerLastMatch(playerId);
+            renderFavoriteLastMatchCard(playerCard, playerMatch, "player");
+        }
+    } catch (err) {
+        console.error("Favorite player last match error:", err);
+        if (playerCard) playerCard.innerHTML = "Failed to load favorite player last match";
+    }
+
+    try {
+        if (teamId) {
+            const teamMatch = await fetchFavoriteTeamLastMatch(teamId);
+            renderFavoriteLastMatchCard(teamCard, teamMatch, "team");
+        }
+    } catch (err) {
+        console.error("Favorite team last match error:", err);
+        if (teamCard) teamCard.innerHTML = "Failed to load favorite team last match";
     }
 }
 
@@ -8880,7 +9176,7 @@ function validateMatchData(t1, t2, winner, wG, lG, wAc, lAc, wAs, lAs, wS, lS, m
     const accuracyRegex = /^(100(\.0{1,2})?|[0-9]{1,2}(\.[0-9]{1,2})?)$/;
 
     if (!t1 || !t2) {
-        showAdminMsg(msgElementId, "Please select both Team 1 and Team 2!", "error");
+        showAdminMsg(msgElementId, "Please select both Blue Team and Orange Team!", "error");
         return false;
     }
 
@@ -8938,27 +9234,28 @@ function validateMatchData(t1, t2, winner, wG, lG, wAc, lAc, wAs, lAs, wS, lS, m
 }
 
 // KULLANICI LIDERLIK TABLOLARI MERKEZI SENKRONIZASYON MOTOR FONKSIYONU
-function refreshAllUserLeaderboards() {
+async function refreshAllUserLeaderboards() {
     // 1. Player Stats Leaderboard'u o an aÃ§ik olan sekme ve platform filtresine gÃ¶re anlik yeniler
-    if (typeof updatePlayerLeaderboardHeader === "function") updatePlayerLeaderboardHeader();
+    if (typeof updatePlayerLeaderboardHeader === "function") await updatePlayerLeaderboardHeader();
     
     // 2. Team Stats Leaderboard'u o an seÃ§ili olan bÃ¶lge ve aktif sekmeye gÃ¶re anlik yeniler
-    if (typeof updateTeamLeaderboardHeader === "function") updateTeamLeaderboardHeader();
+    if (typeof updateTeamLeaderboardHeader === "function") await updateTeamLeaderboardHeader();
     
-    // 3. Arena Matches Stats tablosunu o an seÃ§ili olan arenaya ve aktif sekmeye gÃ¶re anlik yeniler
-    if (typeof renderArenaMatchStats === "function") renderArenaMatchStats();
+    // 3. Matches leaderboard'u o an seÃ§ili olan arenaya ve aktif sekmeye gÃ¶re anlik yeniler
+    if (typeof renderArenaMatchStats === "function") await renderArenaMatchStats();
     
     // 4. Tournament Matches Stats tablosunu o an seÃ§ili turnuvaya ve aktif sekmeye gÃ¶re anlik yeniler
-    if (typeof renderTournamentMatchStats === "function") renderTournamentMatchStats();
+    if (typeof renderTournamentMatchStats === "function") await renderTournamentMatchStats();
     
-    // 5. EÄŸer kullanici bir favori oyuncu detay sayfasindaysa, oradaki verileri ve son maÃ§lari da anlik yeniler
-    //if (typeof renderFavPlayerStats === "function") renderFavPlayerStats();
+    // 5. Advanced query showcase kartlari da PLAYER_MATCH_STATS Ã¼zerinden hesaplandiÄŸi iÃ§in anlik yenilenir
+    if (typeof renderAdvancedQueryShowcase === "function") await renderAdvancedQueryShowcase();
     
     // 6. Kullanici panelindeki favori oyuncu dropdown ve favori takim dropdown listelerini de anlik yeniler ve bu sayede gÃ¼ncel tutar
-    if (typeof refreshUserFavDropdown === "function") refreshUserFavDropdown();
-
-    //  7. Kullanici panelindeki favori takim detay sayfasindaki verileri ve son maÃ§lari da anlik yeniler ve bu sayede gÃ¼ncel tutar
-    //if (typeof renderFavTeamStats === "function") renderFavTeamStats();
+    if (typeof refreshUserFavDropdown === "function") {
+        await refreshUserFavDropdown();
+    } else if (typeof renderFavoriteDashboardHighlights === "function") {
+        await renderFavoriteDashboardHighlights();
+    }
 }
 
 // ADMIN DASHBOARD'DAKI TÃœM KARTLARI VE LISTELERI ANLIK GÃœNCELLEYEN MERKEZ MOTOR FONKSIYONU

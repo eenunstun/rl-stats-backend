@@ -48,6 +48,13 @@ router.get("/", async (req, res) => {
     COALESCE(S.orange_team, ORANGE.team_name) AS team2_name,
     COALESCE(S.blue_score, 0) AS team1_goals,
     COALESCE(S.orange_score, 0) AS team2_goals,
+    COALESCE(BLUE_STATS.assists, 0) AS team1_assists,
+    COALESCE(ORANGE_STATS.assists, 0) AS team2_assists,
+    COALESCE(BLUE_STATS.saves, 0) AS team1_saves,
+    COALESCE(ORANGE_STATS.saves, 0) AS team2_saves,
+    COALESCE(BLUE_STATS.shot_accuracy, 0) AS team1_shot_accuracy,
+    COALESCE(ORANGE_STATS.shot_accuracy, 0) AS team2_shot_accuracy,
+    MVP_PLAYER.player_name AS mvp_player_name,
 
     CASE
       WHEN S.blue_score > S.orange_score THEN COALESCE(S.blue_team, BLUE.team_name)
@@ -72,6 +79,49 @@ router.get("/", async (req, res) => {
   LEFT JOIN (
     ${queries.get("match-scores").replace(/ORDER BY A\.match_id;?/i, "")}
   ) S ON S.match_id = M.match_id
+  LEFT JOIN (
+    SELECT
+      PA.match_id,
+      SUM(PMS.assists) AS assists,
+      SUM(PMS.saves) AS saves,
+      ROUND(AVG(PMS.shot_accuracy), 2) AS shot_accuracy
+    FROM PLAYS_AS PA
+    JOIN PLAYS_FOR PF
+      ON PF.team_id = PA.team_id
+    JOIN PLAYER_MATCH_STATS PMS
+      ON PMS.match_id = PA.match_id
+     AND PMS.player_id = PF.player_id
+    JOIN MATCH_DATA M2
+      ON M2.match_id = PA.match_id
+    WHERE PA.team_type = 'BLUE'
+      AND M2.match_date >= PF.since
+      AND (PF.until IS NULL OR M2.match_date <= PF.until)
+    GROUP BY PA.match_id
+  ) BLUE_STATS ON BLUE_STATS.match_id = M.match_id
+  LEFT JOIN (
+    SELECT
+      PA.match_id,
+      SUM(PMS.assists) AS assists,
+      SUM(PMS.saves) AS saves,
+      ROUND(AVG(PMS.shot_accuracy), 2) AS shot_accuracy
+    FROM PLAYS_AS PA
+    JOIN PLAYS_FOR PF
+      ON PF.team_id = PA.team_id
+    JOIN PLAYER_MATCH_STATS PMS
+      ON PMS.match_id = PA.match_id
+     AND PMS.player_id = PF.player_id
+    JOIN MATCH_DATA M2
+      ON M2.match_id = PA.match_id
+    WHERE PA.team_type = 'ORANGE'
+      AND M2.match_date >= PF.since
+      AND (PF.until IS NULL OR M2.match_date <= PF.until)
+    GROUP BY PA.match_id
+  ) ORANGE_STATS ON ORANGE_STATS.match_id = M.match_id
+  LEFT JOIN PLAYER_MATCH_STATS MVP_STATS
+    ON MVP_STATS.match_id = M.match_id
+   AND MVP_STATS.mvp = TRUE
+  LEFT JOIN PLAYER MVP_PLAYER
+    ON MVP_PLAYER.player_id = MVP_STATS.player_id
 
   ${where}
 

@@ -162,6 +162,84 @@ router.get("/rosters-by-date", async (req, res) => {
   }
 });
 
+router.get("/:id/last-match", async (req, res) => {
+  const teamId = Number(req.params.id);
+
+  if (!Number.isInteger(teamId)) {
+    return res.status(400).json({ error: "Valid team_id is required" });
+  }
+
+  try {
+    const { rows } = await db.query(
+      `
+      WITH team_scores AS (
+        SELECT
+          PA.match_id,
+          PA.team_type,
+          T.team_id,
+          T.team_name,
+          COALESCE(SUM(PMS.goals), 0)::int AS team_score,
+          COALESCE(SUM(PMS.assists), 0)::int AS assists,
+          COALESCE(SUM(PMS.saves), 0)::int AS saves
+        FROM PLAYS_AS PA
+        JOIN TEAM T
+          ON T.team_id = PA.team_id
+        JOIN MATCH_DATA M
+          ON M.match_id = PA.match_id
+        LEFT JOIN PLAYS_FOR PF
+          ON PF.team_id = PA.team_id
+         AND M.match_date >= PF.since
+         AND (PF.until IS NULL OR M.match_date <= PF.until)
+        LEFT JOIN PLAYER_MATCH_STATS PMS
+          ON PMS.match_id = PA.match_id
+         AND PMS.player_id = PF.player_id
+        GROUP BY PA.match_id, PA.team_type, T.team_id, T.team_name
+      )
+      SELECT
+        M.match_id,
+        TO_CHAR(M.match_date, 'YYYY-MM-DD') AS match_date,
+        M.tournament_stage,
+        M.weather,
+        COALESCE(TR.tournament_name, 'Non-Tournament Match') AS tournament_name,
+        A.arena_name,
+        MAX(CASE WHEN TS.team_type = 'BLUE' THEN TS.team_name END) AS blue_team,
+        MAX(CASE WHEN TS.team_type = 'ORANGE' THEN TS.team_name END) AS orange_team,
+        MAX(CASE WHEN TS.team_type = 'BLUE' THEN TS.team_score END) AS blue_score,
+        MAX(CASE WHEN TS.team_type = 'ORANGE' THEN TS.team_score END) AS orange_score,
+        MAX(CASE WHEN TS.team_id = $1 THEN TS.team_type END) AS selected_team_type,
+        MAX(CASE WHEN TS.team_id = $1 THEN TS.team_score END) AS selected_team_score,
+        MAX(CASE WHEN TS.team_id = $1 THEN TS.assists END) AS selected_team_assists,
+        MAX(CASE WHEN TS.team_id = $1 THEN TS.saves END) AS selected_team_saves
+      FROM MATCH_DATA M
+      JOIN PLAYS_AS PA
+        ON PA.match_id = M.match_id
+       AND PA.team_id = $1
+      JOIN ARENA A
+        ON A.arena_id = M.arena_id
+      LEFT JOIN TOURNAMENT TR
+        ON TR.tournament_id = M.tournament_id
+      LEFT JOIN team_scores TS
+        ON TS.match_id = M.match_id
+      GROUP BY
+        M.match_id,
+        M.match_date,
+        M.tournament_stage,
+        M.weather,
+        TR.tournament_name,
+        A.arena_name
+      ORDER BY M.match_date DESC, M.match_id DESC
+      LIMIT 1
+      `,
+      [teamId]
+    );
+
+    res.json(rows[0] || null);
+  } catch (err) {
+    console.error("Team last match fetch error:", err);
+    res.status(500).json({ error: "Failed to fetch team last match" });
+  }
+});
+
 router.get("/:id", async (req, res) => {
   const id = Number(req.params.id);
 

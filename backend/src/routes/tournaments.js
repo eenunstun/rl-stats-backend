@@ -66,9 +66,12 @@ router.post("/", requireAuth, requireAdmin, async (req, res) => {
 
 router.delete("/:id", requireAuth, requireAdmin, async (req, res) => {
   const tournament_id = Number(req.params.id);
+  const client = await db.connect();
 
   try {
-    await db.query(
+    await client.query("BEGIN");
+
+    await client.query(
       `
       DELETE FROM PLAYER_MATCH_STATS
       WHERE match_id IN (
@@ -78,7 +81,7 @@ router.delete("/:id", requireAuth, requireAdmin, async (req, res) => {
       [tournament_id]
     );
 
-    await db.query(
+    await client.query(
       `
       DELETE FROM PLAYS_AS
       WHERE match_id IN (
@@ -88,7 +91,7 @@ router.delete("/:id", requireAuth, requireAdmin, async (req, res) => {
       [tournament_id]
     );
 
-    await db.query(
+    await client.query(
       `
       DELETE FROM MATCH_DATA
       WHERE tournament_id = $1
@@ -96,7 +99,7 @@ router.delete("/:id", requireAuth, requireAdmin, async (req, res) => {
       [tournament_id]
     );
 
-    const result = await db.query(
+    const result = await client.query(
       `
       DELETE FROM TOURNAMENT
       WHERE tournament_id = $1
@@ -106,18 +109,24 @@ router.delete("/:id", requireAuth, requireAdmin, async (req, res) => {
     );
 
     if (result.rowCount === 0) {
+      await client.query("ROLLBACK");
       return res.status(404).json({ error: "Tournament not found" });
     }
+
+    await client.query("COMMIT");
 
     res.json({
       message: "Tournament and related matches deleted successfully",
       tournament: result.rows[0],
     });
   } catch (err) {
+    await client.query("ROLLBACK");
     console.error("Delete tournament error:", err);
     res.status(500).json({
       error: err.message || "Failed to delete tournament",
     });
+  } finally {
+    client.release();
   }
 });
 

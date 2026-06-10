@@ -28,49 +28,61 @@ LIMIT 5;
 -- name: fav-teams-leaderboard
 -- Top 3 Favorite Teams Ranked by Number of Total Goals Scored
 
-SELECT  T.team_name,
-        SUM(PMS.goals) AS team_total_goal,
-        SUM(PMS.assists) AS team_total_assists,
-        SUM(PMS.saves) AS team_total_saves,
-        ROUND(AVG(PMS.shot_accuracy),2) AS team_average_shot_accuracy
-FROM    TEAM T, PLAYER_MATCH_STATS PMS, PLAYS_FOR PF 
-WHERE   T.team_id = PF.team_id
-    AND PMS.player_id = PF.player_id
-    AND T.team_id IN (
-        SELECT FT.team_id
-        FROM FAV_TEAM FT
-    )
-GROUP BY T.team_id, T.team_name
-ORDER BY team_total_goal DESC
+WITH team_stats AS (
+    SELECT  T.team_id,
+            T.team_name,
+            SUM(PMS.goals) AS team_total_goal,
+            SUM(PMS.assists) AS team_total_assists,
+            SUM(PMS.saves) AS team_total_saves,
+            ROUND(AVG(PMS.shot_accuracy),2) AS team_average_shot_accuracy
+    FROM    TEAM T, PLAYER_MATCH_STATS PMS, PLAYS_FOR PF 
+    WHERE   T.team_id = PF.team_id
+        AND PMS.player_id = PF.player_id
+    GROUP BY T.team_id, T.team_name
+),
+favorite_counts AS (
+    SELECT  FT.team_id,
+            COUNT(DISTINCT FT.user_id)::int AS favorite_count
+    FROM    FAV_TEAM FT
+    GROUP BY FT.team_id
+)
+SELECT  TS.team_name,
+        TS.team_total_goal,
+        TS.team_total_assists,
+        TS.team_total_saves,
+        TS.team_average_shot_accuracy,
+        FC.favorite_count
+FROM    team_stats TS,
+        favorite_counts FC
+WHERE   TS.team_id = FC.team_id
+ORDER BY TS.team_total_goal DESC
 LIMIT 3;
 
 
--- name: top-tournament
--- Statistics of the Tournament with Most Goals
+-- name: rank-tournaments-by-goals
+-- Ranks all tournaments by total goals per tournament
 
-SELECT  T.tournament_name,
-        SUM(PMS.goals) AS tournament_total_goal, 
-        SUM(PMS.assists) AS tournament_total_assist, 
-        SUM(PMS.saves) AS tournament_total_save
-FROM    TOURNAMENT T,
-        MATCH_DATA M,
-        PLAYER_MATCH_STATS PMS
-WHERE   M.match_id = PMS.match_id
-    AND T.tournament_id = M.tournament_id
-GROUP BY T.tournament_id, T.tournament_name
-HAVING  SUM(PMS.goals) = (
-        SELECT MAX(tournament_total_goals)
-        FROM (
-             SELECT SUM(PMS1.goals) AS tournament_total_goals
-             FROM TOURNAMENT T1,
-                  MATCH_DATA M1,
-                  PLAYER_MATCH_STATS PMS1
-             WHERE M1.match_id = PMS1.match_id
-             AND T1.tournament_id= M1.tournament_id
-             GROUP BY T1.tournament_id
-             ) AS tournament_goals_total
-);
-
+SELECT
+    T.tournament_id,
+    T.tournament_name,
+    SUM(PMS.goals) AS tournament_total_goals,
+    SUM(PMS.assists) AS tournament_total_assists,
+    SUM(PMS.saves) AS tournament_total_saves,
+    RANK() OVER (
+        ORDER BY SUM(PMS.goals) DESC
+    ) AS goal_rank
+FROM TOURNAMENT T
+JOIN MATCH_DATA M
+    ON T.tournament_id = M.tournament_id
+JOIN PLAYER_MATCH_STATS PMS
+    ON M.match_id = PMS.match_id
+GROUP BY
+    T.tournament_id,
+    T.tournament_name
+ORDER BY
+    goal_rank,
+    tournament_total_goals DESC;
+    
 -- name: match-scores
 -- Final Scores of Matches using plays_for and match_data dates
 

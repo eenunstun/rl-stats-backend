@@ -197,37 +197,161 @@ router.post("/", requireAuth, requireAdmin, async (req, res) => {
   }
 });
 
+router.get("/:id/last-match", async (req, res) => {
+  const playerId = Number(req.params.id);
+
+  if (!Number.isInteger(playerId)) {
+    return res.status(400).json({ error: "Valid player_id is required" });
+  }
+
+  try {
+    const { rows } = await db.query(
+      `
+      WITH team_scores AS (
+        SELECT
+          PA.match_id,
+          PA.team_type,
+          T.team_name,
+          COALESCE(SUM(PMS.goals), 0)::int AS team_score
+        FROM PLAYS_AS PA
+        JOIN TEAM T
+          ON T.team_id = PA.team_id
+        JOIN MATCH_DATA M
+          ON M.match_id = PA.match_id
+        LEFT JOIN PLAYS_FOR PF
+          ON PF.team_id = PA.team_id
+         AND M.match_date >= PF.since
+         AND (PF.until IS NULL OR M.match_date <= PF.until)
+        LEFT JOIN PLAYER_MATCH_STATS PMS
+          ON PMS.match_id = PA.match_id
+         AND PMS.player_id = PF.player_id
+        GROUP BY PA.match_id, PA.team_type, T.team_name
+      )
+      SELECT
+        M.match_id,
+        TO_CHAR(M.match_date, 'YYYY-MM-DD') AS match_date,
+        M.tournament_stage,
+        M.weather,
+        COALESCE(TR.tournament_name, 'Non-Tournament Match') AS tournament_name,
+        A.arena_name,
+        PMS.goals,
+        PMS.assists,
+        PMS.saves,
+        PMS.shot_accuracy,
+        PMS.mvp,
+        MAX(CASE WHEN TS.team_type = 'BLUE' THEN TS.team_name END) AS blue_team,
+        MAX(CASE WHEN TS.team_type = 'ORANGE' THEN TS.team_name END) AS orange_team,
+        MAX(CASE WHEN TS.team_type = 'BLUE' THEN TS.team_score END) AS blue_score,
+        MAX(CASE WHEN TS.team_type = 'ORANGE' THEN TS.team_score END) AS orange_score
+      FROM PLAYER_MATCH_STATS PMS
+      JOIN MATCH_DATA M
+        ON M.match_id = PMS.match_id
+      JOIN ARENA A
+        ON A.arena_id = M.arena_id
+      LEFT JOIN TOURNAMENT TR
+        ON TR.tournament_id = M.tournament_id
+      LEFT JOIN team_scores TS
+        ON TS.match_id = M.match_id
+      WHERE PMS.player_id = $1
+      GROUP BY
+        M.match_id,
+        M.match_date,
+        M.tournament_stage,
+        M.weather,
+        TR.tournament_name,
+        A.arena_name,
+        PMS.goals,
+        PMS.assists,
+        PMS.saves,
+        PMS.shot_accuracy,
+        PMS.mvp
+      ORDER BY M.match_date DESC, M.match_id DESC
+      LIMIT 1
+      `,
+      [playerId]
+    );
+
+    res.json(rows[0] || null);
+  } catch (err) {
+    console.error("Player last match fetch error:", err);
+    res.status(500).json({ error: "Failed to fetch player last match" });
+  }
+});
+
 router.post("/:id/plays-for", requireAuth, requireAdmin, async (req, res) => {
+  const client = await db.connect();
+
   try {
     const player_id = Number(req.params.id);
-    const { team_id, since, until } = req.body || {};
+    const { team_id } = req.body || {};
 
-    if (!team_id || !since) {
+    if (!Number.isInteger(player_id) || !team_id) {
       return res.status(400).json({
-        error: "team_id and since are required",
+        error: "player_id and team_id are required",
       });
     }
 
-    await db.query(
-      `UPDATE PLAYS_FOR
-       SET until = $1::date
-       WHERE player_id = $2 
-         AND until IS NULL 
-         AND since < $1::date`,
-      [since, player_id]
+    const targetTeamId = Number(team_id);
+
+    await client.query("BEGIN");
+
+    const activeMembership = await client.query(
+      `SELECT team_id
+       FROM PLAYS_FOR
+       WHERE player_id = $1
+         AND until IS NULL`,
+      [player_id]
     );
 
-    const result = await db.query(
-      `INSERT INTO PLAYS_FOR (player_id, team_id, since, until)
-       VALUES ($1, $2, $3, $4)
-       RETURNING *`,
-      [player_id, team_id, since, until || null]
+    if (
+      activeMembership.rowCount > 0 &&
+      Number(activeMembership.rows[0].team_id) === targetTeamId
+    ) {
+      await client.query("ROLLBACK");
+      return res.status(409).json({
+        error: "Player is already assigned to this team",
+      });
+    }
+
+    const targetRoster = await client.query(
+      `SELECT COUNT(*)::int AS active_players
+       FROM PLAYS_FOR
+       WHERE team_id = $1
+         AND until IS NULL`,
+      [targetTeamId]
     );
+
+    if (targetRoster.rows[0].active_players >= 3) {
+      await client.query("ROLLBACK");
+      return res.status(409).json({
+        error: "This team already has 3 active players",
+      });
+    }
+
+    await client.query(
+      `UPDATE PLAYS_FOR
+       SET until = CURRENT_DATE
+       WHERE player_id = $1
+         AND until IS NULL`,
+      [player_id]
+    );
+
+    const result = await client.query(
+      `INSERT INTO PLAYS_FOR (player_id, team_id, since, until)
+       VALUES ($1, $2, CURRENT_DATE, NULL)
+       RETURNING *`,
+      [player_id, targetTeamId]
+    );
+
+    await client.query("COMMIT");
 
     res.status(201).json(result.rows[0]);
   } catch (err) {
+    await client.query("ROLLBACK");
     console.error("Assign player to team error:", err);
     res.status(500).json({ error: "Failed to assign player to team" });
+  } finally {
+    client.release();
   }
 });
 
