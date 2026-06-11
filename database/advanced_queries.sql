@@ -28,13 +28,10 @@ LIMIT 5;
 -- name: fav-teams-leaderboard
 -- Top 3 Most Favourited Teams and Their Respective Goals
 
-WITH team_stats AS (
+WITH team_goals AS (
     SELECT  T.team_id,
             T.team_name,
-            SUM(PMS.goals) AS team_total_goal,
-            SUM(PMS.assists) AS team_total_assists,
-            SUM(PMS.saves) AS team_total_saves,
-            ROUND(AVG(PMS.shot_accuracy),2) AS team_average_shot_accuracy
+            SUM(PMS.goals) AS team_total_goal
     FROM    TEAM T, PLAYER_MATCH_STATS PMS, PLAYS_FOR PF 
     WHERE   T.team_id = PF.team_id
         AND PMS.player_id = PF.player_id
@@ -42,14 +39,14 @@ WITH team_stats AS (
 ),
 favorite_counts AS (
     SELECT  FT.team_id,
-            COUNT(DISTINCT FT.user_id)::int AS favorite_count
+            COUNT(DISTINCT FT.user_id) AS favorite_count
     FROM    FAV_TEAM FT
     GROUP BY FT.team_id
 )
 SELECT  TS.team_name,
         TS.team_total_goal,
         FC.favorite_count
-FROM    team_stats TS,
+FROM    team_goals TS,
         favorite_counts FC
 WHERE   TS.team_id = FC.team_id
 ORDER BY FC.favorite_count DESC
@@ -63,8 +60,6 @@ SELECT
     T.tournament_id,
     T.tournament_name,
     SUM(PMS.goals) AS tournament_total_goals,
-    SUM(PMS.assists) AS tournament_total_assists,
-    SUM(PMS.saves) AS tournament_total_saves,
     RANK() OVER (
         ORDER BY SUM(PMS.goals) DESC
     ) AS goal_rank
