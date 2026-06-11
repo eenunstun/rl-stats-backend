@@ -4074,6 +4074,10 @@ async function renderAdminTournamentMatches() {
             const endDate = (m.end_date || "").substring(0, 10);
             const blueGoals = Number(m.team1_goals || 0);
             const orangeGoals = Number(m.team2_goals || 0);
+            const mvpBadge = `
+                <span class="px-2.5 py-1 rounded bg-purple-500/10 border border-purple-500/25 text-purple-300 text-[9px] font-black tracking-widest flex items-center gap-1.5 shadow-sm">
+                    <i data-lucide="star" class="w-3 h-3"></i> MVP: ${m.mvp_player_name || "N/A"}
+                </span>`;
 
             return `
             <div class="border-b border-gray-800/40 px-6 py-4 flex flex-col gap-3 hover:bg-white/[0.02] admin-login-animate group transition-all">
@@ -4097,13 +4101,14 @@ async function renderAdminTournamentMatches() {
                             </div>
 
                             <div class="flex flex-wrap items-center gap-2">
-                                <span class="px-2.5 py-1 rounded bg-white/10 border border-white/20 text-white text-[9px] font-black tracking-widest flex items-center gap-1.5 shadow-sm">
-                                    <i data-lucide="medal" class="w-3 h-3"></i> 
-                                    WINNER TEAM: ${m.winner_team_name || "N/A"}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
+                                 <span class="px-2.5 py-1 rounded bg-white/10 border border-white/20 text-white text-[9px] font-black tracking-widest flex items-center gap-1.5 shadow-sm">
+                                    <i data-lucide="medal" class="w-3 h-3"></i>
+                                     WINNER TEAM: ${m.winner_team_name || "N/A"}
+                                 </span>
+                                 ${mvpBadge}
+                             </div>
+                         </div>
+                     </div>
 
                     <button onclick="deleteTournamentMatch(${m.match_id})" class="text-gray-600 hover:text-red-400 transition-colors p-2 hover:bg-red-500/10 rounded-lg shrink-0 ml-2">
                         <i data-lucide="trash-2" class="w-4 h-4"></i>
@@ -4465,6 +4470,10 @@ async function renderAdminArenaMatches() {
         const orangeGoals = Number(m.team2_goals || 0);
         const matchDate = (m.match_date || '').split('T')[0] || m.match_date || '';
         const isTournamentSource = Boolean(m.tournament_id);
+        const mvpBadge = `
+            <span class="px-2.5 py-1 rounded bg-purple-500/10 border border-purple-500/25 text-purple-300 text-[9px] font-black tracking-widest flex items-center gap-1.5 shadow-sm">
+                <i data-lucide="star" class="w-3 h-3"></i> MVP: ${m.mvp_player_name || 'N/A'}
+            </span>`;
         const sourceBadge = isTournamentSource
             ? `<span class="px-2.5 py-1 rounded bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[9px] font-black tracking-widest flex items-center gap-1.5 shadow-sm">
                 <i data-lucide="award" class="w-3 h-3"></i> TOURNAMENT: ${m.tournament_name || 'Tournament'}
@@ -4495,12 +4504,13 @@ async function renderAdminArenaMatches() {
                             </span>
                         </div>
                         <div class="flex flex-wrap items-center gap-2">
-                            <span class="px-2.5 py-1 rounded bg-white/10 border border-white/20 text-white text-[9px] font-black tracking-widest flex items-center gap-1.5 shadow-sm">
-                                <i data-lucide="medal" class="w-3 h-3"></i> WINNER TEAM: ${m.winner_team_name || 'Not recorded'}
-                            </span>
-                            ${sourceBadge}
-                        </div>
-                    </div>
+                             <span class="px-2.5 py-1 rounded bg-white/10 border border-white/20 text-white text-[9px] font-black tracking-widest flex items-center gap-1.5 shadow-sm">
+                                 <i data-lucide="medal" class="w-3 h-3"></i> WINNER TEAM: ${m.winner_team_name || 'Not recorded'}
+                             </span>
+                             ${mvpBadge}
+                             ${sourceBadge}
+                         </div>
+                     </div>
                 </div>
                  
                 <button onclick="deleteArenaMatch(${m.match_id})" class="text-gray-600 hover:text-red-400 transition-colors p-2 hover:bg-red-500/10 rounded-lg shrink-0 ml-2">
@@ -6443,6 +6453,9 @@ if (recM) {
                     <span class="flex items-center gap-1 px-2 py-0 rounded-md bg-white/10 border border-white/20 text-[10px] font-black tracking-widest text-white shadow-sm">
                         <i data-lucide="medal" class="w-2.5 h-2.5"></i> WINNER: ${m.winner_team_name || 'N/A'}
                     </span>
+                    <span class="flex items-center gap-1 px-2 py-0 rounded-md bg-purple-500/10 border border-purple-500/25 text-[10px] font-black tracking-widest text-purple-300 shadow-sm">
+                        <i data-lucide="star" class="w-2.5 h-2.5"></i> MVP: ${m.mvp_player_name || 'N/A'}
+                    </span>
                     <span class="flex items-center gap-1 px-2 py-0 rounded-md bg-white/5 border border-white/10 text-[10px] font-bold text-gray-400">
                         <i data-lucide="land-plot" class="w-2.5 h-2.5 text-gray-500"></i> ${m.arena_name || 'Arena'}
                     </span>
@@ -6530,6 +6543,9 @@ if (recTMatches) {
                 <div class="flex flex-wrap items-center gap-1.5 pl-[44px]">
                     <span class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[9px] font-bold text-gray-400">
                         <i data-lucide="medal" class="w-2.5 h-2.5"></i> WINNER: ${m.winner_team_name || 'N/A'}
+                    </span>
+                    <span class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-purple-500/10 border border-purple-500/25 text-[9px] font-black text-purple-300 shadow-sm">
+                        <i data-lucide="star" class="w-2.5 h-2.5"></i> MVP: ${m.mvp_player_name || 'N/A'}
                     </span>
                     
                     <span class="flex items-center gap-1 px-1.5 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 text-[9px] font-black text-blue-400 shadow-sm">
@@ -7351,6 +7367,7 @@ async function updateStats() {
 
 async function refreshAfterPlayerMatchStatUpdate() {
     if (typeof renderUpdatedPlayers === "function") renderUpdatedPlayers();
+    if (typeof renderAdminTournamentMatches === "function") await renderAdminTournamentMatches();
     if (typeof renderAdminArenaMatches === "function") await renderAdminArenaMatches();
     if (typeof refreshOverview === "function") await refreshOverview();
     if (typeof refreshAllUserLeaderboards === "function") await refreshAllUserLeaderboards();

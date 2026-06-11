@@ -28,26 +28,26 @@ LIMIT 5;
 -- name: fav-teams-leaderboard
 -- Top 3 Most Favourited Teams and Their Respective Goals
 
-WITH team_goals AS (
+SELECT  TS.team_name,
+        TS.team_total_goal,
+        FC.favorite_count
+FROM
+(
     SELECT  T.team_id,
             T.team_name,
-            SUM(PMS.goals) AS team_total_goal
-    FROM    TEAM T, PLAYER_MATCH_STATS PMS, PLAYS_FOR PF 
+            SUM(PMS.goals) AS team_total_goal,
+            ROUND(AVG(PMS.shot_accuracy), 2) AS team_average_shot_accuracy
+    FROM    TEAM T, PLAYER_MATCH_STATS PMS, PLAYS_FOR PF
     WHERE   T.team_id = PF.team_id
         AND PMS.player_id = PF.player_id
     GROUP BY T.team_id, T.team_name
-),
-favorite_counts AS (
+) AS TS,
+(
     SELECT  FT.team_id,
             COUNT(DISTINCT FT.user_id) AS favorite_count
     FROM    FAV_TEAM FT
     GROUP BY FT.team_id
-)
-SELECT  TS.team_name,
-        TS.team_total_goal,
-        FC.favorite_count
-FROM    team_goals TS,
-        favorite_counts FC
+) AS FC
 WHERE   TS.team_id = FC.team_id
 ORDER BY FC.favorite_count DESC
 LIMIT 3;

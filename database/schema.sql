@@ -71,6 +71,10 @@ FOREIGN KEY (player_id) REFERENCES PLAYER(player_id),
 FOREIGN KEY (match_id) REFERENCES MATCH_DATA(match_id)
 );
 
+CREATE UNIQUE INDEX one_mvp_per_match
+ON PLAYER_MATCH_STATS(match_id)
+WHERE mvp = TRUE;
+
 CREATE TABLE PLAYS_FOR
 (
 player_id INT NOT NULL,
