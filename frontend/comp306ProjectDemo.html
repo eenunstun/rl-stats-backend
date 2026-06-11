@@ -730,7 +730,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
     <!-- Sol: Sayfa Sekmeleri -->
     <div class="flex gap-4">
         <button onclick="showPage('user')" id="nav-user" class="text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-white transition-all">User Panel</button>
-        <button onclick="showPage('admin')" id="nav-admin" class="text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-white transition-all">Admın Panel</button>
+        <button onclick="showPage('admin')" id="nav-admin" class="hidden text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-white transition-all">Admin Panel</button>
     </div>
 
     <!-- Orta: Logo (Absolute sayesinde her zaman ortada) -->
@@ -1183,10 +1183,10 @@ body:has(#page-loader:not(.loader-hidden)) main {
                 <img src="rocket-league-logo.png" class="h-16 w-auto mx-auto mb-6 drop-shadow-lg" alt="RLstats Logo">
                 <!-- Dynamic professional page title -->
                  <h2 id="auth-dynamic-title" class="text-2xl font-black uppercase tracking-tight text-white">
-                    USER SIGN IN
+                    SIGN IN
                 </h2>
                 <p id="auth-dynamic-subtitle" class="text-gray-400 text-sm mt-1">
-                    Please enter your user information.
+                    Please enter your account information.
                 </p>
             </div>
 
@@ -1255,7 +1255,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
         <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Username</label>
         <div class="relative">
             <i data-lucide="user" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 pointer-events-none"></i>
-            <input type="text" id="signup-username" class="auth-input pl-11" placeholder="unique username">
+            <input type="text" id="signup-username" class="auth-input pl-11" placeholder="unique username" oninput="updateStrengthBar(document.getElementById('signup-password').value); checkPasswordMatch()">
         </div>
     </div>
 
@@ -1367,60 +1367,6 @@ body:has(#page-loader:not(.loader-hidden)) main {
         </div>
     </main>
  
-    <main id="page-admin-login" class="hidden min-h-[calc(100vh-80px)] flex items-center justify-center admin-bg-custom">
-    <div id="admin-login-card" class="w-full max-w-md glass-effect p-10 rounded-[2.5rem] border border-gray-700/30 shadow-2xl">
-        
-        <!-- Header Alani -->
-        <div class="text-center mb-8">
-            <img src="rocket-league-logo.png" class="h-16 w-auto mx-auto mb-6 drop-shadow-lg" alt="Admin Logo">
-            <h2 class="text-2xl font-black uppercase tracking-tight text-white">Admin Login</h2>
-            <p class="text-gray-400 text-sm mt-1">Please enter your authorization information.</p>
-        </div>
-
-        <div class="space-y-5">
-            <!-- Admin Username -->
-            <div class="flex flex-col gap-1.5 text-left">
-                <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Admin Username</label>
-                <div class="relative">
-                    <i data-lucide="user" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 pointer-events-none"></i>
-                    <input type="text" id="username" class="auth-input w-full pl-11" placeholder="admin_username">
-                </div>
-            </div>
-
-            <!-- Admin Password -->
-            <div class="flex flex-col gap-1.5 text-left">
-                <label class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Admin Password</label>
-                <div class="relative">
-                    <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 pointer-events-none"></i>
-                    <input type="password" id="password" class="auth-input w-full pl-11 pr-11" placeholder="********">
-                    <button type="button" onclick="togglePassVis('password', 'eye-admin')" 
-                            class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-300 transition-colors">
-                        <i id="eye-admin" data-lucide="eye" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Login Butonu -->
-            <button onclick="handleLogin()" class="w-full bg-purple-600 hover:bg-purple-500 py-4 rounded-xl font-black uppercase tracking-widest transition-all mt-4 text-white shadow-lg shadow-purple-500/20 active:scale-95 flex items-center justify-center gap-2">
-                <i data-lucide="log-in" class="w-4 h-4"></i>
-                Login
-            </button>
-
-            <!-- Hata Mesaji -->
-            <div id="login-error" class="hidden flex items-center justify-center gap-2 text-red-500 text-xs font-bold mt-4">
-                <i data-lucide="circle-alert" class="w-4 h-4"></i>
-                <span id="error-text"></span>
-            </div>
-
-            <!-- ADMIN LOGIN SUCCESS MESSAGE -->
-            <div id="admin-login-success" class="hidden flex items-center justify-center gap-2 text-green-400 text-xs font-bold mt-4 bg-green-500/10 border border-green-500/20 rounded-xl px-4 py-3">
-                <i data-lucide="check-circle" class="w-4 h-4"></i>
-                <span>Admin Login successful!</span>
-            </div>
-        </div>
-    </div>
-</main>
-
 <!-- PROFESSIONAL ADMIN DASHBOARD -->
 <main id="page-admin-dashboard" class="hidden min-h-screen admin-dashboard-custom-bg">
     <div class="px-8 py-6 flex justify-center sticky top-20 z-40 pointer-events-none group">
@@ -3262,7 +3208,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
 
         // ANLIK SCROLL HAFIZASI (Aktif sayfanin scroll pozisyonunu her an kaydet)
         // Stores or restores UI state from browser storage.
-        const pages = ['page-user', 'page-admin-login', 'page-admin-dashboard', 
+        const pages = ['page-user', 'page-admin-dashboard',
             'page-user-auth', 'page-stats-leaderboard', 'page-team-stats-leaderboard', 'page-tournament-stats', 'page-arenas-stats', 'page-fav-player', 'page-fav-team'];
 
         pages.forEach(id => {
@@ -4813,18 +4759,26 @@ function showPage(page, isPopState = false) {
         page = 'admin'; // Internal UI workflow note.
     }
 
-    const pages = ['page-user', 'page-admin-login', 'page-admin-dashboard', 
+    const pages = ['page-user', 'page-admin-dashboard',
         'page-user-auth', 'page-stats-leaderboard', 'page-team-stats-leaderboard', 'page-tournament-stats', 'page-arenas-stats', 'page-fav-player', 'page-fav-team'];
-    const adminCard = document.getElementById('admin-login-card');
     const ticker = document.getElementById('user-news-ticker');
     const adminTicker = document.getElementById('admin-news-ticker'); 
     const navUser  = document.getElementById('nav-user');
     const navAdmin = document.getElementById('nav-admin');
     const userBadge = document.getElementById('user-logged-badge'); 
     const adminBadge = document.getElementById('admin-logged-badge'); 
+    const canUseAdminPanel = isAdmin();
+
+    if (navAdmin) {
+        navAdmin.classList.toggle('hidden', !canUseAdminPanel);
+    }
+
+    if ((page === 'admin' || page === 'page-admin-dashboard') && !canUseAdminPanel) {
+        page = isLoggedIn() ? 'user' : 'login';
+    }
 
     // Stores or restores UI state from browser storage.
-    if (page === 'admin' || page === 'page-admin-login' || page === 'page-admin-dashboard') {
+    if (page === 'admin' || page === 'page-admin-dashboard') {
         localStorage.setItem('lastActivePanel', 'admin');
     } else if (page === 'user' || page === 'login' || page === 'signup' || page.startsWith('page-')) {
         localStorage.setItem('lastActivePanel', 'user');
@@ -4833,9 +4787,7 @@ function showPage(page, isPopState = false) {
     // Handles page navigation and page-level UI state.
     if (page === 'user') {
         const adminDash = document.getElementById('page-admin-dashboard');
-        const adminLogin = document.getElementById('page-admin-login');
-        const isFromAdmin = (adminDash && !adminDash.classList.contains('hidden')) || 
-                            (adminLogin && !adminLogin.classList.contains('hidden'));
+        const isFromAdmin = adminDash && !adminDash.classList.contains('hidden');
         
         if (isFromAdmin) {
             const savedUserPage = localStorage.getItem('lastActiveUserPage');
@@ -4941,7 +4893,7 @@ function showPage(page, isPopState = false) {
         
         if (userBadge) userBadge.classList.add('hidden');
         
-        if (isLoggedIn()) {
+        if (canUseAdminPanel) {
             if (adminBadge) adminBadge.classList.remove('hidden');
             document.getElementById('page-admin-dashboard').classList.remove('hidden');
             
@@ -4956,15 +4908,7 @@ function showPage(page, isPopState = false) {
             document.body.classList.remove('admin-bg-active');
 
             if (adminBadge) adminBadge.classList.add('hidden');
-            document.getElementById('page-admin-login').classList.remove('hidden');
-            
-            if (adminCard) {
-                adminCard.classList.remove('admin-login-animate', 'premium-page-animate');
-                void adminCard.offsetWidth; // Reflow: Animasyonu sifirlar
-                requestAnimationFrame(() => {
-                    adminCard.classList.add('admin-login-animate');
-                });
-            }
+            showPage(isLoggedIn() ? 'user' : 'login', true);
         }
     }
 
@@ -5012,7 +4956,7 @@ function showPage(page, isPopState = false) {
     if (!isLoaderActive) {
         pages.forEach(id => {
             const el = document.getElementById(id);
-            if (el && !el.classList.contains('hidden') && id !== 'page-admin-login' && id !== 'page-user-auth') {
+            if (el && !el.classList.contains('hidden') && id !== 'page-user-auth') {
                 void el.offsetWidth; // Reflow: Animasyonu sifirlar
                 requestAnimationFrame(() => {
                     el.classList.add('premium-page-animate');
@@ -5021,7 +4965,6 @@ function showPage(page, isPopState = false) {
         });
     }
 
-    if (adminCard && page !== 'admin') adminCard.classList.remove('admin-login-animate', 'premium-page-animate');
 
     setTimeout(() => {
         lucide.createIcons();
@@ -5074,17 +5017,21 @@ window.onload = function() {
     const savedUsername = savedUser?.username || savedUser?.user_name || savedUser?.name || null;
     const savedIsAdmin = savedUser?.is_admin === true;
     const hash = window.location.hash.replace('#', '');
-    const adminCard = document.getElementById('admin-login-card'); 
     
+    const navAdmin = document.getElementById('nav-admin');
+    if (navAdmin) {
+        navAdmin.classList.toggle('hidden', !(savedIsAdmin && savedToken));
+    }
+
     // Admin dashboard navigation and refresh workflow.
     if (savedIsAdmin && savedToken) {
 
-        if (typeof setupAdminUI === "function") setupAdminUI(ADMIN_USER);
+        if (typeof setupAdminUI === "function") setupAdminUI(savedUsername);
         setTimeout(() => { if(typeof flashAdminTabs === "function") flashAdminTabs(); }, 1000);
         const adminAvatar = document.getElementById('admin-avatar-initial');
         const adminName = document.getElementById('admin-display-name');
-        if (adminAvatar) adminAvatar.textContent = ADMIN_USER.charAt(0);
-        if (adminName) adminName.textContent = ADMIN_USER;
+        if (adminAvatar) adminAvatar.textContent = savedUsername.charAt(0);
+        if (adminName) adminName.textContent = savedUsername;
 
         // Central synchronization workflow for dashboard data.
         if (typeof refreshAdminDashboard === "function") refreshAdminDashboard();
@@ -5173,7 +5120,6 @@ if (typeof renderArenaMatchStats === "function") {
         }
     } 
     
-    // 2. Normal kullanici oturumu varsa durumu
     else if (currentUser) {
         if (hash && !['user-auth', 'login', 'signup'].includes(hash) && !hash.startsWith('admin-') && hash !== 'admin') {
             if (typeof showPage === "function") {
@@ -5185,33 +5131,17 @@ if (typeof renderArenaMatchStats === "function") {
                 showPage(savedUserPage, true);
             }
         }
-
-    // Admin dashboard navigation and refresh workflow.
-    } else if (isLoggedIn()) {
-        // Admin dashboard navigation and refresh workflow.
-        const activeAdminPage = (hash.startsWith('admin-') || hash === 'admin') ? hash : 'admin';
-        if (typeof showPage === "function") {
-            showPage(activeAdminPage, true);
-        }
-
     // Authentication workflow.
     } else {
-        // Authentication workflow.
-        if (hash === 'admin' || hash.startsWith('admin-') || (hash === '' && lastPanel === 'admin')) {
-            // Coordinates browser history state for navigation.
-            history.replaceState({ page: 'admin' }, "", "#admin");
+        if (['login', 'signup'].includes(hash)) {
             if (typeof showPage === "function") {
-                showPage('admin', true);
-            } // Admin dashboard navigation and refresh workflow.
-        } else if (['login', 'signup'].includes(hash)) {
-            if (typeof showPage === "function") {
-                showPage(activeAdminPage, true);
+                showPage(hash, true);
             }
         } else {
             const savedAuthTab = localStorage.getItem('activeAuthTab') || 'login';
-           if (typeof showPage === "function") {
-                showPage(hash, true);
-            } // Authentication workflow.
+            if (typeof showPage === "function") {
+                showPage(savedAuthTab, true);
+            }
         }
     }
     
@@ -5233,7 +5163,7 @@ if (typeof renderArenaMatchStats === "function") {
 
             // Scrolls the page back to the top.
             const savedScrolls = JSON.parse(localStorage.getItem('panelScrollPositions')) || {};
-            const pages = ['page-user', 'page-admin-login', 'page-admin-dashboard', 
+            const pages = ['page-user', 'page-admin-dashboard',
                 'page-user-auth', 'page-stats-leaderboard', 'page-team-stats-leaderboard', 'page-tournament-stats', 'page-arenas-stats', 'page-fav-player', 'page-fav-team'];
                 
             pages.forEach(id => {
@@ -5248,13 +5178,7 @@ if (typeof renderArenaMatchStats === "function") {
                         behavior: 'instant'
                     });
 
-                    if (id === 'page-admin-login') {
-                        if (adminCard) {
-                            adminCard.classList.remove('premium-page-animate', 'admin-login-animate');
-                            void adminCard.offsetWidth; // Reflow: Animasyonu sifirlar
-                            adminCard.classList.add('admin-login-animate');
-                        }
-                    } else if (id === 'page-user-auth') {
+                    if (id === 'page-user-auth') {
                         const userAuthCard = el.querySelector('.auth-card');
                         if (userAuthCard) {
                             userAuthCard.classList.remove('premium-page-animate', 'admin-login-animate');
@@ -5322,10 +5246,15 @@ window.onpopstate = function(event) {
         cleanPage = 'admin';
     }
 
+    if (cleanPage === 'admin' && !isAdmin()) {
+        history.replaceState({ page: currentUser ? 'user' : 'login' }, "", currentUser ? "#user" : "#login");
+        showPage(currentUser ? 'user' : 'login', true);
+        return;
+    }
+
     // Authentication workflow.
     if (!currentUser) {
-        // Izin verilen sayfalar: auth sekmeleri ve admin paneli
-        const isAllowed = ['user-auth', 'login', 'signup', 'admin', 'page-user-auth', 'page-admin-login'].includes(cleanPage);
+        const isAllowed = ['user-auth', 'login', 'signup', 'page-user-auth'].includes(cleanPage);
         
         if (!isAllowed) {
             // Authentication workflow.
@@ -6702,8 +6631,8 @@ lucide.createIcons();
     if (signupTab) signupTab.classList.remove('auth-tab-animate');
 
     if (tab === 'login') {
-        if (titleEl) titleEl.innerText = 'USER SIGN IN';
-        if (subtitleEl) subtitleEl.innerText = 'Please enter your user information.';
+        if (titleEl) titleEl.innerText = 'SIGN IN';
+        if (subtitleEl) subtitleEl.innerText = 'Please enter your account information.';
         
         if (loginTab) loginTab.classList.remove('hidden');
         if (signupTab) signupTab.classList.add('hidden');
@@ -6774,6 +6703,23 @@ lucide.createIcons();
         lucide.createIcons();
     }
 
+    function getPasswordValidationRules(password, username) {
+    const safePassword = password || "";
+    const safeUsername = (username || "").toLowerCase();
+
+    return {
+        length: safePassword.length >= 8 && safePassword.length <= 30,
+        case: /[a-z]/.test(safePassword) && /[A-Z]/.test(safePassword),
+        number: /[0-9]/.test(safePassword),
+        special: /[^A-Za-z0-9]/.test(safePassword),
+        usernameCheck: safePassword.length > 0 && (safeUsername === "" || !safePassword.toLowerCase().includes(safeUsername))
+    };
+}
+
+function isStrongPassword(password, username) {
+    return Object.values(getPasswordValidationRules(password, username)).every(Boolean);
+}
+
     function updateStrengthBar(val) {
     const fill = document.getElementById('strength-bar-fill');
     const strengthText = document.getElementById('strength-text');
@@ -6781,13 +6727,7 @@ lucide.createIcons();
     const uname = document.getElementById('signup-username')?.value.toLowerCase() || "";
 
     // Password and security validation workflow.
-    const rules = {
-        length: val.length >= 8 && val.length <= 30,
-        case: /[a-z]/.test(val) && /[A-Z]/.test(val),
-        number: /[0-9]/.test(val),
-        special: /[-!@#$%^&*()_+'"/}{()|<>.:,;`Â¨â‚¬=Â´?]/.test(val),
-        usernameCheck: val.length > 0 && (uname === "" || !val.toLowerCase().includes(uname))
-    };
+    const rules = getPasswordValidationRules(val, uname);
 
     // Internal UI workflow note.
     const updateRow = (id, isPassed) => {
@@ -6861,29 +6801,8 @@ lucide.createIcons();
     // Internal UI workflow note.
     if (!uname || !pass1 || !pass2) return showAuthError(errEl, errTxt, 'Please fill in all fields!');
 
-    // Password and security validation workflow.
-    if (pass1.length < 8 || pass1.length > 30) {
-        return showAuthError(errEl, errTxt, 'Password must be between 8 and 30 characters!');
-    }
-
-    // Internal UI workflow note.
-    if (!/[a-z]/.test(pass1) || !/[A-Z]/.test(pass1)) {
-        return showAuthError(errEl, errTxt, 'Password must contain both upper and lower case letters!');
-    }
-
-    // Internal UI workflow note.
-    if (!/[0-9]/.test(pass1)) {
-        return showAuthError(errEl, errTxt, 'Password must contain at least one number!');
-    }
-
-    // Internal UI workflow note.
-    if (!/[-!@#$%^&*()_+'"/}{()|<>.:,;`Â¨â‚¬=Â´?]/.test(pass1)) {
-        return showAuthError(errEl, errTxt, 'Password must contain at least one special character!');
-    }
-
-    // Internal UI workflow note.
-    if (pass1.toLowerCase().includes(uname.toLowerCase())) {
-        return showAuthError(errEl, errTxt, 'Password cannot contain your username!');
+    if (!isStrongPassword(pass1, uname)) {
+        return showAuthError(errEl, errTxt, 'Password must satisfy every strength requirement shown above.');
     }
 
     // Password and security validation workflow.
@@ -6991,25 +6910,6 @@ async function handleUserLogin() {
         );
     }
 
-     // Handles page navigation and page-level UI state.
-    setTimeout(() => {
-    document.querySelectorAll("main").forEach(page => {
-        page.classList.add("hidden");
-    });
-
-    document.getElementById("page-user").classList.remove("hidden");
-
-
-    const userBadge = document.getElementById("user-logged-badge");
-    const displayName = document.getElementById("user-display-name");
-    const avatar = document.getElementById("user-avatar-initial");
-
-    if (userBadge) userBadge.classList.remove("hidden");
-    if (displayName) displayName.textContent = data.user.username;
-    if (avatar) avatar.textContent = data.user.username.charAt(0).toUpperCase();
-
-}, 700);
-
     // Persists the latest calculated data.
     localStorage.setItem(
         "currentUser",
@@ -7022,6 +6922,30 @@ async function handleUserLogin() {
         data.token
     );
 
+    currentUser = data.user.username;
+
+    if (typeof setupUserUI === "function") {
+        setupUserUI(data.user.username);
+    }
+
+    const navAdmin = document.getElementById("nav-admin");
+    if (navAdmin) {
+        navAdmin.classList.toggle("hidden", data.user.is_admin !== true);
+    }
+
+    if (data.user.is_admin === true) {
+        const badge = document.getElementById("admin-logged-badge");
+        const displayName = document.getElementById("admin-display-name");
+        const avatar = document.getElementById("admin-avatar-initial");
+
+        if (badge) badge.classList.remove("hidden");
+        if (displayName) displayName.textContent = data.user.username;
+        if (avatar) avatar.textContent = data.user.username.charAt(0).toUpperCase();
+
+        if (typeof setupAdminUI === "function") setupAdminUI(data.user.username);
+        if (typeof refreshAdminDashboard === "function") refreshAdminDashboard();
+    }
+
     // Updates validation and success messages.
     if (sucEl) {
     sucEl.classList.remove('hidden');
@@ -7029,7 +6953,7 @@ async function handleUserLogin() {
     }
 
     // Handles page navigation and page-level UI state.
-    showPage("user");
+    showPage(data.user.is_admin ? "admin" : "user");
 
 } catch (err) {
 
@@ -7137,6 +7061,8 @@ function userLogout() {
     // Admin dashboard navigation and refresh workflow.
     const adminBadge = document.getElementById('admin-logged-badge');
     if (adminBadge) adminBadge.classList.add('hidden');
+    const navAdmin = document.getElementById('nav-admin');
+    if (navAdmin) navAdmin.classList.add('hidden');
     
     // Internal UI workflow note.
     const inputs = ['user-login-username', 'user-login-password', 'signup-username', 'signup-password', 'signup-password2'];
@@ -7182,114 +7108,6 @@ function userLogout() {
         errEl.style.display = 'flex';
         setTimeout(() => { errEl.classList.add('hidden'); }, 3000);
     }
-
-    // Admin dashboard navigation and refresh workflow.
-    async function handleLogin() {
-    const user = document.getElementById('username').value.trim();
-    const pass = document.getElementById('password').value;
-
-    const errEl = document.getElementById('login-error');
-    const errTxt = document.getElementById('error-text');
-    const sucEl = document.getElementById('admin-login-success');
-    const loader = document.getElementById('page-loader');
-
-    //Eski hata mesajini temizle
-    if (errEl) {
-        errEl.classList.add('hidden');
-        errEl.style.display = 'none';
-    }
-
-    // Updates validation and success messages.
-    if (sucEl) {
-        sucEl.classList.add('hidden');
-        sucEl.style.display = 'none';
-    }
-
-    // Clears stale form and UI state.
-    if (loader) {
-        loader.classList.add('hidden');
-        loader.style.display = 'none';
-    }
-
-    // Validates required input fields.
-    if (!user || !pass) {
-        return showAuthError(
-            errEl,
-            errTxt,
-            "Please enter both username and password."
-        );
-    }
-
-    try {
-        const res = await fetch("http://localhost:5000/api/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                username: user,
-                password: pass
-            })
-        });
-
-        const data = await res.json();
-
-        // Updates validation and success messages.
-        if (!res.ok) {
-            return showAuthError(
-                errEl,
-                errTxt,
-                data.error || "Invalid credentials."
-            );
-        }
-
-        //Admin olmayan kullanici
-        if (!data.user.is_admin) {
-            return showAuthError(
-                errEl,
-                errTxt,
-                "This account is not an administrator."
-            );
-        }
-
-        //Admin bilgilerini kaydet
-        localStorage.setItem("currentUser", JSON.stringify(data.user));
-        localStorage.setItem("token", data.token);
-
-        // Authentication workflow.
-        if (sucEl) {
-            sucEl.classList.remove('hidden');
-            sucEl.style.display = 'flex';
-        }
-
-        // Admin dashboard navigation and refresh workflow.
-        const badge = document.getElementById("admin-logged-badge");
-        const displayName = document.getElementById("admin-display-name");
-        const avatar = document.getElementById("admin-avatar-initial");
-
-        if (badge) badge.classList.remove("hidden");
-        if (displayName) displayName.textContent = data.user.username;
-        if (avatar) avatar.textContent = data.user.username.charAt(0).toUpperCase();
-
-        // Handles page navigation and page-level UI state.
-        setTimeout(() => {
-            document.querySelectorAll("main").forEach(page => {
-                page.classList.add("hidden");
-            });
-
-            document.getElementById("page-admin-dashboard").classList.remove("hidden");
-        }, 700);
-
-    } catch (err) {
-        console.error(err);
-
-        return showAuthError(
-            errEl,
-            errTxt,
-            "Could not connect to backend."
-        );
-    }
-}
 
 function handleAdminLogout() {
     const loader = document.getElementById('page-loader');
@@ -7351,16 +7169,13 @@ function handleAdminLogout() {
     // Admin dashboard navigation and refresh workflow.
     const adminBadge = document.getElementById('admin-logged-badge');
     if (adminBadge) adminBadge.classList.add('hidden');
+    const navAdmin = document.getElementById('nav-admin');
+    if (navAdmin) navAdmin.classList.add('hidden');
 
     // Admin dashboard navigation and refresh workflow.
-    const uField = document.getElementById('username'); 
-    const pField = document.getElementById('password'); 
-    if (uField) uField.value = '';
-    if (pField) pField.value = '';
-
-    history.replaceState({ page: 'admin' }, "", "#admin");
+    history.replaceState({ page: 'login' }, "", "#login");
     if (typeof showPage === "function") {
-        showPage('admin', true);
+        showPage('login', true);
     }
 
     setTimeout(() => {

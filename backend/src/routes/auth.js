@@ -4,11 +4,38 @@ const { signToken, requireAuth, requireAdmin } = require("../middleware/auth");
 
 const router = express.Router();
 
+function validateStrongPassword(password, username) {
+  const safePassword = password || "";
+  const safeUsername = (username || "").toLowerCase();
+
+  const rules = {
+    length: safePassword.length >= 8 && safePassword.length <= 30,
+    case: /[a-z]/.test(safePassword) && /[A-Z]/.test(safePassword),
+    number: /[0-9]/.test(safePassword),
+    special: /[^A-Za-z0-9]/.test(safePassword),
+    usernameCheck: safePassword.length > 0 && (safeUsername === "" || !safePassword.toLowerCase().includes(safeUsername)),
+  };
+
+  return {
+    isStrong: Object.values(rules).every(Boolean),
+    rules,
+  };
+}
+
 router.post("/register", async (req, res) => {
   const { username, password } = req.body || {};
   if (!username || !password) {
     return res.status(400).json({ error: "username and password are required" });
   }
+
+  const passwordStrength = validateStrongPassword(password, username);
+  if (!passwordStrength.isStrong) {
+    return res.status(400).json({
+      error: "Password must be 8-30 characters and include uppercase, lowercase, number, special character, and must not contain the username",
+      rules: passwordStrength.rules,
+    });
+  }
+
   const existing = await db.query(
     "SELECT user_id FROM APP_USER WHERE username = $1",
     [username]
