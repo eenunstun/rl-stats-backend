@@ -36,6 +36,49 @@ router.post("/fav-players", async (req, res) => {
   res.status(201).json(result.rows[0]);
 });
 
+router.put("/fav-players/current", async (req, res) => {
+  const { player_id } = req.body || {};
+  if (!player_id) {
+    return res.status(400).json({ error: "player_id is required" });
+  }
+
+  const client = await db.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    const playerCheck = await client.query(
+      "SELECT player_id FROM PLAYER WHERE player_id = $1",
+      [player_id]
+    );
+
+    if (playerCheck.rowCount === 0) {
+      await client.query("ROLLBACK");
+      return res.status(404).json({ error: "Player not found" });
+    }
+
+    await client.query("DELETE FROM FAV_PLAYER WHERE user_id = $1", [
+      req.user.user_id,
+    ]);
+
+    const result = await client.query(
+      `INSERT INTO FAV_PLAYER (user_id, player_id)
+       VALUES ($1, $2)
+       RETURNING *`,
+      [req.user.user_id, player_id]
+    );
+
+    await client.query("COMMIT");
+    res.json(result.rows[0]);
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.error("Favorite player replace error:", err);
+    res.status(500).json({ error: "Failed to update favorite player" });
+  } finally {
+    client.release();
+  }
+});
+
 router.delete("/fav-players/:player_id", async (req, res) => {
   const player_id = Number(req.params.player_id);
   const result = await db.query(
@@ -76,6 +119,49 @@ router.post("/fav-teams", async (req, res) => {
     return res.status(409).json({ error: "Team already favorited" });
   }
   res.status(201).json(result.rows[0]);
+});
+
+router.put("/fav-teams/current", async (req, res) => {
+  const { team_id } = req.body || {};
+  if (!team_id) {
+    return res.status(400).json({ error: "team_id is required" });
+  }
+
+  const client = await db.connect();
+
+  try {
+    await client.query("BEGIN");
+
+    const teamCheck = await client.query(
+      "SELECT team_id FROM TEAM WHERE team_id = $1",
+      [team_id]
+    );
+
+    if (teamCheck.rowCount === 0) {
+      await client.query("ROLLBACK");
+      return res.status(404).json({ error: "Team not found" });
+    }
+
+    await client.query("DELETE FROM FAV_TEAM WHERE user_id = $1", [
+      req.user.user_id,
+    ]);
+
+    const result = await client.query(
+      `INSERT INTO FAV_TEAM (user_id, team_id)
+       VALUES ($1, $2)
+       RETURNING *`,
+      [req.user.user_id, team_id]
+    );
+
+    await client.query("COMMIT");
+    res.json(result.rows[0]);
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.error("Favorite team replace error:", err);
+    res.status(500).json({ error: "Failed to update favorite team" });
+  } finally {
+    client.release();
+  }
 });
 
 router.delete("/fav-teams/:team_id", async (req, res) => {

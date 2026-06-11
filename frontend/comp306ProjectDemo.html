@@ -948,7 +948,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
     
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-        <div onclick="openTournamentLeaderboard('scheduled')" 
+        <div onclick="openTournamentLeaderboard('all')"
      class="group relative rounded-2xl overflow-hidden cursor-pointer h-56 bg-gray-900 border border-gray-800 
             hover:border-blue-500/50 transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] 
             hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(59,130,246,0.15)] transform-gpu"> <img src="rocket-league-pysonix-tournament-image.png" 
@@ -2743,7 +2743,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
         <div class="flex items-center gap-3">
             <span class="text-xs font-black text-gray-500 uppercase tracking-widest">Favorite Player</span>
             <select id="fav-player-page-select" onchange="handleFavoritePlayerChange(this.value, { renderDetail: true });" class="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-[11px] font-black text-white outline-none focus:border-purple-500 cursor-pointer transition-all hover:bg-white/10 min-w-[200px]">
-                <!-- JS (refreshUserFavDropdown) Burayi Dinamik olarak dolduracak -->
+                <!-- Filled dynamically by refreshUserFavDropdown. -->
             </select>
         </div>
     </div>
@@ -2771,7 +2771,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
         <div class="flex items-center gap-3">
             <span class="text-xs font-black text-gray-500 uppercase tracking-widest">Favorite Team</span>
             <select id="fav-team-page-select" onchange="handleFavoriteTeamChange(this.value, { renderDetail: true });" class="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-[11px] font-black text-white outline-none focus:border-sky-500 cursor-pointer transition-all hover:bg-white/10 min-w-[200px]">
-                <!-- JS (refreshUserFavDropdown) Dynamically This Part -->
+                <!-- Filled dynamically by refreshUserFavDropdown. -->
             </select>
         </div>
     </div>
@@ -2954,28 +2954,18 @@ body:has(#page-loader:not(.loader-hidden)) main {
     const token = localStorage.getItem("token");
     if (!token || !playerId) return;
 
-    const favorites = await fetchMyFavoritePlayers();
-    await Promise.all(favorites
-        .filter(player => Number(player.player_id) !== Number(playerId))
-        .map(player => fetch(`${API_BASE}/users/me/fav-players/${player.player_id}`, {
-            method: "DELETE",
-            headers: getAuthHeaders()
-        }))
-    );
+    const res = await fetch(`${API_BASE}/users/me/fav-players/current`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            ...getAuthHeaders()
+        },
+        body: JSON.stringify({ player_id: Number(playerId) })
+    });
 
-    if (!favorites.some(player => Number(player.player_id) === Number(playerId))) {
-        const res = await fetch(`${API_BASE}/users/me/fav-players`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                ...getAuthHeaders()
-            },
-            body: JSON.stringify({ player_id: Number(playerId) })
-        });
-        if (!res.ok && res.status !== 409) {
-            const data = await res.json().catch(() => ({}));
-            throw new Error(data.error || "Failed to update favorite player");
-        }
+    if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Failed to update favorite player");
     }
 }
 
@@ -2983,28 +2973,18 @@ body:has(#page-loader:not(.loader-hidden)) main {
     const token = localStorage.getItem("token");
     if (!token || !teamId) return;
 
-    const favorites = await fetchMyFavoriteTeams();
-    await Promise.all(favorites
-        .filter(team => Number(team.team_id) !== Number(teamId))
-        .map(team => fetch(`${API_BASE}/users/me/fav-teams/${team.team_id}`, {
-            method: "DELETE",
-            headers: getAuthHeaders()
-        }))
-    );
+    const res = await fetch(`${API_BASE}/users/me/fav-teams/current`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            ...getAuthHeaders()
+        },
+        body: JSON.stringify({ team_id: Number(teamId) })
+    });
 
-    if (!favorites.some(team => Number(team.team_id) === Number(teamId))) {
-        const res = await fetch(`${API_BASE}/users/me/fav-teams`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                ...getAuthHeaders()
-            },
-            body: JSON.stringify({ team_id: Number(teamId) })
-        });
-        if (!res.ok && res.status !== 409) {
-            const data = await res.json().catch(() => ({}));
-            throw new Error(data.error || "Failed to update favorite team");
-        }
+    if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Failed to update favorite team");
     }
 }
 
@@ -4877,7 +4857,7 @@ function showPage(page, isPopState = false) {
                 const userAuthCard = targetEl.querySelector('.auth-card');
                 if (userAuthCard) {
                     userAuthCard.classList.remove('premium-page-animate', 'admin-login-animate');
-                    void userAuthCard.offsetWidth; // Reflow: Animasyonu sifirlar
+                    void userAuthCard.offsetWidth; // Reflow: resets the animation.
                     requestAnimationFrame(() => {
                         userAuthCard.classList.add('admin-login-animate');
                     });
@@ -4957,7 +4937,7 @@ function showPage(page, isPopState = false) {
         pages.forEach(id => {
             const el = document.getElementById(id);
             if (el && !el.classList.contains('hidden') && id !== 'page-user-auth') {
-                void el.offsetWidth; // Reflow: Animasyonu sifirlar
+                void el.offsetWidth; // Reflow: resets the animation.
                 requestAnimationFrame(() => {
                     el.classList.add('premium-page-animate');
                 });
@@ -5091,7 +5071,7 @@ if (typeof renderArenaMatchStats === "function") {
     // Handles page navigation and page-level UI state.
     if (typeof refreshUserFavDropdown === "function") refreshUserFavDropdown();
 
-    // RENDER OF FAVORITE PLAYER VE DROPDOWN MEMORY
+    // Restores favorite player dropdown memory.
     const favPlatSel = document.getElementById('fav-platform-select');
     if (favPlatSel) favPlatSel.value = localStorage.getItem('lastFavPlatform') || 'All Platforms';
     if (typeof renderFavPlayerStats === "function") renderFavPlayerStats();
@@ -5182,11 +5162,11 @@ if (typeof renderArenaMatchStats === "function") {
                         const userAuthCard = el.querySelector('.auth-card');
                         if (userAuthCard) {
                             userAuthCard.classList.remove('premium-page-animate', 'admin-login-animate');
-                            void userAuthCard.offsetWidth; // Reflow: Animasyonu sifirlar
+                            void userAuthCard.offsetWidth; // Reflow: resets the animation.
                             userAuthCard.classList.add('admin-login-animate');
                         }
                     } else {
-                        void el.offsetWidth; // Reflow: Animasyonu sifirlar
+                        void el.offsetWidth; // Reflow: resets the animation.
                         el.classList.add('premium-page-animate');
                     }
                 }
@@ -5312,7 +5292,7 @@ function preventDuplicateTournamentPlayers() {
     });
 }
 
-    function setupUserUI(uname) {
+    async function setupUserUI(uname) {
     const badge = document.getElementById('user-logged-badge');
     if (badge) badge.classList.remove('hidden');
 
@@ -5337,8 +5317,10 @@ function preventDuplicateTournamentPlayers() {
     if (typeof renderAdvancedQueryShowcase === "function") {
         renderAdvancedQueryShowcase();
     }
-    if (typeof renderFavoriteDashboardHighlights === "function") {
-        renderFavoriteDashboardHighlights();
+    if (typeof refreshUserFavDropdown === "function") {
+        await refreshUserFavDropdown();
+    } else if (typeof renderFavoriteDashboardHighlights === "function") {
+        await renderFavoriteDashboardHighlights();
     }
 }
 
@@ -6637,7 +6619,7 @@ lucide.createIcons();
         if (loginTab) loginTab.classList.remove('hidden');
         if (signupTab) signupTab.classList.add('hidden');
         
-        // FORCE REFLOW VE AND SQUARE SYNCHRONIZATION
+        // Forces reflow and square synchronization.
         if (animate && loginTab) {
             void loginTab.offsetWidth; // Reflow: Resets animation
             requestAnimationFrame(() => {
@@ -6660,7 +6642,7 @@ lucide.createIcons();
         if (signupTab) signupTab.classList.remove('hidden');
         if (loginTab) loginTab.classList.add('hidden');
         
-        // FORCE REFLOW VE SQUARE SYNCHRONIZATION
+        // Forces reflow and square synchronization.
         if (animate && signupTab) {
             void signupTab.offsetWidth; // Reflow: Resets animation
             requestAnimationFrame(() => {
@@ -6925,7 +6907,7 @@ async function handleUserLogin() {
     currentUser = data.user.username;
 
     if (typeof setupUserUI === "function") {
-        setupUserUI(data.user.username);
+        await setupUserUI(data.user.username);
     }
 
     const navAdmin = document.getElementById("nav-admin");
@@ -7001,7 +6983,7 @@ function loginUser(uname) {
 
     setTimeout(() => {
         if (loader) {
-            // Inline stilleri temizle
+            // Clears temporary inline styles.
             loader.style.opacity = ""; 
             loader.style.visibility = ""; 
             loader.classList.add('loader-hidden');
@@ -7012,7 +6994,7 @@ function loginUser(uname) {
             if (targetPageEl) {
                 // Updates visibility and animation state.
                 targetPageEl.classList.remove('premium-page-animate', 'admin-login-animate');
-                void targetPageEl.offsetWidth; // Reflow: Animasyonu sifirlar
+                void targetPageEl.offsetWidth; // Reflow: resets the animation.
                 
                 // Updates visibility and animation state.
                 requestAnimationFrame(() => {
@@ -7848,7 +7830,7 @@ function openTournamentLeaderboard(type) {
     const sel = document.getElementById('tournament-name-select');
     if (sel) {
         // Internal UI workflow note.
-        const savedType = localStorage.getItem('lastSelectedTournament');
+        const savedType = type === 'all' ? 'all' : localStorage.getItem('lastSelectedTournament');
         
         if (savedType) {
             // Stores or restores UI state from browser storage.
@@ -8273,6 +8255,7 @@ async function refreshUserFavDropdown() {
         const [players, teams] = await Promise.all([fetchPlayers(), fetchTeams()]);
         let currentFavoritePlayers = [];
         let currentFavoriteTeams = [];
+        let favoritePreferencesLoaded = false;
 
         if (localStorage.getItem("token")) {
             try {
@@ -8280,6 +8263,7 @@ async function refreshUserFavDropdown() {
                     fetchMyFavoritePlayers(),
                     fetchMyFavoriteTeams()
                 ]);
+                favoritePreferencesLoaded = true;
             } catch (favoriteErr) {
                 console.warn("Favorite preference fetch failed, falling back to local storage:", favoriteErr);
             }
@@ -8297,7 +8281,9 @@ async function refreshUserFavDropdown() {
             pageSel.innerHTML = '<option value="">- Select Player -</option>' + playersOptionsHtml;
         }
 
-        const savedFav = currentFavoritePlayers[0]?.player_id || localStorage.getItem('myFavPlayerId');
+        const savedFav = favoritePreferencesLoaded
+            ? currentFavoritePlayers[0]?.player_id
+            : localStorage.getItem('myFavPlayerId');
 
         if (savedFav) {
             const exists = players.some(p => p.player_id.toString() === savedFav.toString());
@@ -8311,6 +8297,10 @@ async function refreshUserFavDropdown() {
                 if (pageSel && players.length > 0) pageSel.value = players[0].player_id;
                 localStorage.removeItem('myFavPlayerId');
             }
+        } else if (favoritePreferencesLoaded) {
+            if (sel) sel.value = "";
+            if (pageSel) pageSel.value = "";
+            localStorage.removeItem('myFavPlayerId');
         }
 
         const teamsOptionsHtml = teams
@@ -8325,7 +8315,9 @@ async function refreshUserFavDropdown() {
             teamPageSel.innerHTML = '<option value="">- Select Team -</option>' + teamsOptionsHtml;
         }
 
-        const savedTeamFav = currentFavoriteTeams[0]?.team_id || localStorage.getItem('myFavTeamId');
+        const savedTeamFav = favoritePreferencesLoaded
+            ? currentFavoriteTeams[0]?.team_id
+            : localStorage.getItem('myFavTeamId');
 
         if (savedTeamFav) {
             const teamExists = teams.some(t => t.team_id.toString() === savedTeamFav.toString());
@@ -8339,6 +8331,10 @@ async function refreshUserFavDropdown() {
                 if (teamPageSel && teams.length > 0) teamPageSel.value = teams[0].team_id;
                 localStorage.removeItem('myFavTeamId');
             }
+        } else if (favoritePreferencesLoaded) {
+            if (teamSel) teamSel.value = "";
+            if (teamPageSel) teamPageSel.value = "";
+            localStorage.removeItem('myFavTeamId');
         }
         if (typeof renderFavoriteDashboardHighlights === "function") {
             await renderFavoriteDashboardHighlights();
@@ -8395,6 +8391,9 @@ async function handleFavoriteTeamChange(teamId, options = {}) {
     }
 
     await renderFavoriteDashboardHighlights();
+    if (typeof renderAdvancedQueryShowcase === "function") {
+        await renderAdvancedQueryShowcase();
+    }
     if (options.renderDetail && typeof renderFavTeamStats === "function") {
         await renderFavTeamStats();
     }
