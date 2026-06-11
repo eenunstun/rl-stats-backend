@@ -26,7 +26,7 @@ Rocket League Stats is a PostgreSQL, Express, and HTML/JavaScript application fo
 ```powershell
 git clone https://github.com/eenunstun/rl-stats-backend.git
 cd rl-stats-backend
-git checkout prototype-setup
+git checkout final-setup
 cd backend
 npm install
 ```
