@@ -6179,6 +6179,10 @@ async function refreshOverview() {
         console.error("Overview matches fetch error:", err);
     }
 
+    if (typeof pruneRecentPlayerStatUpdates === "function") {
+        await pruneRecentPlayerStatUpdates();
+    }
+
     // Updates the counter badge.
     if (document.getElementById('ov-user-count')) {
         document.getElementById('ov-user-count').textContent = overviewUsers.length;
@@ -7208,6 +7212,52 @@ function saveRecentPlayerStatUpdates(updates) {
     localStorage.setItem("recentPlayerStatUpdates", JSON.stringify(updates.slice(0, 25)));
 }
 
+function playerStatUpdateStillMatches(currentStat, update) {
+    if (!currentStat || !update) return false;
+
+    return Number(currentStat.goals || 0) === Number(update.goals || 0)
+        && Number(currentStat.assists || 0) === Number(update.assists || 0)
+        && Number(currentStat.saves || 0) === Number(update.saves || 0)
+        && Number(currentStat.shot_accuracy || 0) === Number(update.shot_accuracy || 0)
+        && Boolean(currentStat.mvp) === Boolean(update.mvp);
+}
+
+async function pruneRecentPlayerStatUpdates() {
+    const updates = getRecentPlayerStatUpdates();
+    if (updates.length === 0 || !localStorage.getItem("token")) return updates;
+
+    const statsByPlayer = new Map();
+    const validUpdates = [];
+
+    for (const update of updates) {
+        const playerId = Number(update.player_id);
+        const matchId = Number(update.match_id);
+        if (!Number.isInteger(playerId) || !Number.isInteger(matchId)) continue;
+
+        try {
+            if (!statsByPlayer.has(playerId)) {
+                statsByPlayer.set(playerId, await fetchPlayerMatchStats(playerId));
+            }
+
+            const currentStat = (statsByPlayer.get(playerId) || [])
+                .find(stat => Number(stat.match_id) === matchId);
+
+            if (playerStatUpdateStillMatches(currentStat, update)) {
+                validUpdates.push(update);
+            }
+        } catch (err) {
+            console.warn("Recent player stat update validation failed:", err);
+            validUpdates.push(update);
+        }
+    }
+
+    if (validUpdates.length !== updates.length) {
+        saveRecentPlayerStatUpdates(validUpdates);
+    }
+
+    return validUpdates;
+}
+
 function clearPlayerMatchStatInputs() {
     ["input-goals", "input-shots", "input-assists", "input-saves"].forEach(id => {
         const input = document.getElementById(id);
@@ -7366,12 +7416,12 @@ async function updateStats() {
 }
 
 async function refreshAfterPlayerMatchStatUpdate() {
-    if (typeof renderUpdatedPlayers === "function") renderUpdatedPlayers();
     if (typeof renderAdminTournamentMatches === "function") await renderAdminTournamentMatches();
     if (typeof renderAdminArenaMatches === "function") await renderAdminArenaMatches();
     if (typeof refreshOverview === "function") await refreshOverview();
     if (typeof refreshAllUserLeaderboards === "function") await refreshAllUserLeaderboards();
     if (typeof updateGlobalTopCards === "function") await updateGlobalTopCards();
+    if (typeof renderUpdatedPlayers === "function") renderUpdatedPlayers();
 }
 
 function renderUpdatedPlayers() {
