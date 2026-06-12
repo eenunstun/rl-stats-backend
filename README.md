@@ -123,7 +123,7 @@ Seed data includes an admin account:
 
 ```text
 Username: Evrim
-Password: SoccerCar@2358
+Password: Nebula!47Crank
 ```
 
 Admin users can create and delete players, teams, tournaments, matches, and player match stats. Regular users can browse the user panel and update their own favorite player/team.
