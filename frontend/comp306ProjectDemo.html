@@ -3030,7 +3030,7 @@ body:has(#page-loader:not(.loader-hidden)) main {
         return isLoggedIn() && user?.is_admin === true;
     }
 
-    async function assignPlayerToTeamAPI(playerId, teamId, since) {
+async function assignPlayerToTeamAPI(playerId, teamId, since) {
     const token = localStorage.getItem('token');
 
     const res = await fetch(`${API_BASE}/players/${playerId}/plays-for`, {
@@ -3048,6 +3048,24 @@ body:has(#page-loader:not(.loader-hidden)) main {
     if (!res.ok) {
         const err = await res.json();
         throw new Error(err.error || 'Failed to assign player to team');
+    }
+
+    return await res.json();
+    }
+
+    async function removePlayerFromTeamAPI(teamId, playerId) {
+    const token = localStorage.getItem('token');
+
+    const res = await fetch(`${API_BASE}/teams/${teamId}/players/${playerId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'Failed to remove player from team');
     }
 
     return await res.json();
@@ -3871,6 +3889,25 @@ function getMatchPlayerStat(selectId, teamId, mvpVal) {
     return getPlayerStatFromSelect(selectId, teamId, mvpVal);
 }
 
+function getLocalTodayDate() {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+}
+
+function parseDateInputAsLocal(dateValue) {
+    const [year, month, day] = String(dateValue || '').split('-').map(Number);
+    if (!year || !month || !day) return null;
+    return new Date(year, month - 1, day);
+}
+
+function formatDateForMessage(date) {
+    return date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+    });
+}
+
 async function addTournamentMatch() {
     const tourneySelect = document.getElementById('t-type-sel');
 
@@ -3924,23 +3961,17 @@ async function addTournamentMatch() {
     if (t1 === t2) { resetOne('t-team2-sel'); return showAdminMsg('t-msg', 'A team cannot play a match against itself.', 'error'); }
     if (!mvpVal) { resetOne('t-mvp-sel'); return showAdminMsg('t-msg', 'MVP player selection is required.', 'error'); }
 
-    const startD = new Date(startDateVal);
-    const endD = new Date(endDateVal);
-    const matchD = new Date(matchDateVal);
-    const now = new Date();
-    const todayZero = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const startZero = new Date(startD.getFullYear(), startD.getMonth(), startD.getDate());
+    const startD = parseDateInputAsLocal(startDateVal);
+    const endD = parseDateInputAsLocal(endDateVal);
+    const matchD = parseDateInputAsLocal(matchDateVal);
+    const todayZero = getLocalTodayDate();
 
-    if (startZero > todayZero) {
+    if (startD > todayZero) {
         return showAdminMsg('t-msg', 'Cannot add matches to a tournament that has not started yet!', 'error');
     }
 
-    const deadlineD = new Date('2026-06-11');
-    const matchZero = new Date(matchD.getFullYear(), matchD.getMonth(), matchD.getDate());
-    const deadlineZero = new Date(deadlineD.getFullYear(), deadlineD.getMonth(), deadlineD.getDate());
-
-    if (matchZero > deadlineZero) {
-        return showAdminMsg('t-msg', 'Matches cannot be created after 11 June 2026!', 'error');
+    if (matchD > todayZero) {
+        return showAdminMsg('t-msg', `Matches cannot be created after ${formatDateForMessage(todayZero)}!`, 'error');
     }
 
     if (matchD < startD || matchD > endD) {
@@ -4331,13 +4362,11 @@ async function addArenaMatch() {
     if (t1 === t2) { resetOne('m-team2-sel'); return showAdminMsg('m-msg', 'A team cannot play a match against itself.', 'error'); }
     if (!mvpVal) { resetOne('m-mvp-sel'); return showAdminMsg('m-msg', 'MVP player selection is required.', 'error'); }
 
-    const matchD = new Date(matchDateVal);
-    const deadlineD = new Date('2026-06-11');
-    const matchZero = new Date(matchD.getFullYear(), matchD.getMonth(), matchD.getDate());
-    const deadlineZero = new Date(deadlineD.getFullYear(), deadlineD.getMonth(), deadlineD.getDate());
+    const matchD = parseDateInputAsLocal(matchDateVal);
 
-    if (matchZero > deadlineZero) {
-        return showAdminMsg('m-msg', 'Matches cannot be created after 11 June 2026!', 'error');
+    const todayZero = getLocalTodayDate();
+    if (matchD > todayZero) {
+        return showAdminMsg('m-msg', `Matches cannot be created after ${formatDateForMessage(todayZero)}!`, 'error');
     }
 
     let players;
@@ -6052,6 +6081,51 @@ async function assignPlayerToTeam() {
         showAdminMsg("assign-msg", err.message, "error");
     }
 }
+
+async function removePlayerFromTeam() {
+    const tSel = document.getElementById("remove-team-sel");
+    const pSel = document.getElementById("remove-player-sel");
+
+    const teamId = parseInt(tSel?.value);
+    const playerId = parseInt(pSel?.value);
+
+    const resetDropdowns = () => {
+        if (tSel) tSel.value = "";
+        if (pSel) pSel.value = "";
+    };
+
+    if (!teamId) {
+        resetDropdowns();
+        return showAdminMsg("remove-msg", "Please select a team.", "error");
+    }
+
+    if (!playerId) {
+        if (pSel) pSel.value = "";
+        return showAdminMsg("remove-msg", "Please select a player to remove.", "error");
+    }
+
+    try {
+        await removePlayerFromTeamAPI(teamId, playerId);
+
+        await renderTeamList();
+        await renderPlayerList();
+        await refreshAssignDropdowns();
+        await refreshRemoveTeamDropdown();
+
+        if (typeof refreshOverview === "function") await refreshOverview();
+        if (typeof updatePlayerLeaderboardHeader === "function") await updatePlayerLeaderboardHeader();
+        if (typeof refreshAllUserLeaderboards === "function") await refreshAllUserLeaderboards();
+        if (typeof refreshUserFavDropdown === "function") await refreshUserFavDropdown();
+
+        resetDropdowns();
+        showAdminMsg("remove-msg", "Player removed from team successfully!", "success");
+    } catch (err) {
+        console.error("Remove player from team error:", err);
+        showAdminMsg("remove-msg", err.message, "error");
+    }
+}
+
+window.removePlayerFromTeam = removePlayerFromTeam;
 
 async function refreshAssignPlayerDropdown() {
     const pSel = document.getElementById("assign-player-sel");

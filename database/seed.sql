@@ -1938,3 +1938,8 @@ VALUES
     (68, 25),
     (69, 26),
     (70, 27);
+
+SELECT setval(
+    pg_get_serial_sequence('MATCH_DATA', 'match_id'),
+    (SELECT MAX(match_id) FROM MATCH_DATA)
+);

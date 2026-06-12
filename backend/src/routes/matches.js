@@ -31,7 +31,7 @@ router.get("/", async (req, res) => {
     const sql = `
   SELECT
     M.match_id,
-    M.match_date,
+    TO_CHAR(M.match_date, 'YYYY-MM-DD') AS match_date,
     M.tournament_stage,
     M.weather,
     M.tournament_id,
@@ -39,8 +39,8 @@ router.get("/", async (req, res) => {
 
     COALESCE(T.tournament_name, 'Non-Tournament Match') AS tournament_name,
     T.country,
-    T.start_date,
-    T.end_date,
+    TO_CHAR(T.start_date, 'YYYY-MM-DD') AS start_date,
+    TO_CHAR(T.end_date, 'YYYY-MM-DD') AS end_date,
 
     AR.arena_name,
 
@@ -334,7 +334,15 @@ router.get("/:id", async (req, res) => {
 
   const matchQ = await db.query(
     `
-    SELECT M.*, COALESCE(T.tournament_name, 'Non-Tournament Match') AS tournament_name, A.arena_name
+    SELECT
+      M.match_id,
+      TO_CHAR(M.match_date, 'YYYY-MM-DD') AS match_date,
+      M.tournament_stage,
+      M.weather,
+      M.tournament_id,
+      M.arena_id,
+      COALESCE(T.tournament_name, 'Non-Tournament Match') AS tournament_name,
+      A.arena_name
     FROM MATCH_DATA M
     LEFT JOIN TOURNAMENT T ON T.tournament_id = M.tournament_id
     JOIN ARENA A ON A.arena_id = M.arena_id

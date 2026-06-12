@@ -529,7 +529,7 @@ router.delete("/:teamId/players/:playerId", requireAuth, requireAdmin, async (re
 
     const result = await db.query(
       `UPDATE PLAYS_FOR
-       SET until = CURRENT_DATE
+       SET until = GREATEST(CURRENT_DATE, since)
        WHERE team_id = $1
          AND player_id = $2
          AND until IS NULL
