@@ -156,6 +156,12 @@ frontend/
 - Empty frontend data: Start the backend first, reset the database, then refresh the browser.
 - Auth failures: Log in again so the frontend stores a fresh JWT token.
 
+## Disclaimer
+
+This project was created solely for educational and portfolio purposes as part of a university coursework project. Any references to Rocket League, professional players, teams, tournaments, or arenas are used for identification and demonstration purposes only. All match results, statistics, and database records are fictional unless otherwise stated.
+
+Rocket League is a trademark of Epic Games, Inc. This project is not affiliated with, endorsed by, sponsored by, or associated with Epic Games, Inc. or Rocket League Esports.
+
 ## Contributors
 
 - Evrim Enüstün
